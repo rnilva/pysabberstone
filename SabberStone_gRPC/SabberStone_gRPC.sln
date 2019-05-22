@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.156
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SabberStone_gRPC", "SabberStone_gRPC.csproj", "{C64B060C-6055-46B2-9C2F-11DACC74D8C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabberStone_gRPC_Client", "..\SabberStone_gRPC_Client\SabberStone_gRPC_Client.csproj", "{416D6CD0-188C-43C6-B89E-B176734518F0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C64B060C-6055-46B2-9C2F-11DACC74D8C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C64B060C-6055-46B2-9C2F-11DACC74D8C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C64B060C-6055-46B2-9C2F-11DACC74D8C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C64B060C-6055-46B2-9C2F-11DACC74D8C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{416D6CD0-188C-43C6-B89E-B176734518F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{416D6CD0-188C-43C6-B89E-B176734518F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{416D6CD0-188C-43C6-B89E-B176734518F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{416D6CD0-188C-43C6-B89E-B176734518F0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {35ECEE53-3E0D-4468-A8A2-52137E1F0360}
+	EndGlobalSection
+EndGlobal

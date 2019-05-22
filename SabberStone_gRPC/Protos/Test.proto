@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+option csharp_namespace = "SabberStone_gRPC";
+
+service Greeter {
+    rpc SayHello (HelloRequest) returns (HelloReply) {}
+	rpc HelloEmpty (Empty) returns (Empty) {}
+    rpc Bidirectional (stream SabberRequest) returns (stream SabberResponse) {}
+}
+
+service SabberStoneRPC {
+    rpc CreateGame (Empty) returns (Empty) {}
+    rpc CurrentHand (Empty) returns (HandZone) {}
+}
+
+message Empty {
+
+}
+
+message Controller {
+
+}
+
+message SabberRequest {
+    enum Type {
+        TEST1 = 0;
+        TEST2 = 1;
+    }
+    Type type = 1;
+}
+
+message SabberResponse {
+    string message = 1;
+}
+
+message HelloRequest {
+    string name = 1;
+}
+
+message HelloReply {
+    string message = 1;
+}
+
+message HandZone {
+    int32 count = 1;
+    repeated Playable playables = 2;
+}
+
+message Playable {
+    int32 id = 1;
+    int32 card_id = 2;
+    int32 cost = 3;
+    bool echo = 4;
+}
