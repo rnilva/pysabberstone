@@ -1,4 +1,5 @@
 syntax = "proto3";
+import "PowerHistory.proto";
 
 option csharp_namespace = "SabberStone_gRPC";
 
@@ -11,6 +12,7 @@ service Greeter {
 service SabberStoneRPC {
     rpc CreateGame (Empty) returns (Empty) {}
     rpc CurrentHand (Empty) returns (HandZone) {}
+    rpc GetHistories (Empty) returns (stream PowerHistory) {}
 }
 
 message Empty {
@@ -52,3 +54,20 @@ message Playable {
     int32 cost = 3;
     bool echo = 4;
 }
+
+message Histories {
+    repeated PowerHistory histories = 1;
+}
+
+
+
+
+message SabberServerResponse {
+    enum Type {
+        INVITE = 0;
+        DATA = 1;
+    }
+    Type type = 1;
+    //repeated PowerHistory histories = 2;
+}
+
