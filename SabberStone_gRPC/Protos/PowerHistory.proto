@@ -1,0 +1,138 @@
+syntax = "proto3";
+
+enum PowerHistoryType 
+{
+    powerhistory_invalid = 0;
+    powerhistory_full_entity = 1;
+    powerhistory_show_entity = 2;
+    powerhistory_hide_entity = 3;
+    powerhistory_tag_change = 4;
+    powerhistory_create_game = 5;
+    powerhistory_power_start = 6;
+    powerhistory_power_end = 7;
+    powerhistory_meta_data = 8;
+    powerhistory_change_entity = 9;
+}
+
+enum HistoryBlockType
+{
+    INVALID = 0;
+    ATTACK = 1;
+    JOUST = 2;
+    POWER = 3;
+    SCRIPT = 4;
+    TRIGGER = 5;
+    DEATHS = 6;
+    PLAY = 7;
+    FATIGUE = 8;
+    RITUAL = 9;
+    REVEAL_CARD = 10;
+    GAME_RESET = 11;
+    ACTION = 99;
+}
+
+enum MetaDataType
+{
+    TARGET = 0;
+    DAMAGE = 1;
+    HEALING = 2;
+    //JOUST = 3;
+    CLIENT_HISTORY = 4;
+    SHOW_BIG_CARD = 5;
+    EFFECT_TIMING = 6;
+    HISTORY_TARGET = 7;
+    OVERRIDE_HISTORY = 8;
+    HISTORY_TARGET_DONT_DUPLICATE_UNTIL_END = 9;
+    BEGIN_ARTIFICIAL_HISTORY_TILE = 10;
+    BEGIN_ARTIFICIAL_HISTORY_TRIGGER_TILE = 11;
+    END_ARTIFICIAL_HISTORY_TILE = 12;
+    START_DRAW = 13;
+    BURNED_CARD = 14;
+    EFFECT_SELECTION = 15;
+    BEGIN_LISTENING_FOR_TURN_EVENTS = 16;
+    HOLD_DRAWN_CARD = 17;
+    CONTROLLER_AND_ZONE_CHANGE = 18;
+    ARTIFICIAL_PAUSE_STUBBED_FOR_14_2 = 19;
+}
+
+message PowerHistory {
+
+    PowerHistoryType type = 1;
+
+    oneof power_history {
+        PowerHistoryEntity full_entity = 2;
+        PowerHistoryEntity show_entity = 3;
+        PowerHistoryHide hide_entity = 4;
+        PowerHistoryTagChange tag_change = 5;
+        PowerHistoryCreateGame create_game = 6;
+        PowerHistoryStart power_start = 7;
+        PowerHistoryEnd power_end = 8;
+        PowerHistoryMetaData meta_data = 9;
+        PowerHistoryEntity change_entity = 10;
+    }
+}
+
+message PowerHistoryEntity
+{
+    int32 entity = 1;
+    string name = 2;
+    repeated Tag tags = 3;
+}
+message Tag
+{
+    int32 name = 1;
+    int32 value = 2;
+}
+
+message PowerHistoryCreateGame
+{
+    Entity game_entity = 1;
+    repeated Player players = 2;
+}
+
+message PowerHistoryStart
+{
+    HistoryBlockType type = 1;
+    int32 index = 2;
+    int32 source = 3;
+    int32 target = 4;
+    string effect_card_id = 5;
+}
+
+message PowerHistoryEnd
+{
+}
+
+message PowerHistoryHide
+{
+    int32 entity = 1;
+    int32 zone = 2;
+}
+
+message PowerHistoryTagChange
+{
+    int32 entity = 1;
+    int32 tag = 2;
+    int32 value = 3;
+}
+
+message PowerHistoryMetaData
+{
+    repeated int32 info = 2;
+    MetaDataType type = 3;
+    int32 data = 4;
+}
+
+message Player
+{
+    int32 id = 1;
+    //pegasus.pegasusshared.BnetId game_account_id = 2;
+    int32 card_back = 3;
+    Entity entity = 4;
+}
+
+message Entity
+{
+    int32 id = 1;
+    repeated Tag tags = 2;
+}

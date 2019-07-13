@@ -20,10 +20,10 @@ namespace SabberStone_gRPC_Client
             Console.ReadKey();
         }
 
-        static void SabberServiceTest()
+        static async void SabberServiceTest()
         {
             var channel = new Channel("localhost:50052", ChannelCredentials.Insecure);
-            channel.ConnectAsync();
+            await channel.ConnectAsync();
 
             var game = new SabberStoneRPC.SabberStoneRPCClient(channel);
             var empty = new Empty();

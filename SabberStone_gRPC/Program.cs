@@ -12,6 +12,8 @@ namespace SabberStone_gRPC
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Test");
+
             const int PORT = 50052;
 
             //Grpc.Core.Interceptors.
