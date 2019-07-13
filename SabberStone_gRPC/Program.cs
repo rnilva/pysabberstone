@@ -5,6 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
+using SabberStonePython.API;
+using SabberStonePython.Tests;
 
 namespace SabberStone_gRPC
 {
@@ -12,6 +14,9 @@ namespace SabberStone_gRPC
     {
         static void Main(string[] args)
         {
+            //UtilTests.DeckStringDeserialize();
+
+
             Console.WriteLine("Test");
 
             const int PORT = 50052;
@@ -22,8 +27,9 @@ namespace SabberStone_gRPC
             {
                 Services =
                 {
-                    Greeter.BindService(new GreeterImpl()),
-                    SabberStoneRPC.BindService(new SabberStoneRPCImpl())
+                    //Greeter.BindService(new GreeterImpl()),
+                    //SabberStoneRPC.BindService(new SabberStoneRPCImpl())
+                    SabberStonePython.API.SabberStonePython.BindService(new API())
                 },
                 Ports = {new ServerPort("localhost", PORT, ServerCredentials.Insecure)}
             };
