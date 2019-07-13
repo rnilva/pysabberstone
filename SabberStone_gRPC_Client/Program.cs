@@ -14,7 +14,7 @@ namespace SabberStone_gRPC_Client
             //ConnectAsync("localhost:50052", "Client2");
             //ConnectAsync("localhost:50052", "Client3");
 
-            SabberServiceTest();
+            //SabberServiceTest();
 
 
             Console.ReadKey();

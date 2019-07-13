@@ -1,0 +1,137 @@
+syntax = "proto3";
+option csharp_namespace = "SabberStonePython.API";
+//import "google/protobuf/empty.proto";
+message Empty {
+
+}
+
+ 
+service SabberStonePython {
+    rpc NewGame(DeckStrings) returns (Game) {}
+    rpc GetCardDictionary(Empty) returns (Cards) {}
+}
+
+message GameTag {
+    
+}
+
+message Card {
+    int32 id = 1;
+    string string_id = 2;
+    string name = 3;
+    // entourage
+    // play requirements
+    repeated GameTag tags = 4;
+}
+
+
+message Cards {
+    // message Pair {
+    //     int32 id = 1;
+    //     Card card = 2;
+    // }
+    // repeated Pair pairs = 1;
+    map<int32, Card> cards = 1;
+}
+
+message DeckStrings {
+    string deck1 = 1;
+    string deck2 = 2;
+}
+
+message Game {
+    int32 id = 1;
+    Controller player1 = 2;
+    Controller player2 = 3;
+}
+
+message Controller {
+    int32 id = 1;
+    Hero hero = 2;
+    BoardZone board_zone = 3;
+    HandZone hand_zone = 4;
+    SecretZone secret_zone = 5;
+    DeckZone deck_zone = 6;
+}
+
+message BoardZone {
+    repeated Minion minions = 1;
+}
+
+message Minion {
+    int32 card_id = 1;
+    int32 atk = 2;
+    int32 base_health = 3;
+    int32 damage = 4;
+    int32 num_attacks_this_turn = 5;
+    bool exhausted = 6;
+    bool attackable_by_rush = 7;
+    bool charge = 8;
+    bool windfury = 9;
+    bool lifesteal = 10;
+    bool poisonous = 11;
+    bool stealth = 12;
+    bool divine_shield = 13;
+    bool immune = 14;
+    bool elusive = 15;
+    bool frozen = 16;
+    bool deathrattle = 17;
+    // race
+    // trigger or aura
+    // enchantments
+    int32 zone_position = 25;
+    int32 order_of_play = 26;
+}
+
+
+message HandZone {
+    repeated Playable entities = 1;
+}
+
+message SecretZone {
+    repeated Playable entities = 1;
+}
+
+message DeckZone {
+    repeated Playable entities = 1;
+}
+
+message Playable {
+    int32 card_id = 1;
+    int32 cost = 2;
+    int32 atk = 3;
+    int32 base_health = 4;
+    bool ghostly = 5;
+}
+
+message Hero {
+    int32 card_class = 1;
+    int32 atk = 2;
+    int32 base_health = 3;
+    int32 damage = 4;
+    int32 num_attacks_this_turn = 5;
+    int32 armor = 20;
+    bool exhausted = 6;
+    bool stealth = 12;
+    bool immune = 14;
+    HeroPower power = 15;
+    Weapon weapon = 16;
+    // fatigue
+}
+
+message HeroPower {
+    int32 card_id = 1;
+    int32 cost = 2;
+    bool exhausted = 3;
+}
+
+message Weapon {
+    int32 card_id = 1;
+    int32 atk = 2;
+    int32 durability = 3;
+    int32 damage = 4;
+    bool windfury = 9;
+    bool lifesteal = 10;
+    bool poisonous = 11;
+    bool immune = 14;
+}
