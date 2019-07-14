@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
@@ -21,6 +22,46 @@ namespace SabberStonePython.API
             return Task.FromResult(SabberHelpers.GenerateGameAPI(request.Deck1, request.Deck2));
         }
 
+        public override async Task Options(Game request, IServerStreamWriter<Option> responseStream, ServerCallContext context)
+        {
+            var game = SabberHelpers.ManagedObjects.Games[request.Id];
+            var options = game.CurrentPlayer.Options();
+
+            try
+            {
+                foreach (var option in options)
+                {
+                    Thread.Sleep(3000);
+                    await responseStream.WriteAsync(new Option(option, request.Id));
+                }
+            }
+            catch
+            {
+                ;
+            }
+
+            
+        }
+
+        public override Task<Game> Process(Option request, ServerCallContext context)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                var game = SabberHelpers.ManagedObjects.Games[request.GameId];
+
+                // Use option ids instead?
+                var playerTask = SabberHelpers.GetPlayerTask(request, game);
+
+                Console.WriteLine(SabberHelpers.Printers.PrintAction(playerTask));
+
+                game.Process(playerTask);
+
+                Console.WriteLine(SabberHelpers.Printers.PrintGame(game));
+
+                return new Game(game);
+            });
+        }
+
         public override Task<Cards> GetCardDictionary(Empty request, ServerCallContext context)
         {
             return Task.Factory.StartNew(() =>
@@ -31,49 +72,6 @@ namespace SabberStonePython.API
 
                 return cards;
             });
-        }
-    }
-
-    public partial class Cards
-    {
-        public Cards(IEnumerable<SabberStoneCore.Model.Card> allCards)
-        {
-            //var pairs = new RepeatedField<Cards.Types.Pair>();
-            //pairs.AddRange(allCards
-            //    .Select(c => new Types.Pair
-            //    {
-            //        Id = c.AssetId,
-            //        Card = new Card
-            //        {
-            //            Id = c.AssetId,
-            //            Name = c.Name,
-            //            StringId = c.Id,
-            //        }
-            //    }));
-            cards_ = new MapField<int, Card>();
-
-            try
-            {
-                foreach (var card in allCards)
-                {
-                    if (card.Name == null)
-                        continue;
-
-                    cards_.Add(card.AssetId, new Card
-                    {
-                        Id = card.AssetId,
-                        Name = card.Name,
-                        StringId = card.Id
-                    });
-                }
-            }
-            catch (Exception e)
-            {
-                ;
-            }
-
-
-            ;
         }
     }
 }

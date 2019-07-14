@@ -8,7 +8,30 @@ message Empty {
  
 service SabberStonePython {
     rpc NewGame(DeckStrings) returns (Game) {}
+    rpc Options(Game) returns (stream Option) {}
+	rpc Process(Option) returns (Game) {}
     rpc GetCardDictionary(Empty) returns (Cards) {}
+}
+
+message Option {
+    enum PlayerTaskType {
+        CHOOSE = 0;
+        CONCEDE = 1;
+        END_TURN = 2;
+        HERO_ATTACK = 3;
+        HERO_POWER = 4;
+        MINION_ATTACK = 5;
+        PLAY_CARD = 6;
+    }
+    PlayerTaskType type = 1;
+    int32 source_id = 2;
+    int32 target_id = 3;
+    int32 sub_option = 4;
+    int32 zone_position = 5;
+    int32 choice = 6;
+
+    int32 game_id = 7;
+    string print = 8;
 }
 
 message GameTag {
@@ -26,11 +49,6 @@ message Card {
 
 
 message Cards {
-    // message Pair {
-    //     int32 id = 1;
-    //     Card card = 2;
-    // }
-    // repeated Pair pairs = 1;
     map<int32, Card> cards = 1;
 }
 
@@ -43,6 +61,14 @@ message Game {
     int32 id = 1;
     Controller player1 = 2;
     Controller player2 = 3;
+    enum State {
+        INVALID = 0;
+        LOADING = 1;
+        RUNNING = 2;
+        COMPLETE = 3;
+    }
+    State state = 4;
+    int32 turn = 5;
 }
 
 message Controller {
