@@ -14,6 +14,8 @@ namespace SabberStonePython.API
             id_ = _id_gen++;
             player1_ = new Controller(game.Player1);
             player2_ = new Controller(game.Player2);
+            state_ = (Types.State)game.State;
+            turn_ = game.Turn;
 
             SabberHelpers.ManagedObjects.Games.Add(id_, game);
         }
@@ -173,6 +175,54 @@ namespace SabberStonePython.API
             lifesteal_ = weapon.HasLifeSteal;
             poisonous_ = weapon.Poisonous;
             immune_ = weapon.IsImmune;
+        }
+    }
+
+    public partial class Option
+    {
+        public Option(SabberStoneCore.Tasks.PlayerTasks.PlayerTask playerTask, int gameId)
+        {
+            if (playerTask is SabberStoneCore.Tasks.PlayerTasks.ChooseTask chooseTask)
+            {
+                choice_ = chooseTask.Choices[0];
+                type_ = Types.PlayerTaskType.Choose;
+                return;
+            }
+
+            type_ = (Types.PlayerTaskType)playerTask.PlayerTaskType;
+            if (playerTask.HasSource)
+                sourceId_ = playerTask.Source.Id;
+            else if (playerTask.HasTarget)
+                targetId_ = playerTask.Target.Id;
+            if (playerTask is SabberStoneCore.Tasks.PlayerTasks.PlayCardTask playCardTask)
+            {
+                subOption_ = playCardTask.ChooseOne;
+                zonePosition_ = playCardTask.ZonePosition;
+            }
+
+            gameId_ = gameId;
+            print_ = playerTask.ToString();
+        }
+    }
+
+    public partial class Cards
+    {
+        public Cards(IEnumerable<SabberStoneCore.Model.Card> allCards)
+        {
+            cards_ = new MapField<int, Card>();
+
+            foreach (var card in allCards)
+            {
+                if (card.Name == null)
+                    continue;
+
+                cards_.Add(card.AssetId, new Card
+                {
+                    Id = card.AssetId,
+                    Name = card.Name,
+                    StringId = card.Id
+                });
+            }
         }
     }
 }

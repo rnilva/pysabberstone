@@ -1,8 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using SabberStoneCore.Enums;
-using SabberStoneCore.Model;
+using SabberStoneCore.Model.Entities;
+using SabberStoneCore.Tasks.PlayerTasks;
+using SabberStonePython.API;
+using Card = SabberStoneCore.Model.Card;
+using Cards = SabberStoneCore.Model.Cards;
+using Game = SabberStoneCore.Model.Game;
+using Controller = SabberStoneCore.Model.Entities.Controller;
+using Minion = SabberStoneCore.Model.Entities.Minion;
 
 namespace SabberStonePython
 {
@@ -58,6 +66,151 @@ namespace SabberStonePython
             Console.WriteLine(game.FullPrint());
 
             return new API.Game(game);
+        }
+
+        public static PlayerTask GetPlayerTask(API.Option option, Game g)
+        {
+            const bool SkipPrePhase = true;
+            EntityList dict;
+            Controller c = g.CurrentPlayer;
+
+            switch (option.Type)
+            {
+                case Option.Types.PlayerTaskType.Choose:
+                    return ChooseTask.Pick(c, option.Choice);
+                case Option.Types.PlayerTaskType.Concede:
+                    return ConcedeTask.Any(c);
+                case Option.Types.PlayerTaskType.EndTurn:
+                    return EndTurnTask.Any(c);
+                case Option.Types.PlayerTaskType.HeroAttack:
+                    return HeroAttackTask.Any(c, (ICharacter)c.Game.IdEntityDic[option.TargetId], SkipPrePhase);
+                case Option.Types.PlayerTaskType.HeroPower:
+                    return HeroPowerTask.Any(c,
+                        option.TargetId > 0 ? (ICharacter) c.Game.IdEntityDic[option.TargetId] : null, option.SubOption, SkipPrePhase);
+                case Option.Types.PlayerTaskType.MinionAttack:
+                    dict = c.Game.IdEntityDic;
+                    return MinionAttackTask.Any(c, dict[option.SourceId], (ICharacter) dict[option.TargetId],
+                        SkipPrePhase);
+                case Option.Types.PlayerTaskType.PlayCard:
+                    dict = c.Game.IdEntityDic;
+                    return PlayCardTask.Any(c, dict[option.SourceId],
+                        option.TargetId > 0 ? (ICharacter) dict[option.TargetId] : null,
+                        option.ZonePosition, option.SubOption, SkipPrePhase);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public static class Printers
+        {
+            public static string PrintAction(PlayerTask a)
+            {
+                var name = a.Controller.Name;
+
+                switch (a.PlayerTaskType)
+                {
+                    case PlayerTaskType.CHOOSE:
+                        var c = a as ChooseTask;
+                        return $"[{name}] chose {c.Game.IdEntityDic[c.Choices[0]]}";
+                    case PlayerTaskType.END_TURN:
+                        return $"[{name}] ended his turn.";
+                    case PlayerTaskType.HERO_ATTACK:
+                        return $"[{name}]'s {a.Controller.Hero} attacked {a.Target}";
+                    case PlayerTaskType.HERO_POWER:
+                        return $"[{name}] used {a.Controller.Hero.HeroPower}" + $"{(a.Target != null ? $" to {a.Target}" : "")}" + $"{(a.Controller.Hero.HeroPower.ChooseOne ? $" with SubOption: {a.ChooseOne}" : "")}";
+                    case PlayerTaskType.MINION_ATTACK:
+                        return $"[{name}]'s {a.Source} attacked {a.Target}";
+                    case PlayerTaskType.PLAY_CARD:
+                        if (a.Source is Minion)
+                            return $"[{name}] played {a.Source} to Position {((PlayCardTask)a).ZonePosition}" + $"{(a.Target != null ? $" and targeted {a.Target}" : "")}" + $" {(a.Source.Card.ChooseOne ? $" with SubOption: {a.ChooseOne}" : "")}";
+                        else
+                            return $"[{name}] played {a.Source}" + $"{(a.Target != null ? $" to {a.Target}" : "")}" + $"{(a.Source.Card.ChooseOne ? $" with SubOption: {a.ChooseOne}" : "")}";
+                    default:
+                        return "";
+                }
+            }
+
+            public static string PrintGame(Game game)
+            {
+                var current = game.CurrentPlayer;
+                var opponent = game.CurrentOpponent;
+                var sb = new StringBuilder();
+                sb.AppendLine("");
+                sb.AppendLine($"ROUND {(game.Turn + 1) / 2} - {current.Name}\n");
+                //sb.AppendLine($"Hero[P1]: {game.Player1.Hero.Health + game.Player1.Hero.Armor} / Hero[P2]: {game.Player2.Hero.Health + game.Player2.Hero.Armor}");
+                sb.AppendLine($"[Op Hero: {opponent.Hero.Health}{(opponent.Hero.Armor == 0 ? "" : $" + {opponent.Hero.Armor}")}][{game.CurrentOpponent.Hero}]");
+                if (opponent.Hero.Weapon != null)
+                {
+                    sb.AppendLine($"[Op Weapon: {opponent.Hero.Weapon}({opponent.Hero.Weapon.AttackDamage}/{opponent.Hero.Weapon.Durability})]");
+                }
+
+                if (opponent.SecretZone.Count > 0 || opponent.SecretZone.Quest != null)
+                {
+                    sb.Append($"[Op Secrets: ");
+                    opponent.SecretZone.ToList().ForEach(p =>
+                    {
+                        var s = p;
+                        if (s.IsQuest)
+                            sb.Append($"{s}({s.QuestProgress})");
+                        else
+                            sb.Append(s);
+                    });
+                    sb.Append("]\n");
+                }
+
+                //if (opponent.SecretZone.Quest != null)
+                //{
+                // sb.Append("[Op Quest: ");
+
+                //}
+                sb.Append("[Op Board: ");
+                opponent.BoardZone.ToList().ForEach(m =>
+                {
+                    var str = new StringBuilder();
+                    str.Append($"({m.AttackDamage}/{m.Health})");
+                    str.Append(m);
+                    str.Append(" | ");
+                    sb.Append(str.ToString());
+                });
+                sb.Append("]\n");
+                sb.Append("[Board: ");
+                current.BoardZone.ToList().ForEach(m =>
+                {
+                    var str = new StringBuilder();
+                    str.Append($"({m.AttackDamage}/{m.Health})");
+                    str.Append(m);
+                    str.Append(" | ");
+                    sb.Append(str.ToString());
+                });
+                sb.Append("]\n");
+                sb.AppendLine($"[Hero: {current.Hero.Health}{(current.Hero.Armor == 0 ? "" : $" + {current.Hero.Armor}")}][{game.CurrentPlayer.Hero}][Power: ({current.Hero.HeroPower.Cost}){current.Hero.HeroPower}]");
+                if (current.Hero.Weapon != null)
+                {
+                    sb.AppendLine($"[Weapon: {current.Hero.Weapon}({current.Hero.Weapon.AttackDamage}/{current.Hero.Weapon.Durability})]");
+                }
+                if (current.SecretZone.Count > 0 || current.SecretZone.Quest != null)
+                {
+                    sb.Append($"[Secrets: ");
+                    current.SecretZone.ToList().ForEach(s =>
+                    {
+                        if (s.IsQuest)
+                            sb.Append($"{s}({s.QuestProgress})");
+                        else
+                            sb.Append(s);
+                    });
+                    sb.Append("]\n");
+                }
+                sb.Append("[Hand: ");
+                current.HandZone.ToList().ForEach(p =>
+                {
+                    sb.Append($"({p.Cost})");
+                    sb.Append(p);
+                });
+                sb.Append("]\n");
+                sb.AppendLine($"[Mana:{current.RemainingMana}/{current.OverloadOwed}/{current.BaseMana}][{current.OverloadLocked}]");
+
+                return sb.ToString();
+            }
         }
 
         public class Deck

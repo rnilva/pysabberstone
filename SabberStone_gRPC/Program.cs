@@ -36,28 +36,28 @@ namespace SabberStone_gRPC
             server.Start();
 
             Console.WriteLine("SabberStone gRPC Server listening on port " + PORT);
-            //Console.WriteLine("Press any key to stop the server...");
-            //Console.ReadKey();
+            Console.WriteLine("Press any key to stop the server...");
+            Console.ReadKey();
 
-            while (true)
-            {
-                Console.WriteLine("Write a name of the client to communicate!");
-                string command = Console.ReadLine();
-                if (command == "stop") break;
-                if (command == "disconnect")
-                {
-                    Console.Write("Write a name of the client to disconnect: ");
-                    ClientManager.Disconnect(Console.ReadLine());
-                    Console.WriteLine();
-                }
-                else
-                {
-                    Console.WriteLine("Write a message to send.");
-                    string message = Console.ReadLine();
+            //while (true)
+            //{
+            //    Console.WriteLine("Write a name of the client to communicate!");
+            //    string command = Console.ReadLine();
+            //    if (command == "stop") break;
+            //    if (command == "disconnect")
+            //    {
+            //        Console.Write("Write a name of the client to disconnect: ");
+            //        ClientManager.Disconnect(Console.ReadLine());
+            //        Console.WriteLine();
+            //    }
+            //    else
+            //    {
+            //        Console.WriteLine("Write a message to send.");
+            //        string message = Console.ReadLine();
 
-                    ClientManager.SendMessage(command, message);
-                }
-            }
+            //        ClientManager.SendMessage(command, message);
+            //    }
+            //}
 
 
             server.ShutdownAsync().Wait();
