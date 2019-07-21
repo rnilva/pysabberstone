@@ -19,10 +19,10 @@ class SabberStonePythonStub(object):
         request_serializer=python__pb2.DeckStrings.SerializeToString,
         response_deserializer=python__pb2.Game.FromString,
         )
-    self.Options = channel.unary_stream(
-        '/SabberStonePython/Options',
+    self.GetOptions = channel.unary_unary(
+        '/SabberStonePython/GetOptions',
         request_serializer=python__pb2.Game.SerializeToString,
-        response_deserializer=python__pb2.Option.FromString,
+        response_deserializer=python__pb2.Options.FromString,
         )
     self.Process = channel.unary_unary(
         '/SabberStonePython/Process',
@@ -47,7 +47,7 @@ class SabberStonePythonServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def Options(self, request, context):
+  def GetOptions(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -76,10 +76,10 @@ def add_SabberStonePythonServicer_to_server(servicer, server):
           request_deserializer=python__pb2.DeckStrings.FromString,
           response_serializer=python__pb2.Game.SerializeToString,
       ),
-      'Options': grpc.unary_stream_rpc_method_handler(
-          servicer.Options,
+      'GetOptions': grpc.unary_unary_rpc_method_handler(
+          servicer.GetOptions,
           request_deserializer=python__pb2.Game.FromString,
-          response_serializer=python__pb2.Option.SerializeToString,
+          response_serializer=python__pb2.Options.SerializeToString,
       ),
       'Process': grpc.unary_unary_rpc_method_handler(
           servicer.Process,

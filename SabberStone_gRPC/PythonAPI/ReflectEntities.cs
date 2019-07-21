@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Google.Protobuf.Collections;
 
@@ -9,15 +10,22 @@ namespace SabberStonePython.API
     {
         private static int _id_gen;
 
-        public Game(SabberStoneCore.Model.Game game)
+        public Game(SabberStoneCore.Model.Game game, int id = -1)
         {
-            id_ = _id_gen++;
             player1_ = new Controller(game.Player1);
             player2_ = new Controller(game.Player2);
             state_ = (Types.State)game.State;
             turn_ = game.Turn;
 
-            SabberHelpers.ManagedObjects.Games.Add(id_, game);
+            if (id < 0)
+            {
+                id_ = _id_gen++;
+                SabberHelpers.ManagedObjects.Games.Add(id_, game);
+            }
+            else
+            {
+                id_ = id;
+            }
         }
 
         //partial void OnConstruction()
@@ -36,6 +44,7 @@ namespace SabberStonePython.API
             handZone_ = new HandZone(controller.HandZone);
             secretZone_ = new SecretZone(controller.SecretZone);
             deckZone_ = new DeckZone(controller.DeckZone);
+            playState_ = (Types.PlayState)controller.PlayState;
         }
     }
 
@@ -182,6 +191,9 @@ namespace SabberStonePython.API
     {
         public Option(SabberStoneCore.Tasks.PlayerTasks.PlayerTask playerTask, int gameId)
         {
+            gameId_ = gameId;
+            print_ = playerTask.ToString();
+
             if (playerTask is SabberStoneCore.Tasks.PlayerTasks.ChooseTask chooseTask)
             {
                 choice_ = chooseTask.Choices[0];
@@ -192,16 +204,23 @@ namespace SabberStonePython.API
             type_ = (Types.PlayerTaskType)playerTask.PlayerTaskType;
             if (playerTask.HasSource)
                 sourceId_ = playerTask.Source.Id;
-            else if (playerTask.HasTarget)
+            if (playerTask.HasTarget)
                 targetId_ = playerTask.Target.Id;
             if (playerTask is SabberStoneCore.Tasks.PlayerTasks.PlayCardTask playCardTask)
             {
                 subOption_ = playCardTask.ChooseOne;
                 zonePosition_ = playCardTask.ZonePosition;
             }
+        }
+    }
 
-            gameId_ = gameId;
-            print_ = playerTask.ToString();
+    public partial class Options
+    {
+        public Options(List<SabberStoneCore.Tasks.PlayerTasks.PlayerTask> playerTasks, int gameId)
+        {
+            var options = new RepeatedField<Option>();
+            options.AddRange(playerTasks.Select(p => new Option(p, gameId)));
+            list_ = options;
         }
     }
 
