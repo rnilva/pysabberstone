@@ -83,16 +83,16 @@ namespace SabberStonePython
                 case Option.Types.PlayerTaskType.EndTurn:
                     return EndTurnTask.Any(c);
                 case Option.Types.PlayerTaskType.HeroAttack:
-                    return HeroAttackTask.Any(c, (ICharacter)c.Game.IdEntityDic[option.TargetId], SkipPrePhase);
+                    return HeroAttackTask.Any(c, (ICharacter)g.IdEntityDic[option.TargetId], SkipPrePhase);
                 case Option.Types.PlayerTaskType.HeroPower:
                     return HeroPowerTask.Any(c,
-                        option.TargetId > 0 ? (ICharacter) c.Game.IdEntityDic[option.TargetId] : null, option.SubOption, SkipPrePhase);
+                        option.TargetId > 0 ? (ICharacter) g.IdEntityDic[option.TargetId] : null, option.SubOption, SkipPrePhase);
                 case Option.Types.PlayerTaskType.MinionAttack:
-                    dict = c.Game.IdEntityDic;
+                    dict = g.IdEntityDic;
                     return MinionAttackTask.Any(c, dict[option.SourceId], (ICharacter) dict[option.TargetId],
                         SkipPrePhase);
                 case Option.Types.PlayerTaskType.PlayCard:
-                    dict = c.Game.IdEntityDic;
+                    dict = g.IdEntityDic;
                     return PlayCardTask.Any(c, dict[option.SourceId],
                         option.TargetId > 0 ? (ICharacter) dict[option.TargetId] : null,
                         option.ZonePosition, option.SubOption, SkipPrePhase);

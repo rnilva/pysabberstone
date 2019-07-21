@@ -10,18 +10,16 @@ def full_random_game(stub, deck1, deck2):
     game = stub.NewGame(python_pb2.DeckStrings(deck1=deck1, deck2=deck2))
     options_list = []
     while game.state != python_pb2.Game.State.COMPLETE:
-        options = stub.Options(game)
-        for option in options:
-            options_list.append(option)
-        option = options_list[random.randrange(len(options_list))]
+        options = stub.GetOptions(game)
+        option = options.list[random.randrange(len(options.list))]
         game = stub.Process(option)
-        options_list.clear()
-
-# def options_to_list(options, list):
-#     for option in options:
-#         list.append(option)
-
-
+        print("Turn: {0}".format(game.turn))
+    if game.player1.play_state == python_pb2.Controller.PlayState.WON:
+        print("Player1 Wins!")
+    elif game.player2.play_state == python_pb2.Controller.PlayState.WON:
+        print("Player2 Wins!")
+    else:
+        print("Tied!")
 
 channel = grpc.insecure_channel('localhost:50052')
 stub = python_pb2_grpc.SabberStonePythonStub(channel)
@@ -51,10 +49,10 @@ for card in hand2:
     print('\t' + cards.cards[card.card_id].name)
 
 
-options = stub.Options(game)
+options = stub.GetOptions(game)
 option_list = []
 
-for option in options:
+for option in options.list:
     print(option.print)
     option_list.append(option)
 

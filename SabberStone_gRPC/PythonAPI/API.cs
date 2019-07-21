@@ -22,44 +22,41 @@ namespace SabberStonePython.API
             return Task.FromResult(SabberHelpers.GenerateGameAPI(request.Deck1, request.Deck2));
         }
 
-        public override async Task Options(Game request, IServerStreamWriter<Option> responseStream, ServerCallContext context)
+        public override Task<Options> GetOptions(Game request, ServerCallContext context)
         {
             var game = SabberHelpers.ManagedObjects.Games[request.Id];
             var options = game.CurrentPlayer.Options();
 
-            try
-            {
-                foreach (var option in options)
-                {
-                    Thread.Sleep(3000);
-                    await responseStream.WriteAsync(new Option(option, request.Id));
-                }
-            }
-            catch
-            {
-                ;
-            }
-
-            
+            return Task.FromResult(new Options(options, request.Id));
         }
 
         public override Task<Game> Process(Option request, ServerCallContext context)
         {
-            return Task.Factory.StartNew(() =>
+            Game test()
             {
                 var game = SabberHelpers.ManagedObjects.Games[request.GameId];
+                try
+                {
+                    // Use option ids instead?
+                    var playerTask = SabberHelpers.GetPlayerTask(request, game);
 
-                // Use option ids instead?
-                var playerTask = SabberHelpers.GetPlayerTask(request, game);
+                    Console.WriteLine(SabberHelpers.Printers.PrintAction(playerTask));
 
-                Console.WriteLine(SabberHelpers.Printers.PrintAction(playerTask));
+                    game.Process(playerTask);
 
-                game.Process(playerTask);
+                    Console.WriteLine(SabberHelpers.Printers.PrintGame(game));
 
-                Console.WriteLine(SabberHelpers.Printers.PrintGame(game));
+                    return new Game(game, request.GameId);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine(e.StackTrace);
+                    return null;
+                }
+            }
 
-                return new Game(game);
-            });
+            return Task.FromResult(test());
         }
 
         public override Task<Cards> GetCardDictionary(Empty request, ServerCallContext context)

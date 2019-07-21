@@ -8,7 +8,7 @@ message Empty {
  
 service SabberStonePython {
     rpc NewGame(DeckStrings) returns (Game) {}
-    rpc Options(Game) returns (stream Option) {}
+    rpc GetOptions(Game) returns (Options) {}
 	rpc Process(Option) returns (Game) {}
     rpc GetCardDictionary(Empty) returns (Cards) {}
 }
@@ -32,6 +32,10 @@ message Option {
 
     int32 game_id = 7;
     string print = 8;
+}
+
+message Options {
+    repeated Option list = 1;
 }
 
 message GameTag {
@@ -78,6 +82,14 @@ message Controller {
     HandZone hand_zone = 4;
     SecretZone secret_zone = 5;
     DeckZone deck_zone = 6;
+    enum PlayState {
+        INVALID = 0;
+        PLAYING = 1;
+        WON = 4;
+        LOST = 5;
+        TIED = 6;
+    }
+    PlayState play_state = 7;
 }
 
 message BoardZone {
