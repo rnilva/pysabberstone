@@ -12,55 +12,56 @@ namespace SabberStone_gRPC
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            //UtilTests.DeckStringDeserialize();
+            var server = new ServerHandleImpl();
 
+            server.Start();
 
-            Console.WriteLine("Test");
+            await server.Shutdown();
+        }
+    }
 
-            const int PORT = 50052;
+    public class ServerHandleImpl : SabberStonePython.API.ServerHandle.ServerHandleBase
+    {
+        const int PORT = 50052;
 
-            //Grpc.Core.Interceptors.
+        public Server Server { get; private set; }
 
-            var server = new Server
+        public ServerHandleImpl()
+        {
+            Server = new Server
             {
                 Services =
                 {
-                    //Greeter.BindService(new GreeterImpl()),
-                    //SabberStoneRPC.BindService(new SabberStoneRPCImpl())
-                    SabberStonePython.API.SabberStonePython.BindService(new API())
+                    SabberStonePython.API.SabberStonePython.BindService(new API()),
+                    SabberStonePython.API.ServerHandle.BindService(this)
                 },
                 Ports = {new ServerPort("localhost", PORT, ServerCredentials.Insecure)}
             };
-            server.Start();
+        }
+
+        public override Task<SabberStonePython.API.Empty> Close(SabberStonePython.API.Empty request, ServerCallContext context)
+        {
+            Console.WriteLine("Closing......");
+
+            Server.ShutdownAsync();
+            return Task.FromResult(new SabberStonePython.API.Empty());
+        }
+
+        public void Start()
+        {
+            Server.Start();
 
             Console.WriteLine("SabberStone gRPC Server listening on port " + PORT);
-            Console.WriteLine("Press any key to stop the server...");
-            Console.ReadKey();
+            Console.WriteLine("Call ServerHandle.Close() to terminate.");
+        }
 
-            //while (true)
-            //{
-            //    Console.WriteLine("Write a name of the client to communicate!");
-            //    string command = Console.ReadLine();
-            //    if (command == "stop") break;
-            //    if (command == "disconnect")
-            //    {
-            //        Console.Write("Write a name of the client to disconnect: ");
-            //        ClientManager.Disconnect(Console.ReadLine());
-            //        Console.WriteLine();
-            //    }
-            //    else
-            //    {
-            //        Console.WriteLine("Write a message to send.");
-            //        string message = Console.ReadLine();
-
-            //        ClientManager.SendMessage(command, message);
-            //    }
-            //}
-
-
-            server.ShutdownAsync().Wait();
+        public async Task Shutdown()
+        {
+            await Server.ShutdownTask;
+            
+            Console.WriteLine("Server terminated!");
         }
     }
 

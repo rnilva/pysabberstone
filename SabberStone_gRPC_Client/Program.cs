@@ -16,6 +16,7 @@ namespace SabberStone_gRPC_Client
 
             //SabberServiceTest();
 
+            CloseTest();
 
             Console.ReadKey();
         }
@@ -29,7 +30,16 @@ namespace SabberStone_gRPC_Client
             var empty = new Empty();
 
             game.CreateGame(empty);
+        }
 
+        static async void CloseTest()
+        {
+            var channel = new Channel("localhost:50052", ChannelCredentials.Insecure);
+            await channel.ConnectAsync();
+
+            var client = new SabberStonePython.API.ServerHandle.ServerHandleClient(channel);
+
+            client.Close(new SabberStonePython.API.Empty());
         }
 
         static async Task ConnectAsync(string target, string clientName)
