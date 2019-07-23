@@ -21,7 +21,7 @@ class SabberStonePythonStub(object):
         )
     self.GetOptions = channel.unary_unary(
         '/SabberStonePython/GetOptions',
-        request_serializer=python__pb2.Game.SerializeToString,
+        request_serializer=python__pb2.GameId.SerializeToString,
         response_deserializer=python__pb2.Options.FromString,
         )
     self.Process = channel.unary_unary(
@@ -33,6 +33,11 @@ class SabberStonePythonStub(object):
         '/SabberStonePython/GetCardDictionary',
         request_serializer=python__pb2.Empty.SerializeToString,
         response_deserializer=python__pb2.Cards.FromString,
+        )
+    self.Reset = channel.unary_unary(
+        '/SabberStonePython/Reset',
+        request_serializer=python__pb2.GameId.SerializeToString,
+        response_deserializer=python__pb2.Game.FromString,
         )
 
 
@@ -68,6 +73,13 @@ class SabberStonePythonServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def Reset(self, request, context):
+    """rpc GetEntityFromId(EntityId) returns () {}
+    """
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
 
 def add_SabberStonePythonServicer_to_server(servicer, server):
   rpc_method_handlers = {
@@ -78,7 +90,7 @@ def add_SabberStonePythonServicer_to_server(servicer, server):
       ),
       'GetOptions': grpc.unary_unary_rpc_method_handler(
           servicer.GetOptions,
-          request_deserializer=python__pb2.Game.FromString,
+          request_deserializer=python__pb2.GameId.FromString,
           response_serializer=python__pb2.Options.SerializeToString,
       ),
       'Process': grpc.unary_unary_rpc_method_handler(
@@ -91,7 +103,54 @@ def add_SabberStonePythonServicer_to_server(servicer, server):
           request_deserializer=python__pb2.Empty.FromString,
           response_serializer=python__pb2.Cards.SerializeToString,
       ),
+      'Reset': grpc.unary_unary_rpc_method_handler(
+          servicer.Reset,
+          request_deserializer=python__pb2.GameId.FromString,
+          response_serializer=python__pb2.Game.SerializeToString,
+      ),
   }
   generic_handler = grpc.method_handlers_generic_handler(
       'SabberStonePython', rpc_method_handlers)
+  server.add_generic_rpc_handlers((generic_handler,))
+
+
+class ServerHandleStub(object):
+  # missing associated documentation comment in .proto file
+  pass
+
+  def __init__(self, channel):
+    """Constructor.
+
+    Args:
+      channel: A grpc.Channel.
+    """
+    self.Close = channel.unary_unary(
+        '/ServerHandle/Close',
+        request_serializer=python__pb2.Empty.SerializeToString,
+        response_deserializer=python__pb2.Empty.FromString,
+        )
+
+
+class ServerHandleServicer(object):
+  # missing associated documentation comment in .proto file
+  pass
+
+  def Close(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+
+def add_ServerHandleServicer_to_server(servicer, server):
+  rpc_method_handlers = {
+      'Close': grpc.unary_unary_rpc_method_handler(
+          servicer.Close,
+          request_deserializer=python__pb2.Empty.FromString,
+          response_serializer=python__pb2.Empty.SerializeToString,
+      ),
+  }
+  generic_handler = grpc.method_handlers_generic_handler(
+      'ServerHandle', rpc_method_handlers)
   server.add_generic_rpc_handlers((generic_handler,))
