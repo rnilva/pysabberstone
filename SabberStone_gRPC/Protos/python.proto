@@ -13,6 +13,11 @@ service SabberStonePython {
     rpc GetCardDictionary(Empty) returns (Cards) {}
 }
 
+service ServerHandle {
+    rpc Close(Empty) returns (Empty) {}
+}
+
+
 message Option {
     enum PlayerTaskType {
         CHOOSE = 0;
