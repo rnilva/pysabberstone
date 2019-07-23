@@ -22,19 +22,19 @@ namespace SabberStonePython.API
             return Task.FromResult(SabberHelpers.GenerateGameAPI(request.Deck1, request.Deck2));
         }
 
-        public override Task<Options> GetOptions(Game request, ServerCallContext context)
+        public override Task<Options> GetOptions(GameId request, ServerCallContext context)
         {
-            var game = SabberHelpers.ManagedObjects.Games[request.Id];
+            var game = ManagedObjects.Games[request.Value];
             var options = game.CurrentPlayer.Options();
 
-            return Task.FromResult(new Options(options, request.Id));
+            return Task.FromResult(new Options(options, request.Value));
         }
 
         public override Task<Game> Process(Option request, ServerCallContext context)
         {
             Game test()
             {
-                var game = SabberHelpers.ManagedObjects.Games[request.GameId];
+                var game = ManagedObjects.Games[request.GameId];
                 try
                 {
                     // Use option ids instead?
@@ -57,6 +57,13 @@ namespace SabberStonePython.API
             }
 
             return Task.FromResult(test());
+        }
+
+        public override Task<Game> Reset(GameId request, ServerCallContext context)
+        {
+            ManagedObjects.Games[request.Value] =  ManagedObjects.InitialGames[request.Value].Clone();
+
+            return Task.FromResult(ManagedObjects.InitialGameAPIs[request.Value]);
         }
 
         public override Task<Cards> GetCardDictionary(Empty request, ServerCallContext context)

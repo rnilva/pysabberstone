@@ -5,18 +5,26 @@ message Empty {
 
 }
 
- 
 service SabberStonePython {
     rpc NewGame(DeckStrings) returns (Game) {}
-    rpc GetOptions(Game) returns (Options) {}
+    rpc GetOptions(GameId) returns (Options) {}
 	rpc Process(Option) returns (Game) {}
     rpc GetCardDictionary(Empty) returns (Cards) {}
+    rpc Reset(GameId) returns (Game);
+    //rpc GetEntityFromId(EntityId) returns () {}
 }
 
 service ServerHandle {
     rpc Close(Empty) returns (Empty) {}
 }
 
+message GameId {
+    int32 value = 1;
+}
+
+message EntityId {
+    int32 value = 1;
+}
 
 message Option {
     enum PlayerTaskType {
@@ -37,6 +45,9 @@ message Option {
 
     int32 game_id = 7;
     string print = 8;
+
+    int32 source_position = 9;
+    int32 target_position = 10;
 }
 
 message Options {
@@ -67,7 +78,7 @@ message DeckStrings {
 }
 
 message Game {
-    int32 id = 1;
+    GameId id = 1;
     Controller player1 = 2;
     Controller player2 = 3;
     enum State {
@@ -125,7 +136,6 @@ message Minion {
     int32 zone_position = 25;
     int32 order_of_play = 26;
 }
-
 
 message HandZone {
     repeated Playable entities = 1;

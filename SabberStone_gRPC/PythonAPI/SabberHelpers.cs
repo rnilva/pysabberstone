@@ -16,11 +16,6 @@ namespace SabberStonePython
 {
     public static class SabberHelpers
     {
-        public static class ManagedObjects
-        {
-            public static Dictionary<int, Game> Games = new Dictionary<int, Game>();
-        }
-
         public static API.Game GenerateGameAPI(string deckString1, string deckString2)
         {
             Deck deck1, deck2;
@@ -63,7 +58,7 @@ namespace SabberStonePython
             });
             game.StartGame();
 
-            Console.WriteLine(game.FullPrint());
+            Console.WriteLine(Printers.PrintGame(game));
 
             return new API.Game(game);
         }
