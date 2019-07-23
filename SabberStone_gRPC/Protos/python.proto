@@ -46,8 +46,8 @@ message Option {
     int32 game_id = 7;
     string print = 8;
 
-    int32 source_position = 9;
-    int32 target_position = 10;
+    int32 attacker_position = 9;
+    int32 defender_position = 10;
 }
 
 message Options {
