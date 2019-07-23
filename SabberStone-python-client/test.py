@@ -1,11 +1,13 @@
 import grpc
 import python_pb2
 import python_pb2_grpc
-#from google.protobuf import empty_pb2
+import random
+from run_server import run_server as run_server
+# from google.protobuf import empty_pb2
 
 # python -m grpc_tools.protoc -I../SabberStone_gRPC/Protos --python_out=. --grpc_python_out=. ../SabberStone_gRPC/Protos/python.proto
 
-import random
+
 def full_random_game(stub, deck1, deck2):
     game = stub.NewGame(python_pb2.DeckStrings(deck1=deck1, deck2=deck2))
     options_list = []
@@ -21,6 +23,7 @@ def full_random_game(stub, deck1, deck2):
     else:
         print("Tied!")
 
+run_server()
 channel = grpc.insecure_channel('localhost:50052')
 stub = python_pb2_grpc.SabberStonePythonStub(channel)
 
@@ -60,10 +63,3 @@ for option in options.list:
 game = stub.Process(option_list[0])
 
 full_random_game(stub, string1, string2)
-
-
-
-
-
-
-
