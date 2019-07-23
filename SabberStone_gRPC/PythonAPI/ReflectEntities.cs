@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Google.Protobuf.Collections;
+using SabberStoneCore.Model.Entities;
 
 namespace SabberStonePython.API
 {
@@ -20,8 +21,8 @@ namespace SabberStonePython.API
 
         public Game(SabberStoneCore.Model.Game game, int id = -1)
         {
-            player1_ = new Controller(game.Player1);
-            player2_ = new Controller(game.Player2);
+            currentPlayer_ = new Controller(game.CurrentPlayer);
+            currentOpponent_ = new Controller(game.CurrentOpponent);
             state_ = (Types.State)game.State;
             turn_ = game.Turn;
 
@@ -49,6 +50,10 @@ namespace SabberStonePython.API
             secretZone_ = new SecretZone(controller.SecretZone);
             deckZone_ = new DeckZone(controller.DeckZone);
             playState_ = (Types.PlayState)controller.PlayState;
+            baseMana_ = controller.BaseMana;
+            remainingMana_ = controller.RemainingMana;
+            overloadLocked_ = controller.OverloadLocked;
+            overloadOwed_ = controller.OverloadOwed;
         }
     }
 
@@ -206,18 +211,15 @@ namespace SabberStonePython.API
                     return;
                 case SabberStoneCore.Tasks.PlayerTasks.PlayCardTask playCardTask:
                     subOption_ = playCardTask.ChooseOne;
-                    zonePosition_ = playCardTask.ZonePosition;
+                    sourcePosition_ = playCardTask.ZonePosition;
+                    targetPosition_ = getPosition(playCardTask.Target, playCardTask.Controller.Id);
                     break;
                 case SabberStoneCore.Tasks.PlayerTasks.MinionAttackTask minionAttackTask:
-                    attackerPosition_ = minionAttackTask.Source.ZonePosition + 1;
-                    defenderPosition_ = minionAttackTask.Target.Card.Type == SabberStoneCore.Enums.CardType.MINION
-                        ? minionAttackTask.Target.ZonePosition + 1
-                        : 0;
+                    sourcePosition_ = getFriendlyPosition(minionAttackTask.Source);
+                    targetPosition_ = getEnemyPosition(minionAttackTask.Target);
                     break;
                 case SabberStoneCore.Tasks.PlayerTasks.HeroAttackTask heroAttackTask:
-                    defenderPosition_ = heroAttackTask.Target.Card.Type == SabberStoneCore.Enums.CardType.MINION
-                        ? heroAttackTask.Target.ZonePosition + 1
-                        : 0;
+                    targetPosition_ = getEnemyPosition(heroAttackTask.Target);
                     break;
             }
 
@@ -226,6 +228,43 @@ namespace SabberStonePython.API
             if (playerTask.HasSource) sourceId_ = playerTask.Source.Id;
             if (playerTask.HasTarget) targetId_ = playerTask.Target.Id;
 
+        }
+
+        private static int getPosition(ICharacter character, int controllerId)
+        {
+            if (character == null)
+                return 0;
+
+            if (character.Controller.Id != controllerId)
+            {
+                if (character.Card.Type == SabberStoneCore.Enums.CardType.MINION)
+                    return character.ZonePosition + 9;
+                else
+                    return 8;
+            }
+            else
+            {
+                if (character.Card.Type == SabberStoneCore.Enums.CardType.MINION)
+                    return character.ZonePosition + 1;
+                else
+                    return 0;
+            }
+        }
+
+        private static int getFriendlyPosition(IPlayable character)
+        {
+            if (character.Card.Type == SabberStoneCore.Enums.CardType.MINION)
+                return character.ZonePosition + 1;
+            else
+                return 0;
+        }
+
+        private static int getEnemyPosition(ICharacter character)
+        {
+            if (character.Card.Type == SabberStoneCore.Enums.CardType.MINION)
+                return character.ZonePosition + 1;
+            else
+                return 0;
         }
     }
 

@@ -40,14 +40,14 @@ message Option {
     int32 source_id = 2;
     int32 target_id = 3;
     int32 sub_option = 4;
-    int32 zone_position = 5;
+    //int32 zone_position = 5;
     int32 choice = 6;
 
     int32 game_id = 7;
     string print = 8;
 
-    int32 attacker_position = 9;
-    int32 defender_position = 10;
+    int32 source_position = 9;
+    int32 target_position = 10;
 }
 
 message Options {
@@ -79,8 +79,8 @@ message DeckStrings {
 
 message Game {
     GameId id = 1;
-    Controller player1 = 2;
-    Controller player2 = 3;
+    Controller CurrentPlayer = 2;
+    Controller CurrentOpponent = 3;
     enum State {
         INVALID = 0;
         LOADING = 1;
@@ -106,6 +106,10 @@ message Controller {
         TIED = 6;
     }
     PlayState play_state = 7;
+    int32 base_mana = 8;
+    int32 remaining_mana = 9;
+    int32 overload_locked = 10;
+    int32 overload_owed = 11;
 }
 
 message BoardZone {
