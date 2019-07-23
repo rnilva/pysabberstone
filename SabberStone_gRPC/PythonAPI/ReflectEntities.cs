@@ -198,30 +198,34 @@ namespace SabberStonePython.API
             gameId_ = gameId;
             print_ = playerTask.ToString();
 
-            if (playerTask is SabberStoneCore.Tasks.PlayerTasks.ChooseTask chooseTask)
+            switch (playerTask)
             {
-                choice_ = chooseTask.Choices[0];
-                type_ = Types.PlayerTaskType.Choose;
-                return;
+                case SabberStoneCore.Tasks.PlayerTasks.ChooseTask chooseTask:
+                    choice_ = chooseTask.Choices[0];
+                    type_ = Types.PlayerTaskType.Choose;
+                    return;
+                case SabberStoneCore.Tasks.PlayerTasks.PlayCardTask playCardTask:
+                    subOption_ = playCardTask.ChooseOne;
+                    zonePosition_ = playCardTask.ZonePosition;
+                    break;
+                case SabberStoneCore.Tasks.PlayerTasks.MinionAttackTask minionAttackTask:
+                    attackerPosition_ = minionAttackTask.Source.ZonePosition + 1;
+                    defenderPosition_ = minionAttackTask.Target.Card.Type == SabberStoneCore.Enums.CardType.MINION
+                        ? minionAttackTask.Target.ZonePosition + 1
+                        : 0;
+                    break;
+                case SabberStoneCore.Tasks.PlayerTasks.HeroAttackTask heroAttackTask:
+                    defenderPosition_ = heroAttackTask.Target.Card.Type == SabberStoneCore.Enums.CardType.MINION
+                        ? heroAttackTask.Target.ZonePosition + 1
+                        : 0;
+                    break;
             }
 
             type_ = (Types.PlayerTaskType)playerTask.PlayerTaskType;
-            if (playerTask.HasSource)
-            {
-                sourceId_ = playerTask.Source.Id;
-                sourcePosition_ = playerTask.Source.ZonePosition;
-            }
-            if (playerTask.HasTarget)
-            {
-                targetId_ = playerTask.Target.Id;
-                targetPosition_ = playerTask.Target.ZonePosition;
-            }
 
-            if (playerTask is SabberStoneCore.Tasks.PlayerTasks.PlayCardTask playCardTask)
-            {
-                subOption_ = playCardTask.ChooseOne;
-                zonePosition_ = playCardTask.ZonePosition;
-            }
+            if (playerTask.HasSource) sourceId_ = playerTask.Source.Id;
+            if (playerTask.HasTarget) targetId_ = playerTask.Target.Id;
+
         }
     }
 
