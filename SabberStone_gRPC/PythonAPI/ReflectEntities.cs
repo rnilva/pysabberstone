@@ -6,6 +6,14 @@ using Google.Protobuf.Collections;
 
 namespace SabberStonePython.API
 {
+    public partial class GameId
+    {
+        public GameId(int id)
+        {
+            value_ = id;
+        }
+    }
+
     public partial class Game
     {
         private static int _id_gen;
@@ -19,19 +27,15 @@ namespace SabberStonePython.API
 
             if (id < 0)
             {
-                id_ = _id_gen++;
-                SabberHelpers.ManagedObjects.Games.Add(id_, game);
-            }
-            else
-            {
-                id_ = id;
-            }
-        }
+                id = _id_gen++;;
 
-        //partial void OnConstruction()
-        //{
-        //    throw new NotImplementedException();
-        //}
+                ManagedObjects.Games.Add(id, game);
+                ManagedObjects.InitialGames.Add(id, game.Clone());
+                ManagedObjects.InitialGameAPIs.Add(id, this);
+            }
+           
+            id_ = new GameId(id);
+        }
     }
 
     public partial class Controller
@@ -203,9 +207,16 @@ namespace SabberStonePython.API
 
             type_ = (Types.PlayerTaskType)playerTask.PlayerTaskType;
             if (playerTask.HasSource)
+            {
                 sourceId_ = playerTask.Source.Id;
+                sourcePosition_ = playerTask.Source.ZonePosition;
+            }
             if (playerTask.HasTarget)
+            {
                 targetId_ = playerTask.Target.Id;
+                targetPosition_ = playerTask.Target.ZonePosition;
+            }
+
             if (playerTask is SabberStoneCore.Tasks.PlayerTasks.PlayCardTask playCardTask)
             {
                 subOption_ = playCardTask.ChooseOne;
