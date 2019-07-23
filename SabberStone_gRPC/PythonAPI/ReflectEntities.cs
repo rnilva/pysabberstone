@@ -211,7 +211,9 @@ namespace SabberStonePython.API
                     return;
                 case SabberStoneCore.Tasks.PlayerTasks.PlayCardTask playCardTask:
                     subOption_ = playCardTask.ChooseOne;
-                    sourcePosition_ = playCardTask.ZonePosition;
+                    sourcePosition_ = playCardTask.ZonePosition < 0
+                        ? playCardTask.Controller.BoardZone.Count
+                        : playCardTask.ZonePosition;
                     targetPosition_ = getPosition(playCardTask.Target, playCardTask.Controller.Id);
                     break;
                 case SabberStoneCore.Tasks.PlayerTasks.MinionAttackTask minionAttackTask:
@@ -220,6 +222,9 @@ namespace SabberStonePython.API
                     break;
                 case SabberStoneCore.Tasks.PlayerTasks.HeroAttackTask heroAttackTask:
                     targetPosition_ = getEnemyPosition(heroAttackTask.Target);
+                    break;
+                case SabberStoneCore.Tasks.PlayerTasks.HeroPowerTask heroPowerTask:
+                    targetPosition_ = getPosition(heroPowerTask.Target, heroPowerTask.Controller.Id);
                     break;
             }
 
@@ -262,9 +267,9 @@ namespace SabberStonePython.API
         private static int getEnemyPosition(ICharacter character)
         {
             if (character.Card.Type == SabberStoneCore.Enums.CardType.MINION)
-                return character.ZonePosition + 1;
+                return character.ZonePosition + 9;
             else
-                return 0;
+                return 8;
         }
     }
 
