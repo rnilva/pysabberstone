@@ -90,7 +90,7 @@ namespace SabberStonePython
                     dict = g.IdEntityDic;
                     return PlayCardTask.Any(c, dict[option.SourceId],
                         option.TargetId > 0 ? (ICharacter) dict[option.TargetId] : null,
-                        option.ZonePosition, option.SubOption, SkipPrePhase);
+                        option.SourcePosition, option.SubOption, SkipPrePhase);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
