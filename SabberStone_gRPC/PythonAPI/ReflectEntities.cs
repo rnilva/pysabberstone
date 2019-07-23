@@ -211,10 +211,9 @@ namespace SabberStonePython.API
                     return;
                 case SabberStoneCore.Tasks.PlayerTasks.PlayCardTask playCardTask:
                     subOption_ = playCardTask.ChooseOne;
-                    sourcePosition_ = playCardTask.ZonePosition < 0
-                        ? playCardTask.Controller.BoardZone.Count
-                        : playCardTask.ZonePosition;
-                    targetPosition_ = getPosition(playCardTask.Target, playCardTask.Controller.Id);
+                    sourcePosition_ = playCardTask.Source.ZonePosition;
+                    if (playCardTask.Source.Card.Type == SabberStoneCore.Enums.CardType.MINION)
+                        targetPosition_ = playCardTask.ZonePosition + 1;
                     break;
                 case SabberStoneCore.Tasks.PlayerTasks.MinionAttackTask minionAttackTask:
                     sourcePosition_ = getFriendlyPosition(minionAttackTask.Source);
