@@ -52,7 +52,7 @@ for card in hand2:
     print('\t' + cards.cards[card.card_id].name)
 
 
-options = stub.GetOptions(game)
+options = stub.GetOptions(game.id)
 option_list = []
 
 for option in options.list:
