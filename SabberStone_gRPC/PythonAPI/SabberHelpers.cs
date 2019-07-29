@@ -88,9 +88,15 @@ namespace SabberStonePython
                         SkipPrePhase);
                 case Option.Types.PlayerTaskType.PlayCard:
                     dict = g.IdEntityDic;
-                    return PlayCardTask.Any(c, dict[option.SourceId],
-                        option.TargetId > 0 ? (ICharacter) dict[option.TargetId] : null,
-                        option.SourcePosition, option.SubOption, SkipPrePhase);
+                    IPlayable source = dict[option.SourceId];
+                    if (source.Card.Type == CardType.MINION)
+                        return PlayCardTask.Any(c, source, null,
+                            option.TargetId > 0 ? option.TargetId : c.BoardZone.Count, 
+                            option.SubOption, SkipPrePhase);
+                    else
+                        return PlayCardTask.Any(c, source,
+                            option.TargetId > 0 ? (ICharacter) dict[option.TargetId] : null,
+                            -1, option.SubOption, SkipPrePhase);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
