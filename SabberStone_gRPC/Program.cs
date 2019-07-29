@@ -37,7 +37,7 @@ namespace SabberStone_gRPC
                     SabberStonePython.API.SabberStonePython.BindService(new API()),
                     SabberStonePython.API.ServerHandle.BindService(this)
                 },
-                Ports = {new ServerPort("localhost", PORT, ServerCredentials.Insecure)}
+                Ports = {new ServerPort("0.0.0.0", PORT, ServerCredentials.Insecure)}
             };
         }
 
