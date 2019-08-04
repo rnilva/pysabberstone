@@ -14,18 +14,20 @@ namespace SabberStone_gRPC
     {
         const int DEFAULT_PORT = 50052;
 
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
-            if (args.Length > 1 && !int.TryParse(args[0], out int port)) 
-                throw new ArgumentException($"Cannot parse port number from given argument {args[0]}.");
-            
-            port = DEFAULT_PORT;
+            //if (args.Length > 1 && !int.TryParse(args[0], out int port))
+            //    throw new ArgumentException($"Cannot parse port number from given argument {args[0]}.");
 
-            var server = new ServerHandleImpl(port);
+            //port = DEFAULT_PORT;
 
-            server.Start();
+            //var server = new ServerHandleImpl(port);
 
-            await server.Shutdown();
+            //server.Start();
+
+            //server.Shutdown().Wait();
+
+            Debugger.DebugRun().Wait();
         }
     }
 
