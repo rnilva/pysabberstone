@@ -160,11 +160,11 @@ namespace SabberStonePython
 				GenerateAttackTargets();
 
                 for (int i = 0; i < attackTargets.Length; i++)
-                    allOptions.Add(new Option(gameId, MinionAttack, j, 
-                        Option.getFriendlyPosition(attackTargets[i])));
+                    allOptions.Add(new Option(gameId, MinionAttack, j + 1, 
+                        Option.getEnemyPosition(attackTargets[i])));
 
                 if (isOpHeroValidAttackTarget && !(minion.CantAttackHeroes || minion.AttackableByRush))
-                    allOptions.Add(new Option(gameId, MinionAttack, j, Option.OP_HERO_POSITION));
+                    allOptions.Add(new Option(gameId, MinionAttack, j + 1, Option.OP_HERO_POSITION));
             }
 			#endregion
 
@@ -489,6 +489,8 @@ namespace SabberStonePython
                 case Option.Types.PlayerTaskType.HeroPower:
                     return HeroPowerTask.Any(c, GetTarget(option.TargetPosition), option.SubOption, SkipPrePhase);
                 case Option.Types.PlayerTaskType.MinionAttack:
+                    if (option.SourcePosition - 1 < 0 || option.SourcePosition >= c.BoardZone.Count)
+                        ;
                     return MinionAttackTask.Any(c, c.BoardZone[option.SourcePosition - 1], GetOpponentTarget(option.TargetPosition),SkipPrePhase);
                 case Option.Types.PlayerTaskType.PlayCard:
                     IPlayable source = c.HandZone[option.SourcePosition];
