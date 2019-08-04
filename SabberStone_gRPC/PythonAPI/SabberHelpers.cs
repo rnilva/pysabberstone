@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SabberStoneCore.Enums;
+using SabberStoneCore.Loader;
+using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
 using SabberStoneCore.Tasks.PlayerTasks;
 using SabberStonePython.API;
@@ -11,6 +13,12 @@ using Cards = SabberStoneCore.Model.Cards;
 using Game = SabberStoneCore.Model.Game;
 using Controller = SabberStoneCore.Model.Entities.Controller;
 using Minion = SabberStoneCore.Model.Entities.Minion;
+using Spell = SabberStoneCore.Model.Entities.Spell;
+using Hero = SabberStoneCore.Model.Entities.Hero;
+using HeroPower = SabberStoneCore.Model.Entities.HeroPower;
+using Weapon = SabberStoneCore.Model.Entities.Weapon;
+using GameTag = SabberStoneCore.Enums.GameTag;
+using static SabberStonePython.API.Option.Types.PlayerTaskType;
 
 namespace SabberStonePython
 {
@@ -63,6 +71,405 @@ namespace SabberStonePython
             return new API.Game(game);
         }
 
+        public static List<API.Option> PythonOptions(this Controller c, int gameId)
+        {
+            if (c.Choice != null)
+            {
+                if (c.Choice.ChoiceType == ChoiceType.GENERAL)
+                    return c.Choice.Choices.Select(p => new Option(gameId, p)).ToList();
+
+                throw new NotImplementedException();
+            }
+
+            int controllerId = c.Id;
+            List<API.Option> allOptions = ManagedObjects.OptionBuffers[gameId];
+
+            allOptions.Add(new Option(gameId, EndTurn));
+
+            #region PlayCardTasks
+			int mana = c.RemainingMana;
+			int zonePosRange = c.BoardZone.Count;
+			bool? spellCostHealth = null;
+
+            Character[] allTargets = null;
+            Minion[] friendlyMinions = null;
+            Minion[] enemyMinions = null;
+            Minion[] allMinions = null;
+            Character[] allFriendly = null;
+            Character[] allEnemies = null;
+
+            ReadOnlySpan<IPlayable> handSpan = c.HandZone.GetSpan();
+			for (int i = 0; i < handSpan.Length; i++)
+			{
+				if (!handSpan[i].ChooseOne || c.ChooseBoth)
+					GetPlayCardTasks(handSpan[i]);
+				else
+				{
+					IPlayable[] playables = handSpan[i].ChooseOnePlayables;
+					for (int j = 1; j < 3; j++)
+						GetPlayCardTasks(handSpan[i], playables[j - 1], j);
+				}
+			}
+			#endregion
+
+			#region HeroPowerTask
+			HeroPower power = c.Hero.HeroPower;
+			Card heroPowerCard = power.Card;
+			if (!power.IsExhausted && mana >= power.Cost &&
+			    !c.HeroPowerDisabled && !heroPowerCard.HideStat)
+			{
+				if (heroPowerCard.ChooseOne)
+				{
+                    if (c.ChooseBoth)
+                        allOptions.Add(new Option(gameId, API.Option.Types.PlayerTaskType.HeroPower));
+                    else
+                    {
+                        allOptions.Add(new Option(gameId, API.Option.Types.PlayerTaskType.HeroPower, 0, 0, 1));
+                        allOptions.Add(new Option(gameId, API.Option.Types.PlayerTaskType.HeroPower, 0, 0, 2));
+                    }
+                }
+				else
+				{
+					if (heroPowerCard.IsPlayableByCardReq(c))
+					{
+						Character[] targets = GetTargets(heroPowerCard);
+						if (targets != null)
+							for (int i = 0; i < targets.Length; i++)
+                                allOptions.Add(new Option(gameId, API.Option.Types.PlayerTaskType.HeroPower, 
+                                    0, Option.getPosition(targets[i], controllerId)));
+						else
+                            allOptions.Add(new Option(gameId, API.Option.Types.PlayerTaskType.HeroPower));
+                    }
+				}
+			}
+			#endregion
+
+			#region MinionAttackTasks
+			Minion[] attackTargets = null;
+			bool isOpHeroValidAttackTarget = false;
+			var boardSpan = c.BoardZone.GetSpan();
+			for (int j = 0; j < boardSpan.Length; j++)
+			{
+				Minion minion = boardSpan[j];
+
+				if (minion.IsExhausted && (!minion.HasCharge || minion.NumAttacksThisTurn != 0))
+					continue;
+				if (minion.IsFrozen || minion.AttackDamage == 0 || minion.CantAttack || minion.Untouchable)
+					continue;
+
+				GenerateAttackTargets();
+
+                for (int i = 0; i < attackTargets.Length; i++)
+                    allOptions.Add(new Option(gameId, MinionAttack, j, 
+                        Option.getFriendlyPosition(attackTargets[i])));
+
+                if (isOpHeroValidAttackTarget && !(minion.CantAttackHeroes || minion.AttackableByRush))
+                    allOptions.Add(new Option(gameId, MinionAttack, j, Option.OP_HERO_POSITION));
+            }
+			#endregion
+
+			#region HeroAttackTaskts
+			Hero hero = c.Hero;
+
+			if ((!hero.IsExhausted || (hero.ExtraAttacksThisTurn > 0 && hero.ExtraAttacksThisTurn >= hero.NumAttacksThisTurn))
+			    && hero.AttackDamage > 0 && !hero.IsFrozen)
+			{
+				GenerateAttackTargets();
+
+                for (int i = 0; i < attackTargets.Length; i++)
+                    allOptions.Add(new Option(gameId, HeroAttack, 0, 
+                        Option.getEnemyPosition(attackTargets[i])));
+
+                if (isOpHeroValidAttackTarget && !hero.CantAttackHeroes)
+                    allOptions.Add(new Option(gameId, HeroAttack, 0, Option.OP_HERO_POSITION));
+            }
+			#endregion
+
+			return allOptions;
+
+			#region local functions
+			void GetPlayCardTasks(in IPlayable playable, in IPlayable chooseOnePlayable = null, int subOption = -1)
+			{
+				Card card = chooseOnePlayable?.Card ?? playable.Card;
+
+				if (!spellCostHealth.HasValue)
+					spellCostHealth = c.ControllerAuraEffects[GameTag.SPELLS_COST_HEALTH] == 1;
+
+				bool healthCost = (playable.AuraEffects?.CardCostHealth ?? false) ||
+				                  (spellCostHealth.Value && playable.Card.Type == CardType.SPELL);
+
+				if (!healthCost && (playable.Cost > mana || playable.Card.HideStat))
+					return;
+
+				// check PlayableByPlayer
+				switch (playable.Card.Type)
+				{
+					//	REQ_MINION_CAP
+					case CardType.MINION when c.BoardZone.IsFull:
+						return;
+					case CardType.SPELL:
+					{
+						if (card.IsSecret)
+						{
+							if (c.SecretZone.IsFull) // REQ_SECRET_CAP
+								return;
+							if (c.SecretZone.Any(p => p.Card.AssetId == card.AssetId)) // REQ_UNIQUE_SECRET
+								return;
+						}
+
+						if (card.IsQuest && c.SecretZone.Quest != null)
+							return;
+						break;
+					}
+				}
+
+				{
+					if (!card.IsPlayableByCardReq(c))
+						return;
+
+					Character[] targets = GetTargets(card);
+
+                    int sourcePosition = playable.ZonePosition;
+
+                    // Card doesn't require any targets
+					if (targets == null)
+					{
+                        if (playable is Minion)
+                            for (int i = 0; i <= zonePosRange; i++)
+                                allOptions.Add(new Option(gameId, PlayCard, sourcePosition, i + 1, subOption));
+                        else
+                            allOptions.Add(new Option(gameId, PlayCard, sourcePosition, 0, subOption));
+                    }
+					else
+					{
+						if (targets.Length == 0)
+						{
+							if (card.MustHaveTargetToPlay)
+								return;
+
+							if (playable is Minion)
+                                for (int i = 0; i <= zonePosRange; i++)
+                                    allOptions.Add(new Option(gameId, PlayCard, sourcePosition, i + 1, subOption));
+							else
+								allOptions.Add(new Option(gameId, PlayCard, sourcePosition, 0, subOption));
+						}
+						else
+						{
+                            for (int j = 0; j < targets.Length; j++)
+                            {
+                                ICharacter target = targets[j];
+                                if (playable is Minion)
+                                    //for (int i = 0; i <= zonePosRange; i++)
+                                    //    allOptions.Add(PlayCardTask.Any(c, playable, target, i, subOption,
+                                    //        true));
+                                    ;
+                                else
+                                    allOptions.Add(new Option(gameId, PlayCard, sourcePosition,
+                                        Option.getPosition(target, controllerId), subOption));
+                            }
+                        }
+                    }
+				}
+			}
+
+			// Returns null if targeting is not required
+			// Returns 0 Array if there is no available target
+			Character[] GetTargets(Card card)
+			{
+				// Check it needs additional validation
+				if (!card.TargetingAvailabilityPredicate?.Invoke(c, card) ?? false)
+					return null;
+
+				Character[] targets;
+
+				switch (card.TargetingType)
+				{
+					case TargetingType.None:
+						return null;
+					case TargetingType.All:
+						if (allTargets == null)
+						{
+							if (c.Opponent.Hero.HasStealth)
+							{
+								allTargets = new Character[GetFriendlyMinions().Length + GetEnemyMinions().Length + 1];
+								allTargets[0] = c.Hero;
+								Array.Copy(GetAllMinions(), 0, allTargets, 1, allMinions.Length);
+							}
+							else
+							{
+								allTargets = new Character[GetFriendlyMinions().Length + GetEnemyMinions().Length + 2];
+								allTargets[0] = c.Hero;
+								allTargets[1] = c.Opponent.Hero;
+								Array.Copy(GetAllMinions(), 0, allTargets, 2, allMinions.Length);
+							}
+						}
+						targets = allTargets;
+						break;
+					case TargetingType.FriendlyCharacters:
+						if (allFriendly == null)
+						{
+							allFriendly = new Character[GetFriendlyMinions().Length + 1];
+							allFriendly[0] = c.Hero;
+							Array.Copy(friendlyMinions, 0, allFriendly, 1, friendlyMinions.Length);
+						}
+						targets = allFriendly;
+						break;
+					case TargetingType.EnemyCharacters:
+						if (allEnemies == null)
+						{
+							if (!c.Opponent.Hero.HasStealth)
+							{
+								allEnemies = new Character[GetEnemyMinions().Length + 1];
+								allEnemies[0] = c.Opponent.Hero;
+								Array.Copy(enemyMinions, 0, allEnemies, 1, enemyMinions.Length);
+							}
+							else
+								allEnemies = GetEnemyMinions();
+						}
+						targets = allEnemies;
+						break;
+					case TargetingType.AllMinions:
+						targets = GetAllMinions();
+						break;
+					case TargetingType.FriendlyMinions:
+						targets = GetFriendlyMinions();
+						break;
+					case TargetingType.EnemyMinions:
+						targets = GetEnemyMinions();
+						break;
+					case TargetingType.Heroes:
+						targets = !c.Opponent.Hero.HasStealth
+							? new[] { c.Hero, c.Opponent.Hero }
+							: new[] { c.Hero };
+						break;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
+
+				// Filtering for target_if_available
+				TargetingPredicate p = card.TargetingPredicate;
+				if (p != null)
+				{
+					if (card.Type == CardType.SPELL || card.Type == CardType.HERO_POWER)
+					{
+						Character[] buffer = new Character[targets.Length];
+						int i = 0;
+						for (int j = 0; j < targets.Length; ++j)
+						{
+							if (!p(targets[j]) || targets[j].CantBeTargetedBySpells) continue;
+							buffer[i] = targets[j];
+							i++;
+						}
+
+						if (i != targets.Length)
+						{
+							Character[] result = new Character[i];
+							Array.Copy(buffer, result, i);
+							return result;
+						}
+						return buffer;
+					}
+					else
+					{
+						if (!card.TargetingAvailabilityPredicate?.Invoke(c, card) ?? false)
+							return null;
+
+						Character[] buffer = new Character[targets.Length];
+						int i = 0;
+						for (int j = 0; j < targets.Length; ++j)
+						{
+							if (!p(targets[j])) continue;
+							buffer[i] = targets[j];
+							i++;
+						}
+
+						if (i != targets.Length)
+						{
+							Character[] result = new Character[i];
+							Array.Copy(buffer, result, i);
+							return result;
+						}
+						return buffer;
+					}
+				}
+				else if (card.Type == CardType.SPELL || card.Type == CardType.HERO_POWER)
+				{
+					Character[] buffer = new Character[targets.Length];
+					int i = 0;
+					for (int j = 0; j < targets.Length; ++j)
+					{
+						if (targets[j].CantBeTargetedBySpells) continue;
+						buffer[i] = targets[j];
+						i++;
+					}
+
+					if (i != targets.Length)
+					{
+						Character[] result = new Character[i];
+						Array.Copy(buffer, result, i);
+						return result;
+					}
+					return buffer;
+				}
+
+				return targets;
+
+				Minion[] GetFriendlyMinions()
+				{
+					return friendlyMinions ?? (friendlyMinions = c.BoardZone.GetAll());
+				}
+
+				Minion[] GetAllMinions()
+				{
+					if (allMinions != null)
+						return allMinions;
+
+					allMinions = new Minion[GetEnemyMinions().Length + GetFriendlyMinions().Length];
+					Array.Copy(enemyMinions, allMinions, enemyMinions.Length);
+					Array.Copy(friendlyMinions, 0, allMinions, enemyMinions.Length, friendlyMinions.Length);
+
+					return allMinions;
+				}
+			}
+
+			void GenerateAttackTargets()
+			{
+				if (attackTargets != null) return;
+
+				Minion[] eMinions = GetEnemyMinions();
+				//var taunts = new Minion[eMinions.Length];
+				Minion[] taunts = null;
+				int tCount = 0;
+				for (int i = 0; i < eMinions.Length; i++)
+					if (eMinions[i].HasTaunt)
+					{
+						if (taunts == null)
+							taunts = new Minion[eMinions.Length];
+						taunts[tCount] = eMinions[i];
+						tCount++;
+					}
+
+				if (tCount > 0)
+				{
+					var targets = new Minion[tCount];
+					Array.Copy(taunts, targets, tCount);
+					attackTargets = targets;
+					isOpHeroValidAttackTarget = false;  // some brawls allow taunt heros and c should be fixed
+					return;
+				}
+				attackTargets = eMinions;
+
+				isOpHeroValidAttackTarget =
+					!c.Opponent.Hero.IsImmune && !c.Opponent.Hero.HasStealth;
+			}
+
+			Minion[] GetEnemyMinions()
+			{
+				return enemyMinions ?? (enemyMinions = c.Opponent.BoardZone.GetAll(p => !p.HasStealth && !p.IsImmune));
+			}
+			#endregion
+        }
+
         public static PlayerTask GetPlayerTask(API.Option option, Game g)
         {
             const bool SkipPrePhase = true;
@@ -78,27 +485,37 @@ namespace SabberStonePython
                 case Option.Types.PlayerTaskType.EndTurn:
                     return EndTurnTask.Any(c);
                 case Option.Types.PlayerTaskType.HeroAttack:
-                    return HeroAttackTask.Any(c, (ICharacter)g.IdEntityDic[option.TargetId], SkipPrePhase);
+                    return HeroAttackTask.Any(c, GetOpponentTarget(option.TargetPosition), SkipPrePhase);
                 case Option.Types.PlayerTaskType.HeroPower:
-                    return HeroPowerTask.Any(c,
-                        option.TargetId > 0 ? (ICharacter) g.IdEntityDic[option.TargetId] : null, option.SubOption, SkipPrePhase);
+                    return HeroPowerTask.Any(c, GetTarget(option.TargetPosition), option.SubOption, SkipPrePhase);
                 case Option.Types.PlayerTaskType.MinionAttack:
-                    dict = g.IdEntityDic;
-                    return MinionAttackTask.Any(c, dict[option.SourceId], (ICharacter) dict[option.TargetId],
-                        SkipPrePhase);
+                    return MinionAttackTask.Any(c, c.BoardZone[option.SourcePosition - 1], GetOpponentTarget(option.TargetPosition),SkipPrePhase);
                 case Option.Types.PlayerTaskType.PlayCard:
-                    dict = g.IdEntityDic;
-                    IPlayable source = dict[option.SourceId];
+                    IPlayable source = c.HandZone[option.SourcePosition];
                     if (source.Card.Type == CardType.MINION)
-                        return PlayCardTask.Any(c, source, null,
-                            option.TargetId > 0 ? option.TargetId : c.BoardZone.Count, 
-                            option.SubOption, SkipPrePhase);
+                        return PlayCardTask.Any(c, source, null, option.TargetPosition - 1, option.SubOption, SkipPrePhase);
                     else
-                        return PlayCardTask.Any(c, source,
-                            option.TargetId > 0 ? (ICharacter) dict[option.TargetId] : null,
-                            -1, option.SubOption, SkipPrePhase);
+                        return PlayCardTask.Any(c, source, GetTarget(option.TargetPosition),
+                            0, option.SubOption, SkipPrePhase);
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+
+            ICharacter GetOpponentTarget(int position)
+            {
+                if (position == Option.OP_HERO_POSITION) return c.Opponent.Hero;
+                return c.Opponent.BoardZone[position - 9];
+            }
+
+            ICharacter GetTarget(int position)
+            {
+                if (position == 0)
+                    return null;
+                if (position >= Option.OP_HERO_POSITION)
+                    return GetOpponentTarget(position);
+                if (position == Option.HERO_POSITION)
+                    return c.Hero;
+                return c.BoardZone[position - 1];
             }
         }
 

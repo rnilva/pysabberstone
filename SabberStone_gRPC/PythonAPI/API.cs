@@ -25,9 +25,10 @@ namespace SabberStonePython.API
         public override Task<Options> GetOptions(GameId request, ServerCallContext context)
         {
             var game = ManagedObjects.Games[request.Value];
-            var options = game.CurrentPlayer.Options();
-
-            return Task.FromResult(new Options(options, request.Value));
+            //var options = game.CurrentPlayer.Options();
+            //return Task.FromResult(new Options(options, request.Value));
+            var options = game.CurrentPlayer.PythonOptions(request.Value);
+            return Task.FromResult(new Options(options));
         }
 
         public override Task<Game> Process(Option request, ServerCallContext context)
@@ -35,11 +36,10 @@ namespace SabberStonePython.API
             Game test()
             {
                 var game = ManagedObjects.Games[request.GameId];
+                var playerTask = SabberHelpers.GetPlayerTask(request, game);
                 try
                 {
                     // Use option ids instead?
-                    var playerTask = SabberHelpers.GetPlayerTask(request, game);
-
                     Console.WriteLine(SabberHelpers.Printers.PrintAction(playerTask));
 
                     game.Process(playerTask);

@@ -12,9 +12,16 @@ namespace SabberStone_gRPC
 {
     class Program
     {
+        const int DEFAULT_PORT = 50052;
+
         static async Task Main(string[] args)
         {
-            var server = new ServerHandleImpl();
+            if (args.Length > 1 && !int.TryParse(args[0], out int port)) 
+                throw new ArgumentException($"Cannot parse port number from given argument {args[0]}.");
+            
+            port = DEFAULT_PORT;
+
+            var server = new ServerHandleImpl(port);
 
             server.Start();
 
@@ -24,11 +31,9 @@ namespace SabberStone_gRPC
 
     public class ServerHandleImpl : SabberStonePython.API.ServerHandle.ServerHandleBase
     {
-        const int PORT = 50052;
-
         public Server Server { get; private set; }
 
-        public ServerHandleImpl()
+        public ServerHandleImpl(int port)
         {
             Server = new Server
             {
@@ -37,7 +42,7 @@ namespace SabberStone_gRPC
                     SabberStonePython.API.SabberStonePython.BindService(new API()),
                     SabberStonePython.API.ServerHandle.BindService(this)
                 },
-                Ports = {new ServerPort("localhost", PORT, ServerCredentials.Insecure)}
+                Ports = {new ServerPort("localhost", port, ServerCredentials.Insecure)}
             };
         }
 
@@ -53,7 +58,7 @@ namespace SabberStone_gRPC
         {
             Server.Start();
 
-            Console.WriteLine("SabberStone gRPC Server listening on port " + PORT);
+            Console.WriteLine("SabberStone gRPC Server listening on port " + Server.Ports.First().Port);
             Console.WriteLine("Call ServerHandle.Close() to terminate.");
         }
 
