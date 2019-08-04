@@ -11,7 +11,7 @@ from run_server import run_server as run_server
 def full_random_game(stub, deck1, deck2):
     game = stub.NewGame(python_pb2.DeckStrings(deck1=deck1, deck2=deck2))
     options_list = []
-    while game.state != python_pb2.Game.State.COMPLETE:
+    while game.state != 3:
         options = stub.GetOptions(game)
         option = options.list[random.randrange(len(options.list))]
         game = stub.Process(option)
@@ -38,8 +38,8 @@ string2 = r"AAECAf0EAA8MuwKVA6sEtATmBJYFhQjC8wK0/ALnlQOmmAOfmwP/nQPinwMA"
 
 game = stub.NewGame(python_pb2.DeckStrings(deck1=string1, deck2=string2))
 
-player1 = game.player1
-player2 = game.player2
+player1 = game.CurrentPlayer
+player2 = game.CurrentOpponent
 
 hand1 = player1.hand_zone.entities
 hand2 = player2.hand_zone.entities

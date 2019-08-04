@@ -33,6 +33,7 @@ namespace SabberStonePython.API
                 ManagedObjects.Games.Add(id, game);
                 ManagedObjects.InitialGames.Add(id, game.Clone());
                 ManagedObjects.InitialGameAPIs.Add(id, this);
+                ManagedObjects.OptionBuffers.Add(id, new List<Option>(50));
             }
            
             id_ = new GameId(id);
@@ -198,6 +199,25 @@ namespace SabberStonePython.API
 
     public partial class Option
     {
+        public const int HERO_POSITION = 0;
+        public const int OP_HERO_POSITION = 8;
+
+        public Option(int gameId, Types.PlayerTaskType type, int sourcePosition = 0, int targetPosition = 0, int subOption = 0)
+        {
+            gameId_ = gameId;
+            type_ = type;
+            sourcePosition_ = sourcePosition;
+            targetPosition_ = targetPosition;
+            subOption_ = subOption;
+        }
+
+        public Option(int gameId, int choice)
+        {
+            gameId_ = gameId;
+            type_ = Types.PlayerTaskType.Choose;
+            choice_ = choice;
+        }
+
         public Option(SabberStoneCore.Tasks.PlayerTasks.PlayerTask playerTask, int gameId)
         {
             gameId_ = gameId;
@@ -236,7 +256,7 @@ namespace SabberStonePython.API
 
         }
 
-        private static int getPosition(ICharacter character, int controllerId)
+        public static int getPosition(ICharacter character, int controllerId)
         {
             if (character == null)
                 return 0;
@@ -246,36 +266,44 @@ namespace SabberStonePython.API
                 if (character.Card.Type == SabberStoneCore.Enums.CardType.MINION)
                     return character.ZonePosition + 9;
                 else
-                    return 8;
+                    return OP_HERO_POSITION;   // 8 for the opponent's Hero
             }
             else
             {
                 if (character.Card.Type == SabberStoneCore.Enums.CardType.MINION)
                     return character.ZonePosition + 1;
                 else
-                    return 0;
+                    return HERO_POSITION;   // 0 for the player's Hero
             }
         }
 
-        private static int getFriendlyPosition(IPlayable character)
+        public static int getFriendlyPosition(IPlayable character)
         {
             if (character.Card.Type == SabberStoneCore.Enums.CardType.MINION)
                 return character.ZonePosition + 1;
             else
-                return 0;
+                return HERO_POSITION;
         }
 
-        private static int getEnemyPosition(ICharacter character)
+        public static int getEnemyPosition(ICharacter character)
         {
             if (character.Card.Type == SabberStoneCore.Enums.CardType.MINION)
                 return character.ZonePosition + 9;
             else
-                return 8;
+                return OP_HERO_POSITION;
         }
     }
 
     public partial class Options
     {
+        public Options(List<Option> pyOptions)
+        {
+            var options = new RepeatedField<Option>();
+            options.AddRange(pyOptions);
+            list_ = options;
+            pyOptions.Clear();
+        }
+
         public Options(List<SabberStoneCore.Tasks.PlayerTasks.PlayerTask> playerTasks, int gameId)
         {
             var options = new RepeatedField<Option>();

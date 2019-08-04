@@ -10,5 +10,6 @@ namespace SabberStonePython
         public static Dictionary<int, Game> Games = new Dictionary<int, Game>();
         public static Dictionary<int, Game> InitialGames = new Dictionary<int, Game>();
         public static Dictionary<int, API.Game> InitialGameAPIs = new Dictionary<int, API.Game>();
+        public static Dictionary<int, List<API.Option>> OptionBuffers = new Dictionary<int, List<API.Option>>();
     }
 }
