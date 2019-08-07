@@ -13,10 +13,17 @@ def call_function(socket, mmf, function_id, *args):
 
 def call_function(socket, mmf, function_id, int_arg: int):
     socket.send(bytes([function_id]))
-    socket.send(pack('i', arg))
+    # Send 1 int argument.
+    socket.send(b'i')
+    socket.send(pack('i', int_arg))
+    socket.send(b'4')
     return _retrieve_returned_value(socket, mmf)
 
 
 def _retrieve_returned_value(socket, mmf):
-    size = struct.unpack('I', socket.recv(4))[0]
+    size = unpack('I', socket.recv(4))[0]
     return mmf[0:size].tobytes()
+
+
+def _encode_argument(arg):
+    pass

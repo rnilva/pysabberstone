@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
+using SabberStone_gRPC.MMF;
 using SabberStonePython.API;
 using SabberStonePython.Tests;
 
@@ -32,8 +33,9 @@ namespace SabberStone_gRPC
             //FileLockTest.Test();
             //MMFTest.Test();
             //MMFTest.MarshalTest();
-            
-            NamedPipeTest.Test();
+
+            //PythonHelper.WritePythonEntities();
+            MMFServer.Run();
         }
     }
 

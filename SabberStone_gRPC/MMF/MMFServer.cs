@@ -1,0 +1,64 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.MemoryMappedFiles;
+using System.IO.Pipes;
+using System.Text;
+using SabberStone_gRPC.MMF.Functions;
+
+namespace SabberStone_gRPC.MMF
+{
+    public static class MMFServer
+    {
+        private const string PIPE_NAME_PREFIX = "sabberstoneserver";
+        private const string MMF_NAME_POSTFIX = "sabberstoneserver.mmf";
+
+        public static void Run()
+        {
+            using (var pipe = new NamedPipeServerStream(PIPE_NAME_PREFIX, PipeDirection.InOut, 1))
+            using (var mmf = MemoryMappedFile.CreateFromFile(
+                File.Open(Path.Combine("../", MMF_NAME_POSTFIX), FileMode.OpenOrCreate),
+                null, 10000, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, false))
+            {
+                Console.WriteLine("Server started. Waiting for the client.....");
+
+                pipe.WaitForConnection();
+
+                Console.WriteLine("Python client connected!");
+
+                try
+                {
+                    using (BinaryWriter bw = new BinaryWriter(pipe))
+                    using (BinaryReader br = new BinaryReader(pipe))
+                    {
+                        while (true)
+                        {
+                            byte function_id = br.ReadByte();
+                            List<dynamic> arguments = new List<dynamic>();
+
+                            while (true)
+                            {
+                                char type = br.ReadChar();
+                                if (type == 'i') 
+                                    arguments.Add(br.ReadInt32());
+                                else if (type == 'b')
+                                    arguments.Add(br.ReadBoolean());
+                                else if ((byte) type == 0x04)   // End of Transmission
+                                    break;
+                            }
+
+                            int size = FunctionTable.CallById((FunctionId) function_id, arguments, mmf);
+
+                            bw.Write(-1);   // End of writing in mmf
+                            bw.Write(size); // Send the size of returned structure.
+                        }
+                    }
+                }
+                catch (IOException e)
+                {
+                    Console.WriteLine("ERROR: " + e.Message);
+                }
+            }
+        }
+    }
+}
