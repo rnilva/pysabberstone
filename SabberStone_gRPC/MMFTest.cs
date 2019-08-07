@@ -97,12 +97,12 @@ namespace SabberStone_gRPC
             //     }
             // }
             using (MemoryMappedViewAccessor view = mmf.CreateViewAccessor())
-                {
-                    byte* ptr = null;
-                    view.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
-                    Marshal.StructureToPtr(structure, (IntPtr)ptr, false);
-                    Console.WriteLine("Structure is written in the mmf. size: " + TestStructure.Size);
-                }
+            {
+                byte* ptr = null;
+                view.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
+                Marshal.StructureToPtr(structure, (IntPtr)ptr, false);
+                Console.WriteLine("Structure is written in the mmf. size: " + TestStructure.Size);
+            }
         }
 
         struct TestStruct
