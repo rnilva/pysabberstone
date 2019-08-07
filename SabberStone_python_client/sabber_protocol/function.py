@@ -22,6 +22,8 @@ def call_function(socket, mmf, function_id, int_arg: int):
 
 def _retrieve_returned_value(socket, mmf):
     size = unpack('I', socket.recv(4))[0]
+    print('function returns a structure of size {0}'.format(size))
+    print(mmf[0:size])
     return mmf[0:size].tobytes()
 
 
