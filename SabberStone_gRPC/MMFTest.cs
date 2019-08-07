@@ -8,9 +8,30 @@ using System.Threading;
 
 namespace SabberStone_gRPC
 {
-    public class MMFTest
+    public static class MMFTest
     {
-        private const string MMF_PATH = "../../../../test.mmf";
+        private const string MMF_PATH = "../test.mmf";
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+        public readonly struct TestStructure
+        {
+            public static readonly int Size = Marshal.SizeOf<TestStructure>();
+
+            public readonly int data1;
+            public readonly int data2;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 200)]
+            public readonly string data3;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 200)]
+            public readonly string data4;
+
+            public TestStructure(int d1, int d2, string d3, string d4)
+            {
+                data1 = d1;
+                data2 = d2;
+                data3 = d3;
+                data4 = d4;
+            }
+        }
 
         public static void Test()
         {
@@ -43,6 +64,45 @@ namespace SabberStone_gRPC
                     }
                 }
             }
+        }
+
+        public static MemoryMappedFile OpenMMF()
+        {
+            var mmf = MemoryMappedFile.CreateFromFile(MMF_PATH);
+
+            using (var stream = mmf.CreateViewStream())
+            {
+                stream.Flush();
+            }
+
+            return mmf;
+        }
+
+        // public static void CloseMMF(MemoryMappedFile mmf)
+        // {
+        //     return mmf.
+        // }
+
+        public static unsafe void WriteStructure(MemoryMappedFile mmf, in TestStructure structure)
+        {
+            // using (var mutex = FileLockTest.FileLock.Lock())
+            // {
+            //     using (MemoryMappedViewAccessor view = mmf.CreateViewAccessor())
+            //     {
+            //         byte* ptr = null;
+            //         view.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
+            //         IntPtr intPtr = (IntPtr)ptr;
+            //         Marshal.StructureToPtr(structure, intPtr, false);
+            //         Console.WriteLine("Structure is written in the mmf. size: " + TestStructure.Size);
+            //     }
+            // }
+            using (MemoryMappedViewAccessor view = mmf.CreateViewAccessor())
+                {
+                    byte* ptr = null;
+                    view.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
+                    Marshal.StructureToPtr(structure, (IntPtr)ptr, false);
+                    Console.WriteLine("Structure is written in the mmf. size: " + TestStructure.Size);
+                }
         }
 
         struct TestStruct
@@ -84,4 +144,6 @@ namespace SabberStone_gRPC
             }
         }
     }
+
+
 }
