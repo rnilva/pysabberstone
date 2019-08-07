@@ -1,6 +1,7 @@
 import python_pb2
 import random
 
+
 def random_games(stub, deck, count):
     game = stub.NewGame(python_pb2.DeckStrings(deck1=deck, deck2=deck))
     game_id = game.id
