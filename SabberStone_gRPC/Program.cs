@@ -31,7 +31,9 @@ namespace SabberStone_gRPC
 
             //FileLockTest.Test();
             //MMFTest.Test();
-            MMFTest.MarshalTest();
+            //MMFTest.MarshalTest();
+            
+            NamedPipeTest.Test();
         }
     }
 
