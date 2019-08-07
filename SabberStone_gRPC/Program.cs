@@ -27,7 +27,11 @@ namespace SabberStone_gRPC
 
             //server.Shutdown().Wait();
 
-            Debugger.DebugRun().Wait();
+            //Debugger.DebugRun().Wait();
+
+            //FileLockTest.Test();
+            //MMFTest.Test();
+            MMFTest.MarshalTest();
         }
     }
 
