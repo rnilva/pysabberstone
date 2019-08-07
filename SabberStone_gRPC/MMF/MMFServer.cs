@@ -34,6 +34,9 @@ namespace SabberStone_gRPC.MMF
                         while (true)
                         {
                             byte function_id = br.ReadByte();
+
+                            Console.WriteLine($"Function {function_id} is requested");
+
                             List<dynamic> arguments = new List<dynamic>();
 
                             while (true)
@@ -43,13 +46,18 @@ namespace SabberStone_gRPC.MMF
                                     arguments.Add(br.ReadInt32());
                                 else if (type == 'b')
                                     arguments.Add(br.ReadBoolean());
-                                else if ((byte) type == 0x04)   // End of Transmission
+                                else if (type == '4')   // End of Transmission
                                     break;
+                                else
+                                {
+                                    Console.WriteLine("Undefined value is received: " + type);
+                                    break;
+                                }
+                                    
                             }
 
                             int size = FunctionTable.CallById((FunctionId) function_id, arguments, mmf);
 
-                            bw.Write(-1);   // End of writing in mmf
                             bw.Write(size); // Send the size of returned structure.
                         }
                     }
