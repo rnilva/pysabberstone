@@ -18,16 +18,28 @@ namespace SabberStone_gRPC
 
         static void Main(string[] args)
         {
-            //if (args.Length > 1 && !int.TryParse(args[0], out int port))
+            // if (args.Length > 1 && !int.TryParse(args[0], out int port))
             //    throw new ArgumentException($"Cannot parse port number from given argument {args[0]}.");
+            
+            string command = args[0];
 
-            //port = DEFAULT_PORT;
+            if (command == "rpc")
+            {
+                int port = DEFAULT_PORT;
 
-            //var server = new ServerHandleImpl(port);
+                var server = new ServerHandleImpl(port);
 
-            //server.Start();
+                server.Start();
 
-            //server.Shutdown().Wait();
+                server.Shutdown().Wait();
+            }
+            else if (command == "mmf")
+            {
+                MMFServer.Run();
+            }
+
+
+
 
             //Debugger.DebugRun().Wait();
 
@@ -37,7 +49,7 @@ namespace SabberStone_gRPC
 
             //PythonHelper.WritePythonEntities();
 
-            MMFServer.Run();
+            //MMFServer.Run();
             //HandZone_unmanaged.Test();
             //PerformanceComparison.MarshalEntity();
         }

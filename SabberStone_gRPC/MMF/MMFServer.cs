@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.IO.Pipes;
@@ -40,7 +41,7 @@ namespace SabberStone_gRPC.MMF
                             {
                                 byte function_id = br.ReadByte();
 
-                                Console.WriteLine($"Function {function_id} is requested");
+                                Debug.WriteLine($"Function {function_id} is requested");
 
                                 List<dynamic> arguments = new List<dynamic>();
 
@@ -55,7 +56,6 @@ namespace SabberStone_gRPC.MMF
                                     {
                                         int len = br.ReadInt32();
                                         string str = Encoding.Default.GetString(br.ReadBytes(len));
-                                        Console.WriteLine("received str: " + str);
                                         arguments.Add(str);
                                     }
                                     else if (type == 'o')
@@ -84,7 +84,7 @@ namespace SabberStone_gRPC.MMF
                                 {
                                     int size = FunctionTable.CallById((FunctionId) function_id, arguments, in mmfPtr);
 
-                                    Console.WriteLine($"Server writes a structure of size {size} to mmf");
+                                    Debug.WriteLine($"Server writes a structure of size {size} to mmf");
 
                                     bw.Write(size); // Send the size of returned structure.
                                 }
@@ -92,10 +92,6 @@ namespace SabberStone_gRPC.MMF
                                 {
                                     Console.WriteLine(e.Message);
                                     Console.WriteLine(e.StackTrace);
-                                }
-                                finally
-                                {
-                                    view.Flush();
                                 }
                             }
                         }

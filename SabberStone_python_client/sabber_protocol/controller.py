@@ -7,7 +7,7 @@ class Controller:
         fields = unpack('6i', data_bytes[0:24])
         (
             self.id,
-            self.state,
+            self.play_state,
             self.base_mana,
             self.remaining_mana,
             self.overload_locked,
@@ -36,7 +36,7 @@ class Controller:
         Board: {8}
         Secret: {9}
         Deck Count: {10}
-        """.format(self.id, self.state,
+        """.format(self.id, self.play_state,
                    self.base_mana, self.remaining_mana, self.overload_locked, self.overload_owed,
                    None, self.hand_zone, self.board_zone, self.secret_zone, self.deck_zone.count)
 

@@ -55,6 +55,8 @@ namespace SabberStone_gRPC.MMF.Functions
             catch (Exception e)
             {
                 Console.WriteLine("Invalid arguments for function " + id);
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
                 return -1;
             }
 

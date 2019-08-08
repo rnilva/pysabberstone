@@ -31,7 +31,7 @@ class Option:
         return "[{0}] {1} => {2}".format(self.type, self.source_position, self.target_position)
 
     def __bytes__(self):
-        return pack(Option.fmt, self.type, self.source_position, self.target_position, self.sub_option, self.choice)
+        return pack(Option.fmt, self.type.value, self.source_position, self.target_position, self.sub_option, self.choice)
 
 
 def get_options_list(data_bytes):
