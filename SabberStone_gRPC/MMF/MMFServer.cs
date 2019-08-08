@@ -10,14 +10,14 @@ namespace SabberStone_gRPC.MMF
 {
     public static class MMFServer
     {
-        private const string PIPE_NAME_PREFIX = "sabberstoneserver";
-        private const string MMF_NAME_POSTFIX = "sabberstoneserver.mmf";
+        private const string PIPE_NAME_PREFIX = "sabberstoneserver_";
+        private const string MMF_NAME_POSTFIX = "_sabberstoneserver.mmf";
 
-        public static void Run()
+        public static void Run(string id = "")
         {
-            using (var pipe = new NamedPipeServerStream(PIPE_NAME_PREFIX, PipeDirection.InOut, 1))
+            using (var pipe = new NamedPipeServerStream(PIPE_NAME_PREFIX + id, PipeDirection.InOut, 1))
             using (var mmf = MemoryMappedFile.CreateFromFile(
-                File.Open(Path.Combine("../", MMF_NAME_POSTFIX), FileMode.OpenOrCreate),
+                File.Open(Path.Combine("../", id + MMF_NAME_POSTFIX), FileMode.OpenOrCreate),
                 null, 10000, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, false))
             {
                 Console.WriteLine("Server started. Waiting for the client.....");
