@@ -1,4 +1,5 @@
 import sabber_protocol.server
+import random
 
 
 server = sabber_protocol.server.SabberStoneServer()
@@ -31,3 +32,22 @@ print(game)
 options = server.options(game)
 for option in options:
     print(option)
+
+
+def full_random_game(server, deck1, deck2):
+    #game = stub.NewGame(python_pb2.DeckStrings(deck1=deck1, deck2=deck2))
+    game = server.new_game(deck1, deck2)
+    while game.state != 3:
+        options = server.options(game)
+        option = options[random.randrange(len(options.list))]
+        game = server.process(option)
+        print("Turn: {0}".format(game.turn))
+
+    cp = game.current_player
+    co = game.current_opponent
+    if cp.play_state == 4:
+        print("Player{0} Wins!".format(cp.id))
+    elif co.play_state == 4:
+        print("Player{0} Wins!".format(co.id))
+    else:
+        print("Tied!")
