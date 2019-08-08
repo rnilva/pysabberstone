@@ -2,14 +2,18 @@
 from struct import *
 
 
-def call_function(socket, mmf, function_id, *args):
+def call_function_multiargs(socket, mmf, function_id, *args):
     # Send function id as a byte
     socket.send(bytes([function_id]))
     for arg in args:
         if type(arg) is int:
+            socket.send(b'i')
             socket.send(pack('i', arg))
         elif type(arg) is str:
-            socket.sendall(pack('i', len(arg)) + arg.encode())
+            socket.send(b's')
+            socket.send(pack('i', len(arg)))
+            socket.send(arg.encode())
+    socket.send(b'4')
     return _retrieve_returned_value(socket, mmf)
 
 

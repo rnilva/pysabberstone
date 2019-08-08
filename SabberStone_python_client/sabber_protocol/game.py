@@ -11,3 +11,4 @@ class Game:
         self.current_player = Controller(data_bytes[offset:])
         offset += self.current_player.size
         self.current_opponent = Controller(data_bytes[offset:])
+        self.size = offset + self.current_opponent.size

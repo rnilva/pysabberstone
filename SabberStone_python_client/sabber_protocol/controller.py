@@ -15,8 +15,8 @@ class Controller:
         ) = fields
 
         offset = 24
-        self.hero = Hero(data_bytes[offset:offset+Hero.size])
-        offset += Hero.size
+        self.hero = Hero(data_bytes[offset:])
+        offset += self.hero.size
         self.hand_zone = HandZone(data_bytes[offset:])
         offset += self.hand_zone.size
         self.board_zone = BoardZone(data_bytes[offset:])

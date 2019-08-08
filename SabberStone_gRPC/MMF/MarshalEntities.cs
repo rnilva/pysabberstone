@@ -94,6 +94,9 @@ namespace SabberStone_gRPC.MMF
 
         public static unsafe int* MarshalWeaponPtr(SModel.Entities.Weapon playable, int* ip)
         {
+            if (playable is null)
+                return ++ip;
+
             *ip++ = playable.Card.AssetId;
             *ip++ = playable.AttackDamage;
             *ip++ = playable.Durability;

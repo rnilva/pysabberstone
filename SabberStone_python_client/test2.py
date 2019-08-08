@@ -32,5 +32,4 @@ string1 = r"AAECAa0GBKbwAr3zApeHA+aIAw3lBOEH9geNCKUJ0gryDPsM5fcC0P4C0okD64oDz50D
 string2 = r"AAECAf0EAA8MuwKVA6sEtATmBJYFhQjC8wK0/ALnlQOmmAOfmwP/nQPinwMA"
 
 game = server.new_game(string1, string2)
-
-input()
+print('Received game object from NewGame! size: {}'.format(game.size))
