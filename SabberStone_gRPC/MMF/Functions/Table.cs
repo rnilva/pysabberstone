@@ -88,7 +88,7 @@ namespace SabberStone_gRPC.MMF.Functions
                     byte* ptr = null;
                     view.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
                     MarshalEntities.MarshalHandZone(game.CurrentPlayer.HandZone, (int*) ptr, out int count);
-                    return count * MMFEntities.Playable.Size;
+                    return 4 + count * MMFEntities.Playable.Size;
                 }
             }
 
