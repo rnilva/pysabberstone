@@ -22,9 +22,9 @@ namespace SabberStone_gRPC.MMF.Functions
         Process = 7
     }
 
-    public static class FunctionTable
+    public static unsafe class FunctionTable
     {
-        public static int CallById(FunctionId id, List<dynamic> arguments, MemoryMappedFile mmf)
+        public static int CallById(FunctionId id, List<dynamic> arguments, in byte* mmfPtr)
         {
             try
             {
@@ -37,17 +37,17 @@ namespace SabberStone_gRPC.MMF.Functions
                         TestMultiArgument(arguments[0], arguments[1], arguments[2]);
                         break;
                     case FunctionId.TestSendOnePlayable:
-                        return TestSendOnePlayable(mmf);
+                        return TestSendOnePlayable(mmfPtr);
                     case FunctionId.TestSendZoneWithPlayables:
-                        return TestSendZoneWithPlayables(mmf);
+                        return TestSendZoneWithPlayables(mmfPtr);
                     case FunctionId.NewGame:
-                        return API.NewGame(arguments[0], arguments[1], mmf);
+                        return API.NewGame(arguments[0], arguments[1], mmfPtr);
                     case FunctionId.Reset:
-                        return API.Reset(arguments[0], mmf);
+                        return API.Reset(arguments[0], mmfPtr);
                     case FunctionId.Options:
-                        return API.GetOptions(arguments[0], mmf);
+                        return API.GetOptions(arguments[0], mmfPtr);
                     case FunctionId.Process:
-                        return API.Process(arguments[0], arguments[1], mmf);
+                        return API.Process(arguments[0], arguments[1], mmfPtr);
                     default:
                         throw new NotImplementedException();
                 }
@@ -71,13 +71,13 @@ namespace SabberStone_gRPC.MMF.Functions
 
         }
 
-        public static int TestSendOnePlayable(MemoryMappedFile mmf)
+        public static int TestSendOnePlayable(in byte* mmfPtr)
         {
             var playable = new MMFEntities.Playable(1, 2, 3, 4, true);
-            return WriteStructure(mmf, in playable);
+            return WriteStructure(in mmfPtr, in playable);
         }
 
-        public static int TestSendZoneWithPlayables(MemoryMappedFile mmf)
+        public static int TestSendZoneWithPlayables(in byte* mmfPtr)
         {
             var game = new Game(new GameConfig
             {
@@ -96,29 +96,13 @@ namespace SabberStone_gRPC.MMF.Functions
 
             game.StartGame();
 
-            //return WriteStructure(mmf, new MMFEntities.HandZone(game.CurrentPlayer.HandZone));
-
-            using (var view = mmf.CreateViewAccessor())
-            {
-                unsafe
-                {
-                    byte* ptr = null;
-                    view.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
-                    MarshalEntities.MarshalHandZone(game.CurrentPlayer.HandZone, (int*) ptr, out int count);
-                    return 4 + count * MMFEntities.Playable.Size;
-                }
-            }
-
+            MarshalEntities.MarshalHandZone(game.CurrentPlayer.HandZone, (int*) mmfPtr, out int count);
+            return 4 + count * MMFEntities.Playable.Size;
         }
 
-        private static unsafe int WriteStructure<T>(MemoryMappedFile mmf, in T structure) where T : struct
+        private static int WriteStructure<T>(in byte* mmfPtr, in T structure) where T : struct
         {
-            using (MemoryMappedViewAccessor view = mmf.CreateViewAccessor())
-            {
-                byte* ptr = null;
-                view.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
-                Marshal.StructureToPtr(structure, (IntPtr) ptr, false);
-            }
+            Marshal.StructureToPtr(structure, (IntPtr) mmfPtr, false);
 
             return Marshal.SizeOf<T>();
         }
