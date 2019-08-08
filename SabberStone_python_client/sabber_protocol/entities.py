@@ -120,6 +120,12 @@ class HandZone:
             i += Playable.size
         self.size = i
 
+    def __str__(self):
+        string = ""
+        for playable in self.Playables:
+            string + str(playable)
+        return string
+
 
 class BoardZone:
 
@@ -132,6 +138,12 @@ class BoardZone:
             self.Playables.append(Minion(data_bytes[i:i + Minion.size]))
             i += Minion.size
         self.size = i
+
+    def __str__(self):
+        string = ""
+        for playable in self.Playables:
+            string + str(playable)
+        return string
 
 
 class SecretZone:
@@ -147,6 +159,12 @@ class SecretZone:
             i += Playable.size
         self.size = i
 
+    def __str__(self):
+        string = ""
+        for playable in self.Playables:
+            string + str(playable)
+        return string
+
 
 class DeckZone:
 
@@ -160,3 +178,4 @@ class DeckZone:
             self.Playables.append(Playable(data_bytes[i:i + Playable.size]))
             i += Playable.size
         self.size = i
+

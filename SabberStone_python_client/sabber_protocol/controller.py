@@ -26,3 +26,21 @@ class Controller:
         self.deck_zone = DeckZone(data_bytes[offset:])
 
         self.size = offset + self.deck_zone.size
+
+    def __str__(self):
+        return """\
+        PlayerId: {0}, PlayState: {1},
+        BaseMana: {2}, RemainingMana: {3}, OverloadLocked: {4}, OverloadOwed: {5}
+        Hero:
+            {5}
+        Hand:
+            {6}
+        Board:
+            {7}
+        Secret:
+            {8}
+        Deck Count: {9}
+        """.format(self.id, self.state,
+                   self.base_mana, self.remaining_mana, self.overload_locked, self.overload_owed,
+                   None, self.hand_zone, self.board_zone, self.secret_zone, self.deck_zone.count)
+
