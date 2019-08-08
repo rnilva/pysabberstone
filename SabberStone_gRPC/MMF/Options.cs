@@ -55,7 +55,7 @@ namespace SabberStone_gRPC.MMF
         }
 
 
-        public static unsafe int MarshalOptions(this SabberStoneCore.Model.Entities.Controller c, MemoryMappedFile mmf)
+        public static unsafe int Options(this SabberStoneCore.Model.Entities.Controller c, MemoryMappedFile mmf)
         {
             MemoryMappedViewAccessor view = mmf.CreateViewAccessor();
             byte* initPtr = null;

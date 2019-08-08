@@ -70,7 +70,7 @@ namespace SabberStone_gRPC.MMF.Functions
 
         public static int GetOptions(int gameId, MemoryMappedFile mmf)
         {
-            return ManagedObjects.Games[gameId].CurrentPlayer.MarshalOptions(mmf);
+            return ManagedObjects.Games[gameId].CurrentPlayer.Options(mmf);
         }
 
         public static int Process(int gameId, in Option option, MemoryMappedFile mmf)
