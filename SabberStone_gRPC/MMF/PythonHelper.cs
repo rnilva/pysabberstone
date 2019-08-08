@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using MMFEntities = SabberStone_gRPC.MMF.Entities;
 
@@ -12,12 +13,14 @@ namespace SabberStone_gRPC.MMF
     {
         private const string DEFAULT_FILE_OUTPUT_PATH = "./";
         private const string PYTHON_ENTITIES_FILE_NAME = "entities.py";
+        private const string PYTHON_ZONES_FILE_NAME = "zones.py";
 
         public static readonly Type[] EntityTypes =
         {
             typeof(MMFEntities.Playable),
             typeof(MMFEntities.HeroPower),
             typeof(MMFEntities.Weapon),
+            typeof(MMFEntities.Hero)
         };
 
         public static readonly Type[] ZoneTypes =
@@ -77,6 +80,8 @@ namespace SabberStone_gRPC.MMF
                 initialiser.AppendLine("        ) = fields");
 
                 writer.WriteLine($"    fmt = \'{fmtBuilder}\'");
+                writer.WriteLine(
+                    $"    size = {typeof(Marshal).GetMethod("TypeOf", BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(entityType).Invoke(null, null)}");
                 writer.WriteLine();
                 writer.WriteLine("    def __init__(self, data_bytes):");
                 writer.WriteLine($"        fields = unpack({entityType.Name}.fmt, data_bytes)");
@@ -85,6 +90,17 @@ namespace SabberStone_gRPC.MMF
 
             writer.Close();
             file.Close();
+        }
+
+        public static void WritePythonZones(string path = DEFAULT_FILE_OUTPUT_PATH + PYTHON_ZONES_FILE_NAME)
+        {
+            var file = File.OpenWrite(path);
+            var writer = new StreamWriter(file);
+            writer.WriteLine("# automatically generated source");
+            writer.WriteLine("# SabberStoneServer entities");
+            writer.WriteLine("from struct import *");
+            writer.WriteLine();
+            writer.WriteLine();
         }
 
         private static string ToUnderScoreSnake(this string str)

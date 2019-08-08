@@ -36,9 +36,9 @@ namespace SabberStone_gRPC
             //MMFTest.MarshalTest();
 
             //PythonHelper.WritePythonEntities();
-            //MMFServer.Run();
+            MMFServer.Run();
             //HandZone_unmanaged.Test();
-            PerformanceComparison.MarshalEntity();
+            //PerformanceComparison.MarshalEntity();
         }
     }
 

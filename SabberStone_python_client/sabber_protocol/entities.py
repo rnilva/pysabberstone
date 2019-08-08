@@ -3,6 +3,7 @@
 from struct import *
 import itertools
 
+
 class Playable:
     fmt = 'iiii?'
     size = 17
@@ -16,7 +17,7 @@ class Playable:
             self.base_health,
             self.ghostly
         ) = fields
-        
+
 
 class HandZone:
 
@@ -28,6 +29,4 @@ class HandZone:
         for _ in itertools.repeat(None, self.count):
             self.Playables.append(Playable(data_bytes[i:i + Playable.size]))
             i += Playable.size
-
-
 
