@@ -4,13 +4,13 @@ from enum import Enum
 
 
 class PlayerTaskType(Enum):
-    CHOOSE = 1,
-    CONCEDE = 2,
-    END_TURN = 3,
-    HERO_ATTACK = 4,
-    HERO_POWER = 5,
-    MINION_ATTACK = 6,
-    PLAY_CARD = 7
+    CHOOSE = 0
+    CONCEDE = 1
+    END_TURN = 2
+    HERO_ATTACK = 3
+    HERO_POWER = 4
+    MINION_ATTACK = 5
+    PLAY_CARD = 6
 
 
 class Option:
@@ -25,18 +25,15 @@ class Option:
             self.target_position,
             self.sub_option,
             self.choice
-        ) = fields
+        ) = fields[1:5]
 
     def __str__(self):
         return "[{0}] {1} => {2}".format(self.type, self.source_position, self.target_position)
 
 
 def get_options_list(data_bytes):
-    count = data_bytes[0:4]
-    print("Received %d options" % count)
-    i = 4
     options = []
-    for _ in itertools.repeat(None, count):
-        options.append(Option(data_bytes[i:i + Option.size]))
-        i += Option.size
+    for i in range(0, len(data_bytes), Option.size):
+        options.append(Option(data_bytes[i:i+Option.size]))
+    
     return options
