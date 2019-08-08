@@ -87,7 +87,7 @@ namespace SabberStone_gRPC.MMF.Functions
                 }
             }
 
-            return game.CurrentPlayer.HandZone.Count * MMFEntities.Playable.Size;
+            return game.CurrentPlayer.HandZone.Count * MMFEntities.Playable.Size + 4;
         }
 
         private static unsafe int WriteStructure<T>(MemoryMappedFile mmf, in T structure) where T : struct
