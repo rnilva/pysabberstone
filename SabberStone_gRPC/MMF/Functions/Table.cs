@@ -75,7 +75,19 @@ namespace SabberStone_gRPC.MMF.Functions
 
             game.StartGame();
 
-            return WriteStructure(mmf, new MMFEntities.HandZone(game.CurrentPlayer.HandZone));
+            //return WriteStructure(mmf, new MMFEntities.HandZone(game.CurrentPlayer.HandZone));
+
+            using (var view = mmf.CreateViewAccessor())
+            {
+                unsafe
+                {
+                    byte* ptr = null;
+                    view.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
+                    MarshalEntities.MarshalHandZone(game.CurrentPlayer.HandZone, (int*) ptr);
+                }
+            }
+
+            return game.CurrentPlayer.HandZone.Count * MMFEntities.Playable.Size;
         }
 
         private static unsafe int WriteStructure<T>(MemoryMappedFile mmf, in T structure) where T : struct

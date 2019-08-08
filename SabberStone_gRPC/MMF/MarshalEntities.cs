@@ -4,6 +4,7 @@ using System.IO.MemoryMappedFiles;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using SabberStoneCore.Model.Entities;
 using SModel = SabberStoneCore.Model;
 using MMFEntities = SabberStone_gRPC.MMF.Entities;
 using Controller = SabberStone_gRPC.MMF.Entities.Controller;
@@ -24,7 +25,8 @@ namespace SabberStone_gRPC.MMF
                 *ip++ = (int)game.State;
                 *ip++ = game.Turn;
 
-                int* offset = MarshalController(game.CurrentPlayer, ip);
+                ip = MarshalController(game.CurrentPlayer, ip);
+                MarshalController(game.CurrentOpponent, ip);
             }
         }
 
@@ -37,10 +39,12 @@ namespace SabberStone_gRPC.MMF
             *ip++ = controller.OverloadLocked;
             *ip++ = controller.OverloadOwed;
 
-
             ip = MarshalHero(controller.Hero, ip);
+            ip = MarshalHandZone(controller.HandZone, ip);
+            ip = MarshalBoardZone(controller.BoardZone, ip);
+            ip = MarshalSecretZone(controller.SecretZone, ip);
+            ip = MarshalDeckZone(controller.DeckZone, ip);
             
-
             return ip;
         }
 
@@ -58,27 +62,26 @@ namespace SabberStone_gRPC.MMF
             *bp++ = Convert.ToByte(playable.HasStealth);
             *bp++ = Convert.ToByte(playable.IsImmune);
 
+            ip = (int*)bp;
+            ip = MarshalHeroPowerPtr(playable.HeroPower, ip);
 
-            bp = MarshalHeroPower(playable.HeroPower, bp);
-            bp = MarshalWeapon(playable.Weapon, bp);
-
-            return (int*)bp;
+            return MarshalWeaponPtr(playable.Weapon, ip);
         }
-        public static unsafe byte* MarshalHeroPower(SModel.Entities.HeroPower playable, byte* bp)
+        public static unsafe int* MarshalHeroPower(SModel.Entities.HeroPower playable, byte* bp)
         {
             Marshal.StructureToPtr(new MMFEntities.HeroPower(playable), (IntPtr) bp, false);
             bp += Marshal.SizeOf<MMFEntities.HeroPower>();
 
-            return bp;
+            return (int*)bp;
         }
 
-        public static unsafe byte* MarshalHeroPowerPtr(SModel.Entities.HeroPower playable, int* ip)
+        public static unsafe int* MarshalHeroPowerPtr(SModel.Entities.HeroPower playable, int* ip)
         {
             *ip++ = playable.Card.AssetId;
             *ip++ = playable.Cost;
             byte* bp = (byte*) ip;
             *bp++ = Convert.ToByte(playable.IsExhausted);
-            return bp;
+            return (int*) bp;
         }
 
         private static unsafe byte* MarshalWeapon(SModel.Entities.Weapon playable, byte* bp)
@@ -89,6 +92,21 @@ namespace SabberStone_gRPC.MMF
             return bp;
         }
 
+        public static unsafe int* MarshalWeaponPtr(SModel.Entities.Weapon playable, int* ip)
+        {
+            *ip++ = playable.Card.AssetId;
+            *ip++ = playable.AttackDamage;
+            *ip++ = playable.Durability;
+            *ip++ = playable.Damage;
+
+            byte* bp = (byte*) ip;
+            *bp++ = Convert.ToByte(playable.IsWindfury);
+            *bp++ = Convert.ToByte(playable.HasLifeSteal);
+            *bp++ = Convert.ToByte(playable.IsImmune);
+
+            return (int*)bp;
+        }
+
         public static unsafe byte* MarshalMinion(SModel.Entities.Minion playable, byte* bp)
         {
             Marshal.StructureToPtr(new MMFEntities.Minion(playable), (IntPtr) bp, false);
@@ -97,7 +115,7 @@ namespace SabberStone_gRPC.MMF
             return bp;
         }
 
-        public static unsafe byte* MarshalMinionPtr(SModel.Entities.Minion playable, int* ip)
+        public static unsafe int* MarshalMinionPtr(SModel.Entities.Minion playable, int* ip)
         {
             *ip++ = playable.Card.AssetId;
             *ip++ = playable.AttackDamage;
@@ -122,14 +140,72 @@ namespace SabberStone_gRPC.MMF
             *bp++ = Convert.ToByte(playable.HasDeathrattle);
             *bp++ = Convert.ToByte(playable.IsSilenced);
 
-            return bp;
+            return (int*)bp;
         }
 
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static unsafe void WriteUInt(ref uint* ptr, uint value)
+        public static unsafe int* MarshalPlayable(SModel.Entities.IPlayable playable, int* ip, bool hand)
         {
-            *ptr++ = value;
+            *ip++ = playable.Card.AssetId;
+            *ip++ = playable.Cost;
+            if (playable is SModel.Entities.Character c)
+            {
+                *ip++ = c.AttackDamage;
+                *ip++ = c.BaseHealth;
+            }
+            else
+                ip += 2;
+
+            byte* bp = (byte*) ip;
+            if (hand)
+                *bp++ = (byte) playable[SabberStoneCore.Enums.GameTag.GHOSTLY];
+            else
+                bp += 1;
+
+            return (int*)bp;
+        }
+
+        public static unsafe int* MarshalHandZone(SModel.Zones.HandZone zone, int* ip)
+        {
+            ReadOnlySpan<IPlayable> span = zone.GetSpan();
+
+            *ip++ = span.Length; // Count
+            for (int i = 0; i < span.Length; i++) 
+                ip = MarshalPlayable(span[i], ip, true);
+
+            return ip;
+        }
+
+        public static unsafe int* MarshalBoardZone(SModel.Zones.BoardZone zone, int* ip)
+        {
+            ReadOnlySpan<Minion> span = zone.GetSpan();
+
+            *ip++ = span.Length; // Count
+            for (int i = 0; i < span.Length; i++) 
+                ip = MarshalMinionPtr(span[i], ip);
+
+            return ip;
+        }
+
+        public static unsafe int* MarshalSecretZone(SModel.Zones.SecretZone zone, int* ip)
+        {
+            ReadOnlySpan<Spell> span = zone.GetSpan();
+
+            *ip++ = span.Length; // Count
+            for (int i = 0; i < span.Length; i++) 
+                ip = MarshalPlayable(span[i], ip, false);
+
+            return ip;
+        }
+
+        public static unsafe int* MarshalDeckZone(SModel.Zones.DeckZone zone, int* ip)
+        {
+            ReadOnlySpan<IPlayable> span = zone.GetSpan();
+
+            *ip++ = span.Length; // Count
+            for (int i = 0; i < span.Length; i++) 
+                ip = MarshalPlayable(span[i], ip, false);
+
+            return ip;
         }
     }
 }

@@ -9,6 +9,8 @@ namespace SabberStone_gRPC.MMF.Entities
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
     public readonly struct Playable
     {
+        public static readonly int Size = Marshal.SizeOf<Playable>();
+
         public readonly int CardId;
         public readonly int Cost;
         public readonly int ATK;
