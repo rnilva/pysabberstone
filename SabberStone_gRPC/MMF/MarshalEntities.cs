@@ -36,7 +36,7 @@ namespace SabberStone_gRPC.MMF
 
         private static unsafe int* MarshalController(SModel.Entities.Controller controller, int* ip, out int size)
         {
-            const int BaseSize = 4 * 6;
+            const int BaseSize = 4 * 10;
 
             *ip++ = controller.PlayerId;
             *ip++ = (int)controller.PlayState;

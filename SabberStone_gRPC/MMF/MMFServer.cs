@@ -15,16 +15,14 @@ namespace SabberStone_gRPC.MMF
 
         public static void Run(string id = "")
         {
-            using (var pipe = new NamedPipeServerStream(PIPE_NAME_PREFIX + id, PipeDirection.InOut, 1))
-            using (var mmf = MemoryMappedFile.CreateFromFile(
-                File.Open(Path.Combine("../", id + MMF_NAME_POSTFIX), FileMode.OpenOrCreate),
-                null, 10000, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, false))
+            while (true)
             {
-                Console.WriteLine("Server started. Waiting for the client.....");
-
-                while (true)
+                using (var pipe = new NamedPipeServerStream(PIPE_NAME_PREFIX + id, PipeDirection.InOut, 1))
+                using (var mmf = MemoryMappedFile.CreateFromFile(
+                    File.Open(Path.Combine("../", id + MMF_NAME_POSTFIX), FileMode.OpenOrCreate),
+                    null, 10000, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, false))
                 {
-                    pipe.WaitForConnection();
+                    Console.WriteLine("Server started. Waiting for the client.....");
 
                     Console.WriteLine("Python client connected!");
 
@@ -44,7 +42,7 @@ namespace SabberStone_gRPC.MMF
                                 while (true)
                                 {
                                     char type = br.ReadChar();
-                                    if (type == 'i') 
+                                    if (type == 'i')
                                         arguments.Add(br.ReadInt32());
                                     else if (type == 'b')
                                         arguments.Add(br.ReadBoolean());
@@ -55,14 +53,14 @@ namespace SabberStone_gRPC.MMF
                                         Console.WriteLine("received str: " + str);
                                         arguments.Add(str);
                                     }
-                                    else if (type == '4')   // End of Transmission
+                                    else if (type == '4') // End of Transmission
                                         break;
                                     else
                                     {
                                         Console.WriteLine("Undefined value is received: " + type);
                                         break;
                                     }
-                                        
+
                                 }
 
                                 try
@@ -73,7 +71,7 @@ namespace SabberStone_gRPC.MMF
 
                                     bw.Write(size); // Send the size of returned structure.
                                 }
-                                catch(Exception e)
+                                catch (Exception e)
                                 {
                                     Console.WriteLine(e.Message);
                                     Console.WriteLine(e.StackTrace);
