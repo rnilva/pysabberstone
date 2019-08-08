@@ -16,6 +16,8 @@ namespace SabberStone_gRPC.MMF
         public static readonly Type[] EntityTypes =
         {
             typeof(MMFEntities.Playable),
+            typeof(MMFEntities.HeroPower),
+            typeof(MMFEntities.Weapon),
         };
 
         public static readonly Type[] ZoneTypes =
