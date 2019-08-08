@@ -7,7 +7,7 @@ using SabberStoneCore.Tasks.PlayerTasks;
 
 namespace SabberStone_gRPC.MMF.Functions
 {
-    public static class API
+    public static unsafe class API
     {
         private static class ManagedObjects
         {
@@ -19,7 +19,7 @@ namespace SabberStone_gRPC.MMF.Functions
 
         private static int _gameIdGen;
 
-        public static unsafe int NewGame(string deck1, string deck2, MemoryMappedFile mmf)
+        public static int NewGame(string deck1, string deck2, in byte* mmfPtr)
         {
             Console.WriteLine("NewGame service is called!");
             Console.WriteLine("Deckstring #1: " + deck1);
@@ -31,55 +31,43 @@ namespace SabberStone_gRPC.MMF.Functions
             ManagedObjects.InitialGames.Add(id, game);
             ManagedObjects.Games.Add(id, game);
 
-            int size = MarshalEntities.MarshalGameToMMF(game, mmf, id);
+            int size = MarshalEntities.MarshalGameToMMF(game, in mmfPtr, id);
 
             Console.WriteLine($"New Game of size {size} is created");
 
-            using (var view = mmf.CreateViewAccessor())
-            {
-                byte* sourcePtr = null;
-                view.SafeMemoryMappedViewHandle.AcquirePointer(ref sourcePtr);
+            var destinationArray = new byte[size];
+            fixed (byte* dstPtr = destinationArray)
+                Buffer.MemoryCopy(mmfPtr, dstPtr, size, size);
 
-                var destinationArray = new byte[size];
-                fixed (byte* dstPtr = destinationArray)
-                    Buffer.MemoryCopy(sourcePtr, dstPtr, size, size);
+            ManagedObjects.InitialGameAPIs.Add(id, destinationArray);
+            
+            return size;
+        }
 
-                ManagedObjects.InitialGameAPIs.Add(id, destinationArray);
-            }
+        public static int Reset(int gameId, in byte* mmfPtr)
+        {
+            ManagedObjects.Games[gameId] = ManagedObjects.InitialGames[gameId].Clone();
+
+            byte[] source = ManagedObjects.InitialGameAPIs[gameId];
+            int size = source.Length;
+            fixed (byte* sourcePtr = source)
+                Buffer.MemoryCopy(sourcePtr, mmfPtr, size, size);
 
             return size;
         }
 
-        public static unsafe int Reset(int gameId, MemoryMappedFile mmf)
+        public static int GetOptions(int gameId, in byte* mmfPtr)
         {
-            ManagedObjects.Games[gameId] = ManagedObjects.InitialGames[gameId].Clone();
-
-            using (var view = mmf.CreateViewAccessor())
-            {
-                byte* dstPtr = null;
-                view.SafeMemoryMappedViewHandle.AcquirePointer(ref dstPtr);
-
-                byte[] source = ManagedObjects.InitialGameAPIs[gameId];
-                int size = source.Length;
-                fixed (byte* sourcePtr = source)
-                    Buffer.MemoryCopy(sourcePtr, dstPtr, size, size);
-
-                return size;
-            }
+            return ManagedObjects.Games[gameId].CurrentPlayer.Options(in mmfPtr);
         }
 
-        public static int GetOptions(int gameId, MemoryMappedFile mmf)
-        {
-            return ManagedObjects.Games[gameId].CurrentPlayer.Options(mmf);
-        }
-
-        public static int Process(int gameId, in Option option, MemoryMappedFile mmf)
+        public static int Process(int gameId, in Option option, in byte* mmfPtr)
         {
             Game game = ManagedObjects.Games[gameId];
             PlayerTask task = SabberHelper.OptionToPlayerTask(game.CurrentPlayer, option);
             game.Process(task);
 
-            return MarshalEntities.MarshalGameToMMF(game, mmf, gameId);
+            return MarshalEntities.MarshalGameToMMF(game, in mmfPtr, gameId);
         }
     }
 }

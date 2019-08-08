@@ -13,25 +13,21 @@ namespace SabberStone_gRPC.MMF
 {
     public static class MarshalEntities
     {
-        public static unsafe int MarshalGameToMMF(SModel.Game game, MemoryMappedFile mmf, int id)
+        public static unsafe int MarshalGameToMMF(SModel.Game game, in byte* mmfPtr, int id)
         {
             const int BaseSize = 4 * 3;
 
-            using (MemoryMappedViewAccessor view = mmf.CreateViewAccessor())
-            {
-                byte* ptr = null;
-                view.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
-                int* ip = (int*)ptr;
+            int* ip = (int*)mmfPtr;
 
-                *ip++ = id;
-                *ip++ = (int)game.State;
-                *ip++ = game.Turn;
+            *ip++ = id;
+            *ip++ = (int)game.State;
+            *ip++ = game.Turn;
 
-                ip = MarshalController(game.CurrentPlayer, ip, out int cpSize);
-                MarshalController(game.CurrentOpponent, ip, out int opSize);
+            ip = MarshalController(game.CurrentPlayer, ip, out int cpSize);
+            MarshalController(game.CurrentOpponent, ip, out int opSize);
 
-                return BaseSize + cpSize + opSize;
-            }
+            return BaseSize + cpSize + opSize;
+            
         }
 
         private static unsafe int* MarshalController(SModel.Entities.Controller controller, int* ip, out int size)

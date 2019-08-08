@@ -13,7 +13,7 @@ namespace SabberStone_gRPC.MMF
         private const string PIPE_NAME_PREFIX = "sabberstoneserver_";
         private const string MMF_NAME_POSTFIX = "_sabberstoneserver.mmf";
 
-        public static void Run(string id = "")
+        public static unsafe void Run(string id = "")
         {
             while (true)
             {
@@ -21,7 +21,11 @@ namespace SabberStone_gRPC.MMF
                 using (var mmf = MemoryMappedFile.CreateFromFile(
                     File.Open(Path.Combine("../", id + MMF_NAME_POSTFIX), FileMode.OpenOrCreate),
                     null, 10000, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, false))
+                using (MemoryMappedViewAccessor view = mmf.CreateViewAccessor())
                 {
+                    byte* mmfPtr = null;
+                    view.SafeMemoryMappedViewHandle.AcquirePointer(ref mmfPtr);
+
                     Console.WriteLine("Server started. Waiting for the client.....");
 
                     pipe.WaitForConnection();
@@ -78,7 +82,7 @@ namespace SabberStone_gRPC.MMF
 
                                 try
                                 {
-                                    int size = FunctionTable.CallById((FunctionId) function_id, arguments, mmf);
+                                    int size = FunctionTable.CallById((FunctionId) function_id, arguments, in mmfPtr);
 
                                     Console.WriteLine($"Server writes a structure of size {size} to mmf");
 
@@ -89,6 +93,10 @@ namespace SabberStone_gRPC.MMF
                                     Console.WriteLine(e.Message);
                                     Console.WriteLine(e.StackTrace);
                                 }
+                                finally
+                                {
+                                    view.Flush();
+                                }
                             }
                         }
                     }
@@ -96,6 +104,7 @@ namespace SabberStone_gRPC.MMF
                     {
                         Console.WriteLine("ERROR: " + e.Message);
                         Console.WriteLine("Connection closed.");
+                        view.Flush();
                     }
                 }
             }

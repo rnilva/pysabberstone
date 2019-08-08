@@ -55,12 +55,9 @@ namespace SabberStone_gRPC.MMF
         }
 
 
-        public static unsafe int Options(this SabberStoneCore.Model.Entities.Controller c, MemoryMappedFile mmf)
+        public static unsafe int Options(this SabberStoneCore.Model.Entities.Controller c, in byte* mmfPtr)
         {
-            MemoryMappedViewAccessor view = mmf.CreateViewAccessor();
-            byte* initPtr = null;
-            view.SafeMemoryMappedViewHandle.AcquirePointer(ref initPtr);
-            int* ip = (int*)initPtr;
+            int* ip = (int*)mmfPtr;
 
             if (c.Choice != null)
             {
@@ -172,7 +169,7 @@ namespace SabberStone_gRPC.MMF
             }
 			#endregion
 
-            return (int)((byte*)ip - initPtr);
+            return (int)((byte*)ip - mmfPtr);
 
 			#region local functions
 			int* GetPlayCardTasks(int* ptr , in IPlayable playable, in IPlayable chooseOnePlayable = null, int subOption = -1)
