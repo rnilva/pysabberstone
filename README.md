@@ -1,6 +1,6 @@
 # The new C#-Python connection system
 
-Because I have not decide how to call it, I call it 'new system' in the rest here.
+Because I have not decide how to call it, I call it 'new system' in the rest of here.
 
 1. New system is extremely fast.
 
@@ -22,4 +22,6 @@ Because I have not decide how to call it, I call it 'new system' in the rest her
    ```
 
 6. You can find out examples in the bunch of rubbish codes in the root directory of Python part.
+
+7. New system currently only works in Unix-based systems.
 
