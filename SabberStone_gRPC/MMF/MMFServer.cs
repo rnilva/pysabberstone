@@ -24,8 +24,9 @@ namespace SabberStone_gRPC.MMF
                 {
                     Console.WriteLine("Server started. Waiting for the client.....");
 
-                    Console.WriteLine("Python client connected!");
+                    pipe.WaitForConnection();
 
+                    Console.WriteLine("Python client connected!");
                     try
                     {
                         using (BinaryWriter bw = new BinaryWriter(pipe))
