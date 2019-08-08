@@ -1,4 +1,4 @@
-# functionc call protocol
+# function call protocol
 from struct import *
 
 
@@ -8,6 +8,8 @@ def call_function(socket, mmf, function_id, *args):
     for arg in args:
         if type(arg) is int:
             socket.send(pack('i', arg))
+        elif type(arg) is str:
+            socket.sendall(pack('i', len(arg)) + arg.encode())
     return _retrieve_returned_value(socket, mmf)
 
 

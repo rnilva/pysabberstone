@@ -27,6 +27,9 @@ namespace SabberStone_gRPC.MMF.Functions
                         return TestSendOnePlayable(mmf);
                     case FunctionId.Test_SendZoneWithPlayables:
                         return TestSendZoneWithPlayables(mmf);
+                    case FunctionId.NewGame:
+                        API.NewGame(mmf, arguments[0], arguments[1]);
+                        return 1000;
                     default:
                         throw new NotImplementedException();
                 }
@@ -108,8 +111,9 @@ namespace SabberStone_gRPC.MMF.Functions
         Test = 0,
         Test_MultiArgument = 1,
         Test_SendOnePlayable = 2,
+        Test_SendZoneWithPlayables = 3,
 
-        Test_SendZoneWithPlayables = 3
+        NewGame = 4
     }
 
 
