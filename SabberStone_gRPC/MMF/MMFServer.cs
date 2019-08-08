@@ -46,6 +46,13 @@ namespace SabberStone_gRPC.MMF
                                     arguments.Add(br.ReadInt32());
                                 else if (type == 'b')
                                     arguments.Add(br.ReadBoolean());
+                                else if (type == 's')
+                                {
+                                    int len = br.ReadInt32();
+                                    string str = System.Text.Encoding.Default.GetString(br.ReadBytes(len));
+                                    Console.WriteLine("received str: " + str);
+                                    arguments.Add(str);
+                                }
                                 else if (type == '4')   // End of Transmission
                                     break;
                                 else

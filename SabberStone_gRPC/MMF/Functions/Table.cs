@@ -29,7 +29,7 @@ namespace SabberStone_gRPC.MMF.Functions
                         return TestSendZoneWithPlayables(mmf);
                     case FunctionId.NewGame:
                         API.NewGame(mmf, arguments[0], arguments[1]);
-                        return 1000;
+                        return 1500;
                     default:
                         throw new NotImplementedException();
                 }

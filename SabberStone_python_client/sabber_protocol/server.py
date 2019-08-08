@@ -7,21 +7,22 @@ from sabber_protocol import function, entities, game
 
 class SabberStoneServer:
 
-    SERVER_ADDRESS = '/tmp/CoreFxPipe_sabberstoneserver'
+    SERVER_ADDRESS = '/tmp/CoreFxPipe_sabberstoneserver_'
 
     def __init__(self):
         self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        self.mmf_fd = open('../sabberstoneserver.mmf', 'r')
-        self.mmf = numpy.memmap(self.mmf_fd, dtype='byte', mode='r', shape=(1000))
+        self.mmf_fd = open('../_sabberstoneserver.mmf', 'r')
+        self.mmf = numpy.memmap(self.mmf_fd, dtype='byte', mode='r', shape=(10000))
         try:
             self.socket.connect(SabberStoneServer.SERVER_ADDRESS)
         except socket.error as msg:
             print(msg)
             sys.exit(1)
         print('Connected to SabberStoneServer')
+        print('mmf length: {0}', len(self.mmf))
 
     def new_game(self, deckstr1, deckstr2):
-        data_bytes = function.call_function(self.socket, self.mmf, 4, deckstr1, deckstr2)
+        data_bytes = function.call_function_multiargs(self.socket, self.mmf, 4, deckstr1, deckstr2)
         return game.Game(data_bytes)
 
     def _test_get_one_playable(self):
