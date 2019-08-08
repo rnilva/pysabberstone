@@ -2,7 +2,7 @@ import socket
 import platform
 import numpy
 import sys
-from sabber_protocol import function, entities, game
+from sabber_protocol import function, entities, game, option
 
 
 class SabberStoneServer:
@@ -28,6 +28,10 @@ class SabberStoneServer:
     def reset(self, game):
         data_bytes = function.call_function(self.socket, self.mmf, 5, game.id)
         return game.reset_with_bytes(data_bytes)
+
+    def options(self, game):
+        data_bytes = function.call_function(self.socket, self.mmf, 6, game.id)
+        return option.get_options_list(data_bytes)
 
     def _test_get_one_playable(self):
         data_bytes = function.call_function(self.socket, self.mmf, 2, 0)

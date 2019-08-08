@@ -67,9 +67,9 @@ namespace SabberStone_gRPC.MMF.Functions
             }
         }
 
-        public static void GetOptions(MemoryMappedFile mmf, int gameId)
+        public static int GetOptions(int gameId, MemoryMappedFile mmf)
         {
-
+            return ManagedObjects.Games[gameId].CurrentPlayer.MarshalOptions(mmf);
         }
     }
 }

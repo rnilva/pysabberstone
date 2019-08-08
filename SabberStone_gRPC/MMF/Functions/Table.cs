@@ -9,6 +9,18 @@ using MMFEntities = SabberStone_gRPC.MMF.Entities;
 
 namespace SabberStone_gRPC.MMF.Functions
 {
+    public enum FunctionId : byte
+    {
+        Test = 0,
+        TestMultiArgument = 1,
+        TestSendOnePlayable = 2,
+        TestSendZoneWithPlayables = 3,
+
+        NewGame = 4,
+        Reset = 5,
+        Options = 6,
+    }
+
     public static class FunctionTable
     {
         public static int CallById(FunctionId id, List<dynamic> arguments, MemoryMappedFile mmf)
@@ -20,17 +32,19 @@ namespace SabberStone_gRPC.MMF.Functions
                     case FunctionId.Test:
                         Test();
                         break;
-                    case FunctionId.Test_MultiArgument:
+                    case FunctionId.TestMultiArgument:
                         TestMultiArgument(arguments[0], arguments[1], arguments[2]);
                         break;
-                    case FunctionId.Test_SendOnePlayable:
+                    case FunctionId.TestSendOnePlayable:
                         return TestSendOnePlayable(mmf);
-                    case FunctionId.Test_SendZoneWithPlayables:
+                    case FunctionId.TestSendZoneWithPlayables:
                         return TestSendZoneWithPlayables(mmf);
                     case FunctionId.NewGame:
                         return API.NewGame(arguments[0], arguments[1], mmf);
                     case FunctionId.Reset:
                         return API.Reset(arguments[0], mmf);
+                    case FunctionId.Options:
+                        return API.GetOptions(arguments[0], mmf);
                     default:
                         throw new NotImplementedException();
                 }
@@ -106,17 +120,4 @@ namespace SabberStone_gRPC.MMF.Functions
             return Marshal.SizeOf<T>();
         }
     }
-
-    public enum FunctionId : byte
-    {
-        Test = 0,
-        Test_MultiArgument = 1,
-        Test_SendOnePlayable = 2,
-        Test_SendZoneWithPlayables = 3,
-
-        NewGame = 4,
-        Reset = 5
-    }
-
-
 }

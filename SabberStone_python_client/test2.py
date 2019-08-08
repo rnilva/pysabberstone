@@ -26,3 +26,8 @@ server.reset(game)
 print()
 print('game after reset:')
 print(game)
+
+# Options Test
+options = server.options(game)
+for option in options:
+    print(option)
