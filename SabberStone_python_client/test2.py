@@ -33,3 +33,10 @@ string2 = r"AAECAf0EAA8MuwKVA6sEtATmBJYFhQjC8wK0/ALnlQOmmAOfmwP/nQPinwMA"
 
 game = server.new_game(string1, string2)
 print('Received game object from NewGame! size: {}'.format(game.size))
+print(game)
+
+# Reset Test
+server.reset(game)
+print()
+print('game after reset:')
+print(game)

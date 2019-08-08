@@ -28,8 +28,9 @@ namespace SabberStone_gRPC.MMF.Functions
                     case FunctionId.Test_SendZoneWithPlayables:
                         return TestSendZoneWithPlayables(mmf);
                     case FunctionId.NewGame:
-                        API.NewGame(mmf, arguments[0], arguments[1]);
-                        return 1500;
+                        return API.NewGame(arguments[0], arguments[1], mmf);
+                    case FunctionId.Reset:
+                        return API.Reset(arguments[0], mmf);
                     default:
                         throw new NotImplementedException();
                 }
@@ -86,11 +87,11 @@ namespace SabberStone_gRPC.MMF.Functions
                 {
                     byte* ptr = null;
                     view.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
-                    MarshalEntities.MarshalHandZone(game.CurrentPlayer.HandZone, (int*) ptr);
+                    MarshalEntities.MarshalHandZone(game.CurrentPlayer.HandZone, (int*) ptr, out int size);
+                    return size;
                 }
             }
 
-            return game.CurrentPlayer.HandZone.Count * MMFEntities.Playable.Size + 4;
         }
 
         private static unsafe int WriteStructure<T>(MemoryMappedFile mmf, in T structure) where T : struct
@@ -113,7 +114,8 @@ namespace SabberStone_gRPC.MMF.Functions
         Test_SendOnePlayable = 2,
         Test_SendZoneWithPlayables = 3,
 
-        NewGame = 4
+        NewGame = 4,
+        Reset = 5
     }
 
 

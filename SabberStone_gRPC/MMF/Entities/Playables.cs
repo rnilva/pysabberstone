@@ -164,6 +164,8 @@ namespace SabberStone_gRPC.MMF.Entities
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
     public readonly struct Minion : IEquatable<Minion>
     {
+        public static readonly int Size = Marshal.SizeOf<Minion>();
+
         public readonly int CardId;
         public readonly int ATK;
         public readonly int BaseHealth;
