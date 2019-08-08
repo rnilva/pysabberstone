@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using SabberStoneCore.Config;
+using SabberStoneCore.Model;
 using SabberEntities = SabberStoneCore.Model.Entities;
 using SabberZones = SabberStoneCore.Model.Zones;
 
@@ -23,6 +25,68 @@ namespace SabberStone_gRPC.MMF.Entities
             
             Count = span.Length;
             Playables = playables;
+        }
+    }
+
+    public readonly struct HandZone_unmanaged
+    {
+        public readonly int Count;
+        public readonly IntPtr Playables;
+
+        public HandZone_unmanaged(SabberZones.HandZone zone)
+        {
+            var span = zone.GetSpan();
+            Count = span.Length;
+            int size = Marshal.SizeOf<Playable>();
+            IntPtr playables = Marshal.AllocHGlobal(size * Count);
+            IntPtr ptr = playables;
+            for (int i = 0; i < span.Length; i++)
+            {
+                Marshal.StructureToPtr(new Playable(span[i], true), ptr, false);
+                ptr += size;
+            }
+            Playables = playables;
+        }
+
+        public void Free()
+        {
+            Marshal.FreeHGlobal(Playables);
+        }
+
+        public static void Test()
+        {
+            var game = new SabberStoneCore.Model.Game(new GameConfig
+            {
+                StartPlayer = 1,
+                Shuffle = false,
+                History = false,
+                Logging = false,
+                Player1Deck = new List<Card>
+                {
+                    Cards.FromName("Stonetusk Boar"),
+                    Cards.FromName("Wisp"),
+                    Cards.FromName("Bloodfen Raptor"),
+                    Cards.FromName("Dalaran Mage")
+                }
+            });
+
+            game.StartGame();
+
+            var unmanagedHand = new HandZone_unmanaged(game.CurrentPlayer.HandZone);
+            IntPtr ptr = unmanagedHand.Playables;
+            for (int i = 0; i < unmanagedHand.Count; i++)
+            {
+                Playable playable = Marshal.PtrToStructure<Playable>(ptr);
+                ptr += Marshal.SizeOf<Playable>();
+
+                Console.WriteLine("- Card 1:");
+                Console.WriteLine($"\t{Cards.FromAssetId(playable.CardId).Name}");
+                Console.WriteLine($"\tCost: {playable.Cost}");
+                Console.WriteLine($"\tATK: {playable.ATK}");
+                Console.WriteLine($"\tHP: {playable.BaseHealth}");
+            }
+
+            unmanagedHand.Free();
         }
     }
 

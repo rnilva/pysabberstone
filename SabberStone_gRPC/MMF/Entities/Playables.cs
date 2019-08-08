@@ -49,7 +49,7 @@ namespace SabberStone_gRPC.MMF.Entities
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
-    public readonly struct HeroPower
+    public readonly struct HeroPower : IEquatable<HeroPower>
     {
         public readonly int CardId;
         public readonly int Cost;
@@ -62,6 +62,41 @@ namespace SabberStone_gRPC.MMF.Entities
             Cost = playable.Cost;
             Exhausted = playable.IsExhausted;
         }
+
+        #region Equality members
+
+        public bool Equals(HeroPower other)
+        {
+            return CardId == other.CardId && Cost == other.Cost && Exhausted == other.Exhausted;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is HeroPower other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = CardId;
+                hashCode = (hashCode * 397) ^ Cost;
+                hashCode = (hashCode * 397) ^ Exhausted.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(HeroPower left, HeroPower right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(HeroPower left, HeroPower right)
+        {
+            return !left.Equals(right);
+        }
+
+        #endregion
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
@@ -125,7 +160,7 @@ namespace SabberStone_gRPC.MMF.Entities
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
-    public readonly struct Minion
+    public readonly struct Minion : IEquatable<Minion>
     {
         public readonly int CardId;
         public readonly int ATK;
@@ -184,6 +219,65 @@ namespace SabberStone_gRPC.MMF.Entities
             Deathrattle = playable.HasDeathrattle;
             Silenced = playable.IsSilenced;
         }
+
+        #region Equality members
+
+        public bool Equals(Minion other)
+        {
+            return CardId == other.CardId && ATK == other.ATK && BaseHealth == other.BaseHealth &&
+                   Damage == other.Damage && NumAttacksThisTurn == other.NumAttacksThisTurn &&
+                   ZonePosition == other.ZonePosition && OrderOfPlay == other.OrderOfPlay &&
+                   Exhausted == other.Exhausted && Stealth == other.Stealth && Immune == other.Immune &&
+                   Charge == other.Charge && AttackableByRush == other.AttackableByRush && Windfury == other.Windfury &&
+                   Lifesteal == other.Lifesteal && Taunt == other.Taunt && DivineShield == other.DivineShield &&
+                   Elusive == other.Elusive && Frozen == other.Frozen && Deathrattle == other.Deathrattle &&
+                   Silenced == other.Silenced;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Minion other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = CardId;
+                hashCode = (hashCode * 397) ^ ATK;
+                hashCode = (hashCode * 397) ^ BaseHealth;
+                hashCode = (hashCode * 397) ^ Damage;
+                hashCode = (hashCode * 397) ^ NumAttacksThisTurn;
+                hashCode = (hashCode * 397) ^ ZonePosition;
+                hashCode = (hashCode * 397) ^ OrderOfPlay;
+                hashCode = (hashCode * 397) ^ Exhausted.GetHashCode();
+                hashCode = (hashCode * 397) ^ Stealth.GetHashCode();
+                hashCode = (hashCode * 397) ^ Immune.GetHashCode();
+                hashCode = (hashCode * 397) ^ Charge.GetHashCode();
+                hashCode = (hashCode * 397) ^ AttackableByRush.GetHashCode();
+                hashCode = (hashCode * 397) ^ Windfury.GetHashCode();
+                hashCode = (hashCode * 397) ^ Lifesteal.GetHashCode();
+                hashCode = (hashCode * 397) ^ Taunt.GetHashCode();
+                hashCode = (hashCode * 397) ^ DivineShield.GetHashCode();
+                hashCode = (hashCode * 397) ^ Elusive.GetHashCode();
+                hashCode = (hashCode * 397) ^ Frozen.GetHashCode();
+                hashCode = (hashCode * 397) ^ Deathrattle.GetHashCode();
+                hashCode = (hashCode * 397) ^ Silenced.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(Minion a, Minion b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(Minion a, Minion b)
+        {
+            return !a.Equals(b);
+        }
+
+        #endregion
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]

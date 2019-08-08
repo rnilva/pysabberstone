@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
 using SabberStone_gRPC.MMF;
+using SabberStone_gRPC.MMF.Entities;
 using SabberStonePython.API;
 using SabberStonePython.Tests;
 
@@ -35,7 +36,9 @@ namespace SabberStone_gRPC
             //MMFTest.MarshalTest();
 
             //PythonHelper.WritePythonEntities();
-            MMFServer.Run();
+            //MMFServer.Run();
+            //HandZone_unmanaged.Test();
+            PerformanceComparison.MarshalEntity();
         }
     }
 
