@@ -172,7 +172,7 @@ namespace SabberStone_gRPC.MMF
             }
 			#endregion
 
-            return (int)((ip - (int*)initPtr) / Option.Size);
+            return (int)((byte*)ip - initPtr);
 
 			#region local functions
 			int* GetPlayCardTasks(int* ptr , in IPlayable playable, in IPlayable chooseOnePlayable = null, int subOption = -1)
