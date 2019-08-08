@@ -20,11 +20,9 @@ class SabberStoneServer:
             sys.exit(1)
         print('Connected to SabberStoneServer')
 
-    
     def _test_get_one_playable(self):
         data_bytes = function.call_function(self.socket, self.mmf, 2, 0)
         return entities.Playable(data_bytes)
-
 
     def _test_zone_with_playables(self):
         data_bytes = function.call_function(self.socket, self.mmf, 3, 0)
