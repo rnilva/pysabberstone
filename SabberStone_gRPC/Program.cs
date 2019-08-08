@@ -16,13 +16,21 @@ namespace SabberStone_gRPC
     {
         const int DEFAULT_PORT = 50052;
 
+        private const string FALLBACK_HELP =
+            "Usage: dotnet run -c release [Type] [ID]\n\tType = { rpc, mmf }\n\tId: unique id for this server instance (only for mmf)";
+
         static void Main(string[] args)
         {
             // if (args.Length > 1 && !int.TryParse(args[0], out int port))
             //    throw new ArgumentException($"Cannot parse port number from given argument {args[0]}.");
-            
-            string command = args[0];
 
+            if (args.Length < 1)
+            {
+                Console.WriteLine(FALLBACK_HELP);
+                return;
+            }
+
+            string command = args[0];
             if (command == "rpc")
             {
                 int port = DEFAULT_PORT;
@@ -35,7 +43,15 @@ namespace SabberStone_gRPC
             }
             else if (command == "mmf")
             {
-                MMFServer.Run();
+                if (args.Length > 1)
+                    MMFServer.Run(args[1]);
+                else
+                    MMFServer.Run();
+            }
+            else
+            {
+                Console.WriteLine(FALLBACK_HELP);
+                return;
             }
 
 

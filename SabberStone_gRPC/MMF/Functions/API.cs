@@ -14,7 +14,6 @@ namespace SabberStone_gRPC.MMF.Functions
             public static Dictionary<int, Game> Games = new Dictionary<int, Game>();
             public static Dictionary<int, Game> InitialGames = new Dictionary<int, Game>();
             public static Dictionary<int, byte[]> InitialGameAPIs = new Dictionary<int, byte[]>();
-            public static Dictionary<int, List<SabberStonePython.API.Option>> OptionBuffers = new Dictionary<int, List<SabberStonePython.API.Option>>();
         }
 
         private static int _gameIdGen;
@@ -40,7 +39,7 @@ namespace SabberStone_gRPC.MMF.Functions
                 Buffer.MemoryCopy(mmfPtr, dstPtr, size, size);
 
             ManagedObjects.InitialGameAPIs.Add(id, destinationArray);
-            
+
             return size;
         }
 
