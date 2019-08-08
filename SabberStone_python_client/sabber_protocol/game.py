@@ -17,10 +17,8 @@ class Game:
         return """\
         Id: {0}
         State: {1}, Turn: {2}
-        Current Player: 
-            {3},
-        Current Opponent: 
-            {4}
+        Current Player: {3}
+        Current Opponent: {4}
         """.format(self.id, self.state, self.turn, self.current_player, self.current_opponent)
 
     def reset_with_bytes(self, data_bytes):

@@ -18,6 +18,10 @@ class Playable:
             self.ghostly
         ) = fields
 
+    def __str__(self):
+        return "{{CardId:{0}, Cost:{1}, ATK:{2}, HP:{3}}}".format(
+                self.card_id, self.cost, self.atk, self.base_health)
+
 
 class HeroPower:
     fmt = '2i?'
@@ -106,7 +110,29 @@ class Minion:
             self.deathrattle,
             self.silenced
         ) = fields
-
+    
+    def __str__(self):
+        ints = "{{CardId:{0}, ATK:{1}, HP:{2}, Exhausted{3}".format(
+            self.card_id, self.atk, (self.base_health - self.atk), self.exhausted)
+        bools = ""
+        if self.stealth:
+            bools += " STEALTH "
+        if self.immune:
+            bools += " IMMUNE "
+        if self.windfury:
+            bools += " WINDFURY "
+        if self.lifesteal:
+            bools += " LIFESTEAL "
+        if self.taunt:
+            bools += " TAUNT "
+        if self.divine_shield:
+            bools += " DIVINE_SHIELD "
+        if self.elusive:
+            bools += " ELUSIVE "
+        if self.frozen:
+            bools += " FROZEN "
+        bools += "}"
+        return ints + bools; 
 
 class HandZone:
 
@@ -123,7 +149,7 @@ class HandZone:
     def __str__(self):
         string = ""
         for playable in self.Playables:
-            string + str(playable)
+            string += str(playable)
         return string
 
 
@@ -142,7 +168,7 @@ class BoardZone:
     def __str__(self):
         string = ""
         for playable in self.Playables:
-            string + str(playable)
+            string += str(playable)
         return string
 
 
@@ -162,7 +188,7 @@ class SecretZone:
     def __str__(self):
         string = ""
         for playable in self.Playables:
-            string + str(playable)
+            string += str(playable)
         return string
 
 
