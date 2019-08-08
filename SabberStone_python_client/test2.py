@@ -1,6 +1,6 @@
 import sabber_protocol.server
 import random
-
+import cProfile
 
 server = sabber_protocol.server.SabberStoneServer()
 
@@ -39,8 +39,8 @@ def full_random_game(server, deck1, deck2):
     game = server.new_game(deck1, deck2)
     while game.state != 3:
         options = server.options(game)
-        option = options[random.randrange(len(options.list))]
-        game = server.process(option)
+        option = options[random.randrange(len(options))]
+        game = server.process(game, option)
         print("Turn: {0}".format(game.turn))
 
     cp = game.current_player
@@ -51,3 +51,6 @@ def full_random_game(server, deck1, deck2):
         print("Player{0} Wins!".format(co.id))
     else:
         print("Tied!")
+
+print("Full Random Game Test")
+full_random_game(server, string1, string2)

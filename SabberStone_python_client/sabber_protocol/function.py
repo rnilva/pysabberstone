@@ -26,17 +26,16 @@ def call_function(socket, mmf, function_id, int_arg: int):
     return _retrieve_returned_value(socket, mmf)
 
 def send_option(socket, mmf, game_id, option):
-    socket.send(b'7')
+    socket.send(bytes([7]))
     socket.send(b'i')
     socket.send(pack('i', game_id))
     socket.send(b'o')
     socket.send(bytes(option))
+    socket.send(b'4')
     return _retrieve_returned_value(socket, mmf)
 
 def _retrieve_returned_value(socket, mmf):
     size = unpack('I', socket.recv(4))[0]
-    print('function returns a structure of size {0}'.format(size))
-    print(mmf[0:size])
     return mmf[0:size].tobytes()
 
 

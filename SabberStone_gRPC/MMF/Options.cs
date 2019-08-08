@@ -62,7 +62,10 @@ namespace SabberStone_gRPC.MMF
             if (c.Choice != null)
             {
                 if (c.Choice.ChoiceType == ChoiceType.GENERAL)
-                    c.Choice.Choices.ForEach(i => MarshalChoice(i, ref ip));
+				{
+					c.Choice.Choices.ForEach(i => MarshalChoice(i, ref ip));
+					return (int)((byte*)ip - mmfPtr);
+				}
 
                 throw new NotImplementedException();
             }

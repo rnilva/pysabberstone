@@ -111,7 +111,8 @@ namespace SabberStone_gRPC.MMF
             if (playable is null)
             {
                 exist = false;
-                return ++ip;
+                *ip++ = 0;
+                return ip;
             }
 
             *ip++ = playable.Card.AssetId;
