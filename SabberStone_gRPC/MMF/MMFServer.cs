@@ -22,58 +22,70 @@ namespace SabberStone_gRPC.MMF
             {
                 Console.WriteLine("Server started. Waiting for the client.....");
 
-                pipe.WaitForConnection();
-
-                Console.WriteLine("Python client connected!");
-
-                try
+                while (true)
                 {
-                    using (BinaryWriter bw = new BinaryWriter(pipe))
-                    using (BinaryReader br = new BinaryReader(pipe))
+                    pipe.WaitForConnection();
+
+                    Console.WriteLine("Python client connected!");
+
+                    try
                     {
-                        while (true)
+                        using (BinaryWriter bw = new BinaryWriter(pipe))
+                        using (BinaryReader br = new BinaryReader(pipe))
                         {
-                            byte function_id = br.ReadByte();
-
-                            Console.WriteLine($"Function {function_id} is requested");
-
-                            List<dynamic> arguments = new List<dynamic>();
-
                             while (true)
                             {
-                                char type = br.ReadChar();
-                                if (type == 'i') 
-                                    arguments.Add(br.ReadInt32());
-                                else if (type == 'b')
-                                    arguments.Add(br.ReadBoolean());
-                                else if (type == 's')
+                                byte function_id = br.ReadByte();
+
+                                Console.WriteLine($"Function {function_id} is requested");
+
+                                List<dynamic> arguments = new List<dynamic>();
+
+                                while (true)
                                 {
-                                    int len = br.ReadInt32();
-                                    string str = System.Text.Encoding.Default.GetString(br.ReadBytes(len));
-                                    Console.WriteLine("received str: " + str);
-                                    arguments.Add(str);
+                                    char type = br.ReadChar();
+                                    if (type == 'i') 
+                                        arguments.Add(br.ReadInt32());
+                                    else if (type == 'b')
+                                        arguments.Add(br.ReadBoolean());
+                                    else if (type == 's')
+                                    {
+                                        int len = br.ReadInt32();
+                                        string str = System.Text.Encoding.Default.GetString(br.ReadBytes(len));
+                                        Console.WriteLine("received str: " + str);
+                                        arguments.Add(str);
+                                    }
+                                    else if (type == '4')   // End of Transmission
+                                        break;
+                                    else
+                                    {
+                                        Console.WriteLine("Undefined value is received: " + type);
+                                        break;
+                                    }
+                                        
                                 }
-                                else if (type == '4')   // End of Transmission
-                                    break;
-                                else
+
+                                try
                                 {
-                                    Console.WriteLine("Undefined value is received: " + type);
-                                    break;
+                                    int size = FunctionTable.CallById((FunctionId) function_id, arguments, mmf);
+
+                                    Console.WriteLine($"Server writes a structure of size {size} to mmf");
+
+                                    bw.Write(size); // Send the size of returned structure.
                                 }
-                                    
+                                catch(Exception e)
+                                {
+                                    Console.WriteLine(e.Message);
+                                    Console.WriteLine(e.StackTrace);
+                                }
                             }
-
-                            int size = FunctionTable.CallById((FunctionId) function_id, arguments, mmf);
-
-                            Console.WriteLine($"Server writes a structure of size {size} to mmf");
-
-                            bw.Write(size); // Send the size of returned structure.
                         }
                     }
-                }
-                catch (IOException e)
-                {
-                    Console.WriteLine("ERROR: " + e.Message);
+                    catch (IOException e)
+                    {
+                        Console.WriteLine("ERROR: " + e.Message);
+                        Console.WriteLine("Connection closed.");
+                    }
                 }
             }
         }
