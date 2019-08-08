@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO.MemoryMappedFiles;
 using System.Text;
 using SabberStoneCore.Model;
+using SabberStoneCore.Tasks.PlayerTasks;
 
 namespace SabberStone_gRPC.MMF.Functions
 {
@@ -70,6 +71,15 @@ namespace SabberStone_gRPC.MMF.Functions
         public static int GetOptions(int gameId, MemoryMappedFile mmf)
         {
             return ManagedObjects.Games[gameId].CurrentPlayer.MarshalOptions(mmf);
+        }
+
+        public static int Process(int gameId, in Option option, MemoryMappedFile mmf)
+        {
+            Game game = ManagedObjects.Games[gameId];
+            PlayerTask task = SabberHelper.OptionToPlayerTask(game.CurrentPlayer, option);
+            game.Process(task);
+
+            return MarshalEntities.MarshalGameToMMF(game, mmf, gameId);
         }
     }
 }

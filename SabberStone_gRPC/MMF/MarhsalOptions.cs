@@ -19,14 +19,14 @@ namespace SabberStone_gRPC.MMF
     {
         public static readonly int Size = Marshal.SizeOf<Option>();
 
-        public readonly int Type;
+        public readonly PlayerTaskType Type;
         public readonly int SourcePosition;
         public readonly int TargetPosition;
         public readonly int SubOption;
         public readonly int Choice;
     }
 
-    public static class MarhsalOptions
+    public static class MarshalOptions
     {
         private static unsafe int* MarshalOption(PlayerTaskType type, int* ip,
             int sourcePosition = 0, 

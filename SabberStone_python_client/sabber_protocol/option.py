@@ -1,4 +1,4 @@
-from struct import unpack
+from struct import unpack, pack
 import itertools
 from enum import Enum
 
@@ -29,6 +29,9 @@ class Option:
 
     def __str__(self):
         return "[{0}] {1} => {2}".format(self.type, self.source_position, self.target_position)
+
+    def __bytes__(self):
+        return pack(Option.fmt, self.type, self.source_position, self.target_position, self.sub_option, self.choice)
 
 
 def get_options_list(data_bytes):

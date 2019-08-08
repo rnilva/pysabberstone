@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
+using SabberStoneCore.Model.Entities;
+using SabberStoneCore.Tasks.PlayerTasks;
 using static SabberStonePython.SabberHelpers;
 
 namespace SabberStone_gRPC.MMF
@@ -52,6 +55,53 @@ namespace SabberStone_gRPC.MMF
             return game;
         }
 
+        public static PlayerTask OptionToPlayerTask(SabberStoneCore.Model.Entities.Controller c, in Option option)
+        {
+            const bool SkipPrePhase = true;
+            EntityList dict;
 
+            switch (option.Type)
+            {
+                case PlayerTaskType.CHOOSE:
+                    return ChooseTask.Pick(c, option.Choice);
+                case PlayerTaskType.CONCEDE:
+                    return ConcedeTask.Any(c);
+                case PlayerTaskType.END_TURN:
+                    return EndTurnTask.Any(c);
+                case PlayerTaskType.HERO_ATTACK:
+                    return HeroAttackTask.Any(c, GetOpponentTarget(option.TargetPosition), SkipPrePhase);
+                case PlayerTaskType.HERO_POWER:
+                    return HeroPowerTask.Any(c, GetTarget(option.TargetPosition), option.SubOption, SkipPrePhase);
+                case PlayerTaskType.MINION_ATTACK:
+                    return MinionAttackTask.Any(c, c.BoardZone[option.SourcePosition - 1], GetOpponentTarget(option.TargetPosition),SkipPrePhase);
+                case PlayerTaskType.PLAY_CARD:
+                    IPlayable source = c.HandZone[option.SourcePosition];
+                    if (source.Card.Type == CardType.MINION)
+                        return PlayCardTask.Any(c, source, null, option.TargetPosition - 1, option.SubOption, SkipPrePhase);
+                    else
+                        return PlayCardTask.Any(c, source, GetTarget(option.TargetPosition),
+                            0, option.SubOption, SkipPrePhase);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            
+            ICharacter GetOpponentTarget(int position)
+            {
+                if (position == MarshalOptions.OP_HERO_POSITION) return c.Opponent.Hero;
+                return c.Opponent.BoardZone[position - 9];
+            }
+
+            ICharacter GetTarget(int position)
+            {
+                if (position == 0)
+                    return null;
+                if (position >= MarshalOptions.OP_HERO_POSITION)
+                    return GetOpponentTarget(position);
+                if (position == MarshalOptions.HERO_POSITION)
+                    return c.Hero;
+                return c.BoardZone[position - 1];
+            }
+        }
     }
 }
