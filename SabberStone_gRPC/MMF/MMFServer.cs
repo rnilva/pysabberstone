@@ -62,12 +62,19 @@ namespace SabberStone_gRPC.MMF
                                 }
                                     
                             }
+                            try
+                            {
+                                int size = FunctionTable.CallById((FunctionId) function_id, arguments, mmf);
+                                
+                                Console.WriteLine($"Server writes a structure of size {size} to mmf");
 
-                            int size = FunctionTable.CallById((FunctionId) function_id, arguments, mmf);
-
-                            Console.WriteLine($"Server writes a structure of size {size} to mmf");
-
-                            bw.Write(size); // Send the size of returned structure.
+                                bw.Write(size); // Send the size of returned structure.
+                            }
+                            catch(Exception e)
+                            {
+                                Console.WriteLine(e.Message);
+                                Console.WriteLine(e.StackTrace);
+                            }
                         }
                     }
                 }
