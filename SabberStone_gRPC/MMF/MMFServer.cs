@@ -100,7 +100,6 @@ namespace SabberStone_gRPC.MMF
                     {
                         Console.WriteLine("ERROR: " + e.Message);
                         Console.WriteLine("Connection closed.");
-                        view.Flush();
                     }
                 }
             }

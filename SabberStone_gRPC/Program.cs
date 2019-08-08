@@ -17,13 +17,10 @@ namespace SabberStone_gRPC
         const int DEFAULT_PORT = 50052;
 
         private const string FALLBACK_HELP =
-            "Usage: dotnet run -c release [Type] [ID]\n\tType = { rpc, mmf }\n\tId: unique id for this server instance (only for mmf)";
+            "Usage: dotnet run -c release [Type] [ID or PORT]\n\tType = { rpc, mmf }\n\tId: unique id for this server instance (only for mmf)";
 
         static void Main(string[] args)
         {
-            // if (args.Length > 1 && !int.TryParse(args[0], out int port))
-            //    throw new ArgumentException($"Cannot parse port number from given argument {args[0]}.");
-
             if (args.Length < 1)
             {
                 Console.WriteLine(FALLBACK_HELP);
@@ -33,7 +30,14 @@ namespace SabberStone_gRPC
             string command = args[0];
             if (command == "rpc")
             {
-                int port = DEFAULT_PORT;
+                int port;
+                if (args.Length > 1)
+                { 
+                    if (!int.TryParse(args[1], out port))
+                        throw new ArgumentException($"Cannot parse port number from given argument {args[1]}." + '\n' + FALLBACK_HELP);
+                }
+                else
+                    port = DEFAULT_PORT;
 
                 var server = new ServerHandleImpl(port);
 
@@ -53,21 +57,6 @@ namespace SabberStone_gRPC
                 Console.WriteLine(FALLBACK_HELP);
                 return;
             }
-
-
-
-
-            //Debugger.DebugRun().Wait();
-
-            //FileLockTest.Test();
-            //MMFTest.Test();
-            //MMFTest.MarshalTest();
-
-            //PythonHelper.WritePythonEntities();
-
-            //MMFServer.Run();
-            //HandZone_unmanaged.Test();
-            //PerformanceComparison.MarshalEntity();
         }
     }
 
