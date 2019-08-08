@@ -10,13 +10,14 @@ from sabber_protocol import function, entities, option
 class SabberStoneServer:
 
     SERVER_ADDRESS = '/tmp/CoreFxPipe_sabberstoneserver_'
+    MMF_NAME_POSTFIX = '_sabberstoneserver.mmf'
 
-    def __init__(self):
+    def __init__(self, id : str):
         self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        self.mmf_fd = open('../_sabberstoneserver.mmf', 'r')
+        self.mmf_fd = open('../' + id + SabberStoneServer.MMF_NAME_POSTFIX, 'r')
         self.mmf = numpy.memmap(self.mmf_fd, dtype='byte', mode='r', shape=(10000))
         try:
-            self.socket.connect(SabberStoneServer.SERVER_ADDRESS)
+            self.socket.connect(SabberStoneServer.SERVER_ADDRESS + id)
         except socket.error as msg:
             print(msg)
             sys.exit(1)
