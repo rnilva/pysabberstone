@@ -37,22 +37,22 @@ namespace SabberStone_gRPC.MMF.Functions
                         TestMultiArgument(arguments[0], arguments[1], arguments[2]);
                         break;
                     case FunctionId.TestSendOnePlayable:
-                        return TestSendOnePlayable(mmfPtr);
+                        return TestSendOnePlayable(in mmfPtr);
                     case FunctionId.TestSendZoneWithPlayables:
-                        return TestSendZoneWithPlayables(mmfPtr);
+                        return TestSendZoneWithPlayables(in mmfPtr);
                     case FunctionId.NewGame:
-                        return API.NewGame(arguments[0], arguments[1], mmfPtr);
+                        return API.NewGame((string)arguments[0], (string)arguments[1], in mmfPtr);
                     case FunctionId.Reset:
-                        return API.Reset(arguments[0], mmfPtr);
+                        return API.Reset((int)arguments[0], in mmfPtr);
                     case FunctionId.Options:
-                        return API.GetOptions(arguments[0], mmfPtr);
+                        return API.GetOptions((int)arguments[0], in mmfPtr);
                     case FunctionId.Process:
-                        return API.Process(arguments[0], arguments[1], mmfPtr);
+                        return API.Process((int)arguments[0], (Option)arguments[1], in mmfPtr);
                     default:
                         throw new NotImplementedException();
                 }
             }
-            catch (ArgumentOutOfRangeException)
+            catch (Exception e)
             {
                 Console.WriteLine("Invalid arguments for function " + id);
                 return -1;
