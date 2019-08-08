@@ -2,7 +2,9 @@ import socket
 import platform
 import numpy
 import sys
-from sabber_protocol import function, entities, game, option
+from sabber_protocol.entities import *
+from sabber_protocol.game import Game
+from sabber_protocol import function, entities, option
 
 
 class SabberStoneServer:
@@ -23,7 +25,7 @@ class SabberStoneServer:
 
     def new_game(self, deckstr1, deckstr2):
         data_bytes = function.call_function_multiargs(self.socket, self.mmf, 4, deckstr1, deckstr2)
-        return game.Game(data_bytes)
+        return Game(data_bytes)
 
     def reset(self, game):
         data_bytes = function.call_function(self.socket, self.mmf, 5, game.id)
@@ -32,6 +34,10 @@ class SabberStoneServer:
     def options(self, game):
         data_bytes = function.call_function(self.socket, self.mmf, 6, game.id)
         return option.get_options_list(data_bytes)
+
+    def process(self, game, option):
+        data_bytes = function.send_option(self.socket, self.mmf, game.id, option)
+        return Game(data_bytes)
 
     def _test_get_one_playable(self):
         data_bytes = function.call_function(self.socket, self.mmf, 2, 0)

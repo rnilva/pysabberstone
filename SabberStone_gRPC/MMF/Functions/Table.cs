@@ -19,6 +19,7 @@ namespace SabberStone_gRPC.MMF.Functions
         NewGame = 4,
         Reset = 5,
         Options = 6,
+        Process = 7
     }
 
     public static class FunctionTable
@@ -45,6 +46,8 @@ namespace SabberStone_gRPC.MMF.Functions
                         return API.Reset(arguments[0], mmf);
                     case FunctionId.Options:
                         return API.GetOptions(arguments[0], mmf);
+                    case FunctionId.Process:
+                        return API.Process(arguments[0], arguments[1], mmf);
                     default:
                         throw new NotImplementedException();
                 }
