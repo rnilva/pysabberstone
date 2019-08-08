@@ -2,7 +2,7 @@ import socket
 import platform
 import numpy
 import sys
-from sabber_protocol import function, entities
+from sabber_protocol import function, entities, game
 
 
 class SabberStoneServer:
@@ -20,11 +20,13 @@ class SabberStoneServer:
             sys.exit(1)
         print('Connected to SabberStoneServer')
 
-    
+    def new_game(self, deckstr1, deckstr2):
+        data_bytes = function.call_function(self.socket, self.mmf, 4, deckstr1, deckstr2)
+        return game.Game(data_bytes)
+
     def _test_get_one_playable(self):
         data_bytes = function.call_function(self.socket, self.mmf, 2, 0)
         return entities.Playable(data_bytes)
-
 
     def _test_zone_with_playables(self):
         data_bytes = function.call_function(self.socket, self.mmf, 3, 0)

@@ -20,7 +20,8 @@ namespace SabberStone_gRPC.MMF
             typeof(MMFEntities.Playable),
             typeof(MMFEntities.HeroPower),
             typeof(MMFEntities.Weapon),
-            typeof(MMFEntities.Hero)
+            typeof(MMFEntities.Minion)
+            //typeof(MMFEntities.Hero)
         };
 
         public static readonly Type[] ZoneTypes =
@@ -48,17 +49,6 @@ namespace SabberStone_gRPC.MMF
                 List<string> names = new List<string>();
                 foreach (FieldInfo field in fields)
                 {
-                    //if (!field.FieldType.IsPrimitive)
-                    //{
-                    //    ;
-                    //    if (field.FieldType.IsArray)
-                    //    {
-                    //        ;
-                    //        var test = field.FieldType.GetElementType();
-                    //        ;
-                    //    }
-                    //}
-
                     switch (field.FieldType.Name)
                     {
                         case "Int32":
@@ -81,7 +71,7 @@ namespace SabberStone_gRPC.MMF
 
                 writer.WriteLine($"    fmt = \'{fmtBuilder}\'");
                 writer.WriteLine(
-                    $"    size = {typeof(Marshal).GetMethod("TypeOf", BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(entityType).Invoke(null, null)}");
+                    $"    size = {typeof(Marshal).GetMethod("SizeOf", new Type[]{}).MakeGenericMethod(entityType).Invoke(null, null)}");
                 writer.WriteLine();
                 writer.WriteLine("    def __init__(self, data_bytes):");
                 writer.WriteLine($"        fields = unpack({entityType.Name}.fmt, data_bytes)");
