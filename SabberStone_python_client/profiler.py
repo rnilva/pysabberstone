@@ -13,6 +13,7 @@ def random_games_rpc(stub, deck, count):
         game = stub.Reset(game_id)
         print("{0}th game is finished.".format(i + 1))
 
+
 def random_games_mmf(server, deck, count):
     game = server.new_game(deck, deck)
     for i in range(count):

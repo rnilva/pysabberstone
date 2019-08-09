@@ -262,7 +262,7 @@ namespace SabberStonePython
                                     //for (int i = 0; i <= zonePosRange; i++)
                                     //    allOptions.Add(PlayCardTask.Any(c, playable, target, i, subOption,
                                     //        true));
-                                    ;
+                                    continue;
                                 else
                                     allOptions.Add(new Option(gameId, PlayCard, sourcePosition,
                                         Option.getPosition(target, controllerId), subOption));
@@ -473,7 +473,6 @@ namespace SabberStonePython
         public static PlayerTask GetPlayerTask(API.Option option, Game g)
         {
             const bool SkipPrePhase = true;
-            EntityList dict;
             Controller c = g.CurrentPlayer;
 
             switch (option.Type)
@@ -489,8 +488,6 @@ namespace SabberStonePython
                 case Option.Types.PlayerTaskType.HeroPower:
                     return HeroPowerTask.Any(c, GetTarget(option.TargetPosition), option.SubOption, SkipPrePhase);
                 case Option.Types.PlayerTaskType.MinionAttack:
-                    if (option.SourcePosition - 1 < 0 || option.SourcePosition >= c.BoardZone.Count)
-                        ;
                     return MinionAttackTask.Any(c, c.BoardZone[option.SourcePosition - 1], GetOpponentTarget(option.TargetPosition),SkipPrePhase);
                 case Option.Types.PlayerTaskType.PlayCard:
                     IPlayable source = c.HandZone[option.SourcePosition];

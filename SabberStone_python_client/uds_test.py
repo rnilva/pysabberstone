@@ -30,10 +30,12 @@ class TestStructure:
 
     def __init__(self, data_bytes):
         fields = struct.unpack(self.fmt, data_bytes)
-        (self.data1,
-         self.data2,
-         self.data3,
-         self.data4) = fields
+        (
+            self.data1,
+            self.data2,
+            self.data3,
+            self.data4
+        ) = fields
         self.data3 = self.data3[:self.data3.index(b'\0')]
         self.data4 = self.data4[:self.data4.index(b'\0')]
 
@@ -63,7 +65,8 @@ try:
         # message_rev = message[::-1].decode()
         # print("Sent message : ", message_rev)
 
-        # sock.sendall(struct.pack('I', len(message_rev)) + message_rev.encode('utf-8'))
+        # sock.sendall(struct.pack('I', len(message_rev))
+        #     + message_rev.encode('utf-8'))
 
         call_function(sock, i, 999)
         print('Call function {0} with argument 999'.format(i))
