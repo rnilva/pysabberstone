@@ -58,7 +58,6 @@ namespace SabberStone_gRPC.MMF
         public static PlayerTask OptionToPlayerTask(SabberStoneCore.Model.Entities.Controller c, in Option option)
         {
             const bool SkipPrePhase = true;
-            EntityList dict;
 
             switch (option.Type)
             {

@@ -19,8 +19,12 @@ class Game:
         State: {1}, Turn: {2}
         Current Player: {3}
         Current Opponent: {4}
-        """.format(self.id, self.state, self.turn, self.current_player, self.current_opponent)
+        """.format(self.id, self.state, self.turn,
+                   self.current_player, self.current_opponent)
 
     def reset_with_bytes(self, data_bytes):
-        self.__init__(data_bytes)
+        self.id, self.state, self.turn = unpack('3i', data_bytes[0:12])
+        self.current_player.reset_with_bytes(data_bytes[12:])
+        self.current_opponent.reset_with_bytes(
+            data_bytes[12 + self.current_player.size:])
         return self
