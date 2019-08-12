@@ -13,7 +13,7 @@ namespace SabberStone_gRPC.MMF.Functions
         {
             public static Dictionary<int, Game> Games = new Dictionary<int, Game>();
             public static Dictionary<int, Game> InitialGames = new Dictionary<int, Game>();
-            public static Dictionary<int, byte[]> InitialGameAPIs = new Dictionary<int, byte[]>();
+            // public static Dictionary<int, byte[]> InitialGameAPIs = new Dictionary<int, byte[]>();
         }
 
         private static int _gameIdGen;
@@ -24,35 +24,39 @@ namespace SabberStone_gRPC.MMF.Functions
             Console.WriteLine("Deckstring #1: " + deck1);
             Console.WriteLine("Deckstring #2: " + deck2);
 
-            Game game = SabberHelper.GenerateGame(deck1, deck2);
+            Game game = SabberHelper.GenerateGame(deck1, deck2, false);
             int id = _gameIdGen++;
 
-            ManagedObjects.InitialGames.Add(id, game);
+            ManagedObjects.InitialGames.Add(id, game.Clone());
             ManagedObjects.Games.Add(id, game);
+            game.StartGame();
 
             int size = MarshalEntities.MarshalGameToMMF(game, in mmfPtr, id);
 
             Console.WriteLine($"New Game of size {size} is created");
 
-            var destinationArray = new byte[size];
-            fixed (byte* dstPtr = destinationArray)
-                Buffer.MemoryCopy(mmfPtr, dstPtr, size, size);
+            // var destinationArray = new byte[size];
+            // fixed (byte* dstPtr = destinationArray)
+            //     Buffer.MemoryCopy(mmfPtr, dstPtr, size, size);
 
-            ManagedObjects.InitialGameAPIs.Add(id, destinationArray);
+            // ManagedObjects.InitialGameAPIs.Add(id, destinationArray);
 
             return size;
         }
 
         public static int Reset(int gameId, in byte* mmfPtr)
         {
-            ManagedObjects.Games[gameId] = ManagedObjects.InitialGames[gameId].Clone();
+            // ManagedObjects.Games[gameId] = ManagedObjects.InitialGames[gameId].Clone();
 
-            byte[] source = ManagedObjects.InitialGameAPIs[gameId];
-            int size = source.Length;
-            fixed (byte* sourcePtr = source)
-                Buffer.MemoryCopy(sourcePtr, mmfPtr, size, size);
+            // byte[] source = ManagedObjects.InitialGameAPIs[gameId];
+            // int size = source.Length;
+            // fixed (byte* sourcePtr = source)
+            //     Buffer.MemoryCopy(sourcePtr, mmfPtr, size, size);
 
-            return size;
+            Game game = ManagedObjects.InitialGames[gameId].Clone();
+            ManagedObjects.Games[gameId] = game;
+            game.StartGame();
+            return MarshalEntities.MarshalGameToMMF(game, in mmfPtr, gameId);
         }
 
         public static int GetOptions(int gameId, in byte* mmfPtr)

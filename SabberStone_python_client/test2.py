@@ -2,7 +2,7 @@ import sabber_protocol.server
 import random
 import cProfile
 
-server = sabber_protocol.server.SabberStoneServer()
+server = sabber_protocol.server.SabberStoneServer(id="test")
 
 print("Send one playable test")
 playable = server._test_get_one_playable()

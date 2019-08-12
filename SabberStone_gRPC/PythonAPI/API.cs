@@ -72,9 +72,14 @@ namespace SabberStonePython.API
 
         public override Task<Game> Reset(GameId request, ServerCallContext context)
         {
-            ManagedObjects.Games[request.Value] =  ManagedObjects.InitialGames[request.Value].Clone();
+            // ManagedObjects.Games[request.Value] =  ManagedObjects.InitialGames[request.Value].Clone();
 
-            return Task.FromResult(ManagedObjects.InitialGameAPIs[request.Value]);
+            // return Task.FromResult(ManagedObjects.InitialGameAPIs[request.Value]);
+
+            var game = ManagedObjects.InitialGames[request.Value].Clone();
+            ManagedObjects.Games[request.Value] = game;
+            game.StartGame();
+            return Task.FromResult(new Game(game, request.Value));
         }
 
         public override Task<Cards> GetCardDictionary(Empty request, ServerCallContext context)
