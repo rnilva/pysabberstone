@@ -174,14 +174,22 @@ namespace SabberStone_gRPC.MMF
                 *ip++ = c.AttackDamage;
                 *ip++ = c.BaseHealth;
             }
+            else if (playable is SModel.Entities.Weapon w)
+            {
+                *ip++ = w.AttackDamage;
+                *ip++ = w.Durability;
+            }
             else
-                ip += 2;
+            {
+                *ip++ = 0;
+                *ip++ = 0;
+            }
 
             byte* bp = (byte*) ip;
             if (hand)
                 *bp++ = (byte) playable[SabberStoneCore.Enums.GameTag.GHOSTLY];
             else
-                bp += 1;
+                *bp++ = (byte) 0;
 
             return (int*)bp;
         }
