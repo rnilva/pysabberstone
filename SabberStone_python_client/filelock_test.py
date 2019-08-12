@@ -39,5 +39,3 @@ def release_lock(fd):
     print("Python client releases the exclusive lock.")
 
     input("Process is still hanging on...")
-
-
