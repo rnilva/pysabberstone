@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO.MemoryMappedFiles;
 using System.Text;
+using System.Threading;
 using SabberStoneCore.Model;
 using SabberStoneCore.Tasks.PlayerTasks;
 
@@ -11,12 +13,21 @@ namespace SabberStone_gRPC.MMF.Functions
     {
         private static class ManagedObjects
         {
-            public static Dictionary<int, Game> Games = new Dictionary<int, Game>();
-            public static Dictionary<int, Game> InitialGames = new Dictionary<int, Game>();
+            public static ConcurrentDictionary<int, Game> Games = new ConcurrentDictionary<int, Game>();
+            public static ConcurrentDictionary<int, Game> InitialGames = new ConcurrentDictionary<int, Game>();
             // public static Dictionary<int, byte[]> InitialGameAPIs = new Dictionary<int, byte[]>();
         }
 
+        private static object _locker;
         private static int _gameIdGen;
+
+        private static int GetNextId()
+        {
+            lock (_locker)
+            {
+                return _gameIdGen++;
+            }
+        }
 
         public static int NewGame(string deck1, string deck2, in byte* mmfPtr)
         {
@@ -25,10 +36,10 @@ namespace SabberStone_gRPC.MMF.Functions
             Console.WriteLine("Deckstring #2: " + deck2);
 
             Game game = SabberHelper.GenerateGame(deck1, deck2, false);
-            int id = _gameIdGen++;
+            int id = GetNextId();
 
-            ManagedObjects.InitialGames.Add(id, game.Clone());
-            ManagedObjects.Games.Add(id, game);
+            ManagedObjects.InitialGames.TryAdd(id, game.Clone());
+            ManagedObjects.Games.TryAdd(id, game);
             game.StartGame();
 
             int size = MarshalEntities.MarshalGameToMMF(game, in mmfPtr, id);

@@ -24,43 +24,52 @@ class SabberStoneServer:
                  server_path=DEFAULT_SERVER_PATH,
                  id: str = "",
                  run_csharp_process=True):
-        csharp_server = subprocess.Popen(["dotnet", "run",
-                                          "-p", server_path,
-                                          "-v", "m",
-                                          "-c", "Release",
-                                          "mmf", id],
-                                         stdout=subprocess.DEVNULL)
-        self.csharp_server = csharp_server
-
-        mmf_path = '../' + id + MMF_NAME_POSTFIX
-        uds_path = SERVER_ADDRESS + id
-
-        while True:
-            now = time.time()
-            timeout = now + TIMEOUT
-            if (os.path.isfile(mmf_path)):
-                break
-            if time.time() > timeout:
-                raise Exception('Can\'t connect to the server. (mmf timeout)')
-
         self.id = id
         self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        self.mmf_fd = open(mmf_path, 'r')
-        self.mmf = numpy.memmap(self.mmf_fd, dtype='byte', mode='r',
-                                shape=(10000))
+        mmf_path = '../' + id + MMF_NAME_POSTFIX
+        uds_path = SERVER_ADDRESS + id
+        if run_csharp_process:
+            csharp_server = subprocess.Popen(["dotnet", "run",
+                                              "-p", server_path,
+                                              "-v", "m",
+                                              "-c", "Release",
+                                              "mmf", id],
+                                             stdout=subprocess.DEVNULL)
+            self.csharp_server = csharp_server
 
-        while True:
-            try:
-                self.socket.connect(uds_path)
-                break
-            except socket.error as e:
+            while True:
+                now = time.time()
+                timeout = now + TIMEOUT
+                if (os.path.isfile(mmf_path)):
+                    break
                 if time.time() > timeout:
-                    raise Exception('''Can\'t connect to the server.
-                (uds timeout)''')
-                pass
+                    raise Exception('Can\'t connect to the server. (mmf timeout)')
+            self.mmf_fd = open(mmf_path, 'r')
+            self.mmf = numpy.memmap(self.mmf_fd, dtype='byte', mode='r',
+                                shape=(10000))
+            while True:
+                try:
+                    self.socket.connect(uds_path)
+                    break
+                except socket.error as e:
+                    if time.time() > timeout:
+                        raise Exception('''Can\'t connect to the server.
+                    (uds timeout)''')
+                    pass
+        else:
+            self.mmf_fd = open(mmf_path, 'r')
+            self.mmf = numpy.memmap(self.mmf_fd, dtype='byte', mode='r',
+                                shape=(10000))
+            self.socket.connect(uds_path)
 
         print('Connected to SabberStoneServer')
         print('mmf length: {0}'.format(len(self.mmf)))
+
+    def new_thread(self, thread_id: int):
+        call_function_void_return(self.socket, 9)
+        id = self.id + str(thread_id);
+        print('Connecting to thread {0}......'.format(thread_id))
+        return SabberStoneServer(id=id, run_csharp_process=False)
 
     def new_game(self, deckstr1, deckstr2):
         data_bytes = call_function_multiargs(self.socket, self.mmf, 4,
