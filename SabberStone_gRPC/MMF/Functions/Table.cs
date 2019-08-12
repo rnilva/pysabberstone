@@ -20,7 +20,9 @@ namespace SabberStone_gRPC.MMF.Functions
         Reset = 5,
         Options = 6,
         Process = 7,
-        Terminate = 8
+        
+        Terminate = 8,
+        NewThread = 9
     }
 
     public static unsafe class FunctionTable

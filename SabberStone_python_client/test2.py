@@ -54,3 +54,9 @@ def full_random_game(server, deck1, deck2):
 
 print("Full Random Game Test")
 full_random_game(server, string1, string2)
+
+print("New Thread Test")
+thread1 = server.new_thread(thread_id=1)
+thread2 = server.new_thread(thread_id=2)
+full_random_game(thread1, string1, string2)
+full_random_game(thread2, string1, string2)

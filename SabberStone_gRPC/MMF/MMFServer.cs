@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.IO.Pipes;
 using System.Text;
+using System.Threading.Tasks;
 using SabberStone_gRPC.MMF.Functions;
 
 namespace SabberStone_gRPC.MMF
@@ -52,8 +53,16 @@ namespace SabberStone_gRPC.MMF
                                         Console.SetOut(stdout);
                                         return;
                                     }
+                                    else if (function_id == (byte) FunctionId.NewThread)
+                                    {
+                                        //int len = br.ReadInt32();
+                                        //string threadId = Encoding.Default.GetString(br.ReadBytes(len));
+                                        int threadId = br.ReadInt32();
+                                        Task.Factory.StartNew(() => Run(id + threadId));
+                                        continue;
+                                    }
 
-                                    Debug.WriteLine($"Function {function_id} is requested");
+                                    //Debug.WriteLine($"Function {function_id} is requested");
 
                                     List<dynamic> arguments = new List<dynamic>();
 
@@ -96,7 +105,7 @@ namespace SabberStone_gRPC.MMF
                                     {
                                         int size = FunctionTable.CallById((FunctionId) function_id, arguments, in mmfPtr);
 
-                                        Debug.WriteLine($"Server writes a structure of size {size} to mmf");
+                                        //Debug.WriteLine($"Server writes a structure of size {size} to mmf");
 
                                         bw.Write(size); // Send the size of returned structure.
                                     }
