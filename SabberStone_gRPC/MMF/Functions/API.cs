@@ -18,7 +18,7 @@ namespace SabberStone_gRPC.MMF.Functions
             // public static Dictionary<int, byte[]> InitialGameAPIs = new Dictionary<int, byte[]>();
         }
 
-        private static object _locker;
+        private static object _locker = new object();
         private static int _gameIdGen;
 
         private static int GetNextId()
