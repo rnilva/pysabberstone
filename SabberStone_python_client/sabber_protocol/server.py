@@ -36,38 +36,35 @@ class SabberStoneServer:
                                               "mmf", id],
                                              stdout=subprocess.DEVNULL)
             self.csharp_server = csharp_server
-
-            while True:
-                now = time.time()
-                timeout = now + TIMEOUT
-                if (os.path.isfile(mmf_path)):
-                    break
-                if time.time() > timeout:
-                    raise Exception('Can\'t connect to the server. (mmf timeout)')
-            self.mmf_fd = open(mmf_path, 'r')
-            self.mmf = numpy.memmap(self.mmf_fd, dtype='byte', mode='r',
-                                shape=(10000))
-            while True:
-                try:
-                    self.socket.connect(uds_path)
-                    break
-                except socket.error as e:
-                    if time.time() > timeout:
-                        raise Exception('''Can\'t connect to the server.
-                    (uds timeout)''')
-                    pass
+            self.is_thread = False
         else:
-            self.mmf_fd = open(mmf_path, 'r')
-            self.mmf = numpy.memmap(self.mmf_fd, dtype='byte', mode='r',
-                                shape=(10000))
-            self.socket.connect(uds_path)
+            self.is_thread = True
+        
+        timeout = time.time() + TIMEOUT
+        while True:
+            if (os.path.isfile(mmf_path)):
+                break
+            if time.time() > timeout:
+                raise Exception('Can\'t connect to the server. (mmf timeout)')
+        self.mmf_fd = open(mmf_path, 'r')
+        self.mmf = numpy.memmap(self.mmf_fd, dtype='byte', mode='r',
+                            shape=(10000))
+        while True:
+            try:
+                self.socket.connect(uds_path)
+                break
+            except socket.error as e:
+                if time.time() > timeout:
+                    raise Exception('''Can\'t connect to the server.
+                (uds timeout)''')
+                pass
 
         print('Connected to SabberStoneServer')
         print('mmf length: {0}'.format(len(self.mmf)))
 
     def new_thread(self, thread_id: int):
-        call_function_void_return(self.socket, 9)
-        id = self.id + str(thread_id);
+        call_function_void_return_int_arg(self.socket, 9, thread_id)
+        id = self.id + str(thread_id)
         print('Connecting to thread {0}......'.format(thread_id))
         return SabberStoneServer(id=id, run_csharp_process=False)
 
@@ -97,5 +94,9 @@ class SabberStoneServer:
         return HandZone(data_bytes)
 
     def __del__(self):
-        call_function_void_return(self.socket, 8)
+        if not self.is_thread:
+            try:
+                call_function_void_return(self.socket, 8)
+            except:
+                pass
         print('server {0} closed'.format(self.id))

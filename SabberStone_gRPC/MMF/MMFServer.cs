@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.IO.Pipes;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using SabberStone_gRPC.MMF.Functions;
 
@@ -14,11 +15,14 @@ namespace SabberStone_gRPC.MMF
     {
         private const string PIPE_NAME_PREFIX = "sabberstoneserver_";
         private const string MMF_NAME_POSTFIX = "_sabberstoneserver.mmf";
-        private const string OUTPUT_PATH = "mmf_server_output.txt";
+        private const string OUTPUT_PATH = "_mmf_server_output.txt";
+
+        private static List<Task> RunningThreads = new List<Task>();
+        private static CancellationTokenSource CTS = new CancellationTokenSource();
 
         public static unsafe void Run(string id = "")
         {
-            using (var outputFile = File.CreateText(OUTPUT_PATH))
+            using (var outputFile = File.CreateText(id + OUTPUT_PATH))
             {
                 outputFile.AutoFlush = true;
                 var stdout = Console.Out;
@@ -50,6 +54,7 @@ namespace SabberStone_gRPC.MMF
 
                                     if (function_id == (byte)FunctionId.Terminate)
                                     {
+                                        CTS.Cancel();
                                         Console.SetOut(stdout);
                                         return;
                                     }
@@ -58,7 +63,11 @@ namespace SabberStone_gRPC.MMF
                                         //int len = br.ReadInt32();
                                         //string threadId = Encoding.Default.GetString(br.ReadBytes(len));
                                         int threadId = br.ReadInt32();
-                                        Task.Factory.StartNew(() => Run(id + threadId));
+                                        Console.WriteLine($"New Thread {threadId} is created.");
+                                        RunningThreads.Add(
+                                            Task.Factory.StartNew(() => 
+                                                Run(id + threadId), CTS.Token));
+                                        bw.Write((byte) 4);
                                         continue;
                                     }
 

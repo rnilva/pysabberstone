@@ -27,8 +27,11 @@ def call_function(socket, mmf, function_id, int_arg: int):
 
 
 def call_function_void_return(socket, function_id):
-    socket.send(bytes([function_id]) + b'4')
+    socket.send(bytes([function_id]))
 
+def call_function_void_return_int_arg(socket, function_id, int_arg: int):
+    socket.send(bytes([function_id]) + pack('i', int_arg))
+    eot = socket.recv(1)
 
 def send_option(socket, mmf, game_id, option):
     socket.send(bytes([7]))
