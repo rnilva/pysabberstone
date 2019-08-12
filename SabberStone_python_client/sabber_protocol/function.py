@@ -25,6 +25,11 @@ def call_function(socket, mmf, function_id, int_arg: int):
     socket.send(b'4')
     return _retrieve_returned_value(socket, mmf)
 
+
+def call_function_void_return(socket, function_id):
+    socket.send(bytes([function_id]) + b'4')
+
+
 def send_option(socket, mmf, game_id, option):
     socket.send(bytes([7]))
     socket.send(b'i')
@@ -33,6 +38,7 @@ def send_option(socket, mmf, game_id, option):
     socket.send(bytes(option))
     socket.send(b'4')
     return _retrieve_returned_value(socket, mmf)
+
 
 def _retrieve_returned_value(socket, mmf):
     size = unpack('I', socket.recv(4))[0]

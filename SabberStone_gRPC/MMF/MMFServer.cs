@@ -13,95 +13,109 @@ namespace SabberStone_gRPC.MMF
     {
         private const string PIPE_NAME_PREFIX = "sabberstoneserver_";
         private const string MMF_NAME_POSTFIX = "_sabberstoneserver.mmf";
+        private const string OUTPUT_PATH = "mmf_server_output.txt";
 
         public static unsafe void Run(string id = "")
         {
-            while (true)
+            using (var outputFile = File.CreateText(OUTPUT_PATH))
             {
-                using (var pipe = new NamedPipeServerStream(PIPE_NAME_PREFIX + id, PipeDirection.InOut, 1))
-                using (var mmf = MemoryMappedFile.CreateFromFile(
-                    File.Open(Path.Combine("../", id + MMF_NAME_POSTFIX), FileMode.OpenOrCreate),
-                    null, 10000, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, false))
-                using (MemoryMappedViewAccessor view = mmf.CreateViewAccessor())
+                outputFile.AutoFlush = true;
+                var stdout = Console.Out;
+                Console.SetOut(outputFile);
+                while (true)
                 {
-                    byte* mmfPtr = null;
-                    view.SafeMemoryMappedViewHandle.AcquirePointer(ref mmfPtr);
-
-                    Console.WriteLine("Server started. Waiting for the client.....");
-
-                    pipe.WaitForConnection();
-
-                    Console.WriteLine("Python client connected!");
-                    try
+                    using (var pipe = new NamedPipeServerStream(PIPE_NAME_PREFIX + id, PipeDirection.InOut, 1))
+                    using (var mmf = MemoryMappedFile.CreateFromFile(
+                        File.Open(Path.Combine("../", id + MMF_NAME_POSTFIX), FileMode.OpenOrCreate),
+                        null, 10000, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, false))
+                    using (MemoryMappedViewAccessor view = mmf.CreateViewAccessor())
                     {
-                        using (BinaryWriter bw = new BinaryWriter(pipe))
-                        using (BinaryReader br = new BinaryReader(pipe))
+                        byte* mmfPtr = null;
+                        view.SafeMemoryMappedViewHandle.AcquirePointer(ref mmfPtr);
+
+                        Console.WriteLine("Server started. Waiting for the client.....");
+
+                        pipe.WaitForConnection();
+
+                        Console.WriteLine("Python client connected!");
+                        try
                         {
-                            while (true)
+                            using (BinaryWriter bw = new BinaryWriter(pipe))
+                            using (BinaryReader br = new BinaryReader(pipe))
                             {
-                                byte function_id = br.ReadByte();
-
-                                Debug.WriteLine($"Function {function_id} is requested");
-
-                                List<dynamic> arguments = new List<dynamic>();
-
                                 while (true)
                                 {
-                                    char type = br.ReadChar();
-                                    if (type == 'i')
-                                        arguments.Add(br.ReadInt32());
-                                    else if (type == 'b')
-                                        arguments.Add(br.ReadBoolean());
-                                    else if (type == 's')
+                                    byte function_id = br.ReadByte();
+
+                                    if (function_id == (byte)FunctionId.Terminate)
                                     {
-                                        int len = br.ReadInt32();
-                                        string str = Encoding.Default.GetString(br.ReadBytes(len));
-                                        arguments.Add(str);
+                                        Console.SetOut(stdout);
+                                        return;
                                     }
-                                    else if (type == 'o')
+
+                                    Debug.WriteLine($"Function {function_id} is requested");
+
+                                    List<dynamic> arguments = new List<dynamic>();
+
+                                    while (true)
                                     {
-                                        var bytes = br.ReadBytes(Option.Size);
-                                        unsafe
+                                        char type = br.ReadChar();
+                                        if (type == 'i')
+                                            arguments.Add(br.ReadInt32());
+                                        else if (type == 'b')
+                                            arguments.Add(br.ReadBoolean());
+                                        else if (type == 's')
                                         {
-                                            fixed (byte* ptr = bytes)
+                                            int len = br.ReadInt32();
+                                            string str = Encoding.Default.GetString(br.ReadBytes(len));
+                                            arguments.Add(str);
+                                        }
+                                        else if (type == 'o')
+                                        {
+                                            var bytes = br.ReadBytes(Option.Size);
+                                            unsafe
                                             {
-                                                Option* opPtr = (Option*)ptr;
-                                                arguments.Add(*opPtr);
+                                                fixed (byte* ptr = bytes)
+                                                {
+                                                    Option* opPtr = (Option*)ptr;
+                                                    arguments.Add(*opPtr);
+                                                }
                                             }
                                         }
+                                        else if (type == '4') // End of Transmission
+                                            break;
+                                        else
+                                        {
+                                            Console.WriteLine("Undefined value is received: " + type);
+                                            break;
+                                        }
+
                                     }
-                                    else if (type == '4') // End of Transmission
-                                        break;
-                                    else
+
+                                    try
                                     {
-                                        Console.WriteLine("Undefined value is received: " + type);
-                                        break;
+                                        int size = FunctionTable.CallById((FunctionId) function_id, arguments, in mmfPtr);
+
+                                        Debug.WriteLine($"Server writes a structure of size {size} to mmf");
+
+                                        bw.Write(size); // Send the size of returned structure.
                                     }
-
-                                }
-
-                                try
-                                {
-                                    int size = FunctionTable.CallById((FunctionId) function_id, arguments, in mmfPtr);
-
-                                    Debug.WriteLine($"Server writes a structure of size {size} to mmf");
-
-                                    bw.Write(size); // Send the size of returned structure.
-                                }
-                                catch (Exception e)
-                                {
-                                    Console.WriteLine(e.Message);
-                                    Console.WriteLine(e.StackTrace);
+                                    catch (Exception e)
+                                    {
+                                        Console.WriteLine(e.Message);
+                                        Console.WriteLine(e.StackTrace);
+                                    }
                                 }
                             }
                         }
-                    }
-                    catch (IOException e)
-                    {
-                        Console.WriteLine("ERROR: " + e.Message);
-                        Console.WriteLine("Connection closed.");
+                        catch (IOException e)
+                        {
+                            Console.WriteLine("ERROR: " + e.Message);
+                            Console.WriteLine("Connection closed.");
+                        }
                     }
                 }
+                //Console.SetOut(stdout);
             }
         }
     }

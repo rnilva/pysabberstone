@@ -19,7 +19,8 @@ namespace SabberStone_gRPC.MMF.Functions
         NewGame = 4,
         Reset = 5,
         Options = 6,
-        Process = 7
+        Process = 7,
+        Terminate = 8
     }
 
     public static unsafe class FunctionTable
@@ -48,6 +49,9 @@ namespace SabberStone_gRPC.MMF.Functions
                         return API.GetOptions((int)arguments[0], in mmfPtr);
                     case FunctionId.Process:
                         return API.Process((int)arguments[0], (Option)arguments[1], in mmfPtr);
+                    case FunctionId.Terminate:
+                        Environment.Exit(1);
+                        break;
                     default:
                         throw new NotImplementedException();
                 }
