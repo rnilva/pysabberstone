@@ -17,7 +17,7 @@ namespace SabberStone_gRPC.MMF
         private const string MMF_NAME_POSTFIX = "_sabberstoneserver.mmf";
         private const string OUTPUT_PATH = "_mmf_server_output.txt";
 
-        private static List<Task> RunningThreads = new List<Task>();
+        public static List<Task> RunningThreads = new List<Task>();
         private static CancellationTokenSource CTS = new CancellationTokenSource();
 
         public static unsafe void Run(string id = "")
@@ -70,6 +70,7 @@ namespace SabberStone_gRPC.MMF
                                         bw.Write((byte) 4);
                                         continue;
                                     }
+
 
                                     //Debug.WriteLine($"Function {function_id} is requested");
 

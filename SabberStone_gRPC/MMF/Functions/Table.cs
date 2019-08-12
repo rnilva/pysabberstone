@@ -22,7 +22,9 @@ namespace SabberStone_gRPC.MMF.Functions
         Process = 7,
         
         Terminate = 8,
-        NewThread = 9
+        NewThread = 9,
+
+        Status = 10
     }
 
     public static unsafe class FunctionTable
@@ -54,6 +56,8 @@ namespace SabberStone_gRPC.MMF.Functions
                     case FunctionId.Terminate:
                         Environment.Exit(1);
                         break;
+                    case FunctionId.Status:
+                        return API.Status(in mmfPtr);
                     default:
                         throw new NotImplementedException();
                 }
