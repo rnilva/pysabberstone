@@ -181,8 +181,8 @@ namespace SabberStone_gRPC.MMF
             }
             else
             {
-                *ip++ = 0;
-                *ip++ = 0;
+                *ip++ = -1;
+                *ip++ = -1;
             }
 
             byte* bp = (byte*) ip;
