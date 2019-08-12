@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO.MemoryMappedFiles;
 using System.Text;
 using System.Threading;
 using SabberStoneCore.Model;
 using SabberStoneCore.Tasks.PlayerTasks;
+using SabberStoneCore.Enums;
 
 namespace SabberStone_gRPC.MMF.Functions
 {
@@ -82,6 +84,19 @@ namespace SabberStone_gRPC.MMF.Functions
             game.Process(task);
 
             return MarshalEntities.MarshalGameToMMF(game, in mmfPtr, gameId);
+        }
+
+        public static unsafe int Status(in byte* mmfPtr)
+        {
+            //var sb = new StringBuilder();
+
+            var str = $"Server status: {MMFServer.RunningThreads.Count + 1} Threads, Total {ManagedObjects.Games.Count} Games, {ManagedObjects.Games.Count(p => p.Value.State == State.COMPLETE)} Completed Games.";
+            fixed (char* ptr = str)
+            {
+                Encoding.Default.GetBytes(ptr, str.Length, mmfPtr, 1000);
+            }
+            
+            return str.Length;
         }
     }
 }

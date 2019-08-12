@@ -85,6 +85,10 @@ class SabberStoneServer:
         data_bytes = send_option(self.socket, self.mmf, game.id, option)
         return Game(data_bytes)
 
+    def get_server_status(self):
+        data_bytes = call_function_multiargs(self.socket, self.mmf, 10)
+        print(data_bytes.decode())
+
     def _test_get_one_playable(self):
         data_bytes = call_function(self.socket, self.mmf, 2, 0)
         return Playable(data_bytes)

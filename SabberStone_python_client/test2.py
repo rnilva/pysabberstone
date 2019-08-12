@@ -1,8 +1,11 @@
 import sabber_protocol.server
 import random
 import cProfile
+from multiprocessing import Process
 
 server = sabber_protocol.server.SabberStoneServer(id="test")
+
+server.get_server_status()
 
 print("Send one playable test")
 playable = server._test_get_one_playable()
@@ -41,7 +44,6 @@ def full_random_game(server, deck1, deck2):
         options = server.options(game)
         option = options[random.randrange(len(options))]
         game = server.process(game, option)
-        print("Turn: {0}".format(game.turn))
 
     cp = game.current_player
     co = game.current_opponent
@@ -60,7 +62,19 @@ thread1 = server.new_thread(thread_id=1)
 thread2 = server.new_thread(thread_id=2)
 thread3 = server.new_thread(thread_id=3)
 thread4 = server.new_thread(thread_id=4)
-full_random_game(thread1, string1, string2)
-full_random_game(thread2, string1, string2)
-full_random_game(thread3, string1, string2)
-full_random_game(thread4, string1, string2)
+
+server.get_server_status()
+
+processes = [
+    Process(target=full_random_game, args=(thread1, string1, string2)),
+    Process(target=full_random_game, args=(thread2, string1, string2)),
+    Process(target=full_random_game, args=(thread3, string1, string2)),
+    Process(target=full_random_game, args=(thread4, string1, string2))]
+
+for p in processes:
+    p.start()
+
+for p in processes:
+    p.join()
+
+server.get_server_status()
