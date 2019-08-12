@@ -1,4 +1,0 @@
-Python client connected!
-Server started. Waiting for the client.....
-Python client connected!
-New Thread 4 is created.
