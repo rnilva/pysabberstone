@@ -107,10 +107,11 @@ class Minion:
             self.deathrattle,
             self.silenced
         ) = fields
-    
+
     def __str__(self):
         ints = "{{CardId:{0}, ATK:{1}, HP:{2}, Exhausted{3}".format(
-            self.card_id, self.atk, (self.base_health - self.atk), self.exhausted)
+            self.card_id, self.atk, (self.base_health - self.atk),
+            self.exhausted)
         bools = ""
         if self.stealth:
             bools += " STEALTH "
@@ -129,7 +130,8 @@ class Minion:
         if self.frozen:
             bools += " FROZEN "
         bools += "}"
-        return ints + bools; 
+        return ints + bools
+
 
 class HandZone:
 

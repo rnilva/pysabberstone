@@ -55,7 +55,8 @@ class SabberStoneServer:
                 break
             except socket.error as e:
                 if time.time() > timeout:
-                    raise Exception('Can\'t connect to the server.\ (uds timeout)')
+                    raise Exception('''Can\'t connect to the server.
+                (uds timeout)''')
                 pass
 
         print('Connected to SabberStoneServer')

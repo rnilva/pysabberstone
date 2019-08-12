@@ -8,7 +8,7 @@ namespace SabberStone_gRPC_Client
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             //ConnectAsync("localhost:50052", "Client1");
             //ConnectAsync("localhost:50052", "Client2");

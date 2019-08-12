@@ -488,8 +488,6 @@ namespace SabberStonePython
                 case Option.Types.PlayerTaskType.HeroPower:
                     return HeroPowerTask.Any(c, GetTarget(option.TargetPosition), option.SubOption, SkipPrePhase);
                 case Option.Types.PlayerTaskType.MinionAttack:
-                    if (option.SourcePosition - 1 < 0 || option.SourcePosition >= c.BoardZone.Count)
-                        ;
                     return MinionAttackTask.Any(c, c.BoardZone[option.SourcePosition - 1], GetOpponentTarget(option.TargetPosition),SkipPrePhase);
                 case Option.Types.PlayerTaskType.PlayCard:
                     IPlayable source = c.HandZone[option.SourcePosition];

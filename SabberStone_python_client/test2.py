@@ -35,7 +35,7 @@ for option in options:
 
 
 def full_random_game(server, deck1, deck2):
-    #game = stub.NewGame(python_pb2.DeckStrings(deck1=deck1, deck2=deck2))
+    # game = stub.NewGame(python_pb2.DeckStrings(deck1=deck1, deck2=deck2))
     game = server.new_game(deck1, deck2)
     while game.state != 3:
         options = server.options(game)
