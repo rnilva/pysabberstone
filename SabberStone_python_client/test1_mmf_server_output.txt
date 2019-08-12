@@ -1,3 +1,0 @@
-Server started. Waiting for the client.....
-Python client connected!
-New Thread 2 is created.
