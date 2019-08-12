@@ -32,7 +32,7 @@ namespace SabberStonePython.API
 
                 ManagedObjects.Games.Add(id, game);
                 ManagedObjects.InitialGames.Add(id, game.Clone());
-                ManagedObjects.InitialGameAPIs.Add(id, this);
+                //ManagedObjects.InitialGameAPIs.Add(id, this);
                 ManagedObjects.OptionBuffers.Add(id, new List<Option>(50));
             }
            
