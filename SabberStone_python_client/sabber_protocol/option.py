@@ -15,10 +15,10 @@ class PlayerTaskType(Enum):
 
 class Option:
     fmt = '5i'
-    size = 20
+    size_self = 20
 
     def __init__(self, data_bytes):
-        fields = unpack(Option.fmt, data_bytes[0:size])
+        fields = unpack(Option.fmt, data_bytes[0:Option.size_self])
         self.type = PlayerTaskType(fields[0])
         (
             self.source_position,
@@ -26,9 +26,9 @@ class Option:
             self.sub_option,
             self.choice
         ) = fields[1:5]
-        length = unpack('i', data_bytes[size:size+4])[0]
-        self.print = data_bytes[size+4:size+4+length].decode()
-        self.size = size + length
+        length = unpack('i', data_bytes[Option.size_self:Option.size_self+4])[0]
+        self.size = Option.size_self + 4 + length
+        self.print = data_bytes[Option.size_self+4:self.size].decode()
 
     def __str__(self):
         return "[{0}] {1} => {2}".format(self.type, self.source_position,
@@ -42,8 +42,6 @@ class Option:
 def get_options_list(data_bytes):
     options = []
     offset = 0
-    # for i in range(0, len(data_bytes), Option.size):
-    #     options.append(Option(data_bytes[i:]))
     while offset < len(data_bytes):
         option = Option(data_bytes[offset:])
         options.append(option)
