@@ -41,7 +41,7 @@ class Weapon:
     size = 19
 
     def __init__(self, data_bytes):
-        fields = unpack(HeroPower.fmt, data_bytes)
+        fields = unpack(Weapon.fmt, data_bytes)
         (
             self.card_id,
             self.atk,
