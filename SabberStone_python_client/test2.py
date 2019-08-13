@@ -34,7 +34,7 @@ print(game)
 # Options Test
 options = server.options(game)
 for option in options:
-    print(option)
+    print(option.print)
 
 
 def full_random_game(server, deck1, deck2):

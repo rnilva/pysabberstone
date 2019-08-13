@@ -70,25 +70,47 @@ namespace SabberStone_gRPC.MMF
 
             *ip++ = str.Length;
 
+			byte* bp = (byte*)ip;
+
             fixed (char* chPtr = str)
             {
-                Encoding.Default.GetBytes(chPtr, str.Length, (byte*)ip, 1000);
+                Encoding.Default.GetBytes(chPtr, str.Length, bp, 1000);
             }
+			
 
-            return ip + str.Length;
+            return (int*)(bp + str.Length);
         }
 
-        private static unsafe void MarshalChoice(int choice, ref int* ip)
+        private static unsafe void MarshalChoice(int choice, ref int* ip, string cardName)
         {
             *ip++ = (int) PlayerTaskType.CHOOSE;
             ip += 3;
             *ip++ = choice;
+
+			string str = string.Format("[CHOOSE] {0}", cardName);
+
+			*ip++ = str.Length;
+			fixed (char* ptr = str)
+				Encoding.Default.GetBytes(ptr, str.Length, (byte*)ip, 1000);
+			
+			ip = (int*)((byte*)ip + str.Length);
         }
+
+		private const string EndTurnPrint = "[END_TURN]";
 
         private static unsafe void MarshalEndTurn(ref int* ip)
         {
             *ip++ = (int) PlayerTaskType.END_TURN;
             ip += 4;
+
+			*ip++ = EndTurnPrint.Length;
+			byte* bp = (byte*)ip;
+			fixed (char* ptr = EndTurnPrint)
+			{
+                Encoding.Default.GetBytes(ptr, EndTurnPrint.Length, bp, 1000);
+            }
+
+			ip = (int*)(bp + EndTurnPrint.Length);
         }
 
 
@@ -100,7 +122,7 @@ namespace SabberStone_gRPC.MMF
             {
                 if (c.Choice.ChoiceType == ChoiceType.GENERAL)
 				{
-					c.Choice.Choices.ForEach(i => MarshalChoice(i, ref ip));
+					c.Choice.Choices.ForEach(i => MarshalChoice(i, ref ip, c.Game.IdEntityDic[i].Card.Name));
 					return (int)((byte*)ip - mmfPtr);
 				}
 
