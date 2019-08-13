@@ -31,14 +31,51 @@ namespace SabberStone_gRPC.MMF
         private static unsafe int* MarshalOption(PlayerTaskType type, int* ip,
             int sourcePosition = 0, 
             int targetPosition = 0,
-            int subOption = 0)
+            int subOption = 0,
+            IPlayable source = null,
+            ICharacter target = null)
         {
             *ip++ = (int) type;
             *ip++ = sourcePosition;
             *ip++ = targetPosition;
             *ip++ = subOption;
             ip++;
-            return ip;
+
+            var sb = new StringBuilder();
+            switch (type)
+            {
+                case PlayerTaskType.MINION_ATTACK:
+                case PlayerTaskType.HERO_ATTACK:
+                    sb.Append($"[ATTACK] {source} => {target}");
+                    break;
+                case PlayerTaskType.HERO_POWER:
+                    sb.Append($"[HEROPOWER]{source}");
+                    if (target != null)
+                        sb.Append($" => {target}");
+                    break;
+                case PlayerTaskType.PLAY_CARD:
+                    sb.Append($"[PLAY_CARD] {source}");
+                    if (target != null)
+                        sb.Append($" => {target}");
+                    if (source.Card.Type == CardType.MINION)
+                        sb.Append($"(Pos {targetPosition})");
+                    if (subOption > 0)
+                        sb.Append($"(Opt {subOption}");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            var str = sb.ToString();
+
+            *ip++ = str.Length;
+
+            fixed (char* chPtr = str)
+            {
+                Encoding.Default.GetBytes(chPtr, str.Length, (byte*)ip, 1000);
+            }
+
+            return ip + str.Length;
         }
 
         private static unsafe void MarshalChoice(int choice, ref int* ip)
@@ -109,11 +146,11 @@ namespace SabberStone_gRPC.MMF
 				if (heroPowerCard.ChooseOne)
                 {
                     if (c.ChooseBoth)
-                        ip = MarshalOption(PlayerTaskType.HERO_POWER, ip);
+                        ip = MarshalOption(PlayerTaskType.HERO_POWER, ip, source: c.Hero.HeroPower);
                     else
                     {
-                        ip = MarshalOption(PlayerTaskType.HERO_POWER, ip, 0, 0, 1);
-                        ip = MarshalOption(PlayerTaskType.HERO_POWER, ip, 0, 0, 2);
+                        ip = MarshalOption(PlayerTaskType.HERO_POWER, ip, 0, 0, 1, source: c.Hero.HeroPower);
+                        ip = MarshalOption(PlayerTaskType.HERO_POWER, ip, 0, 0, 2, source: c.Hero.HeroPower);
                     }
                 }
 				else
@@ -124,9 +161,9 @@ namespace SabberStone_gRPC.MMF
                         if (targets != null)
                             for (int i = 0; i < targets.Length; i++)
                                 ip = MarshalOption(PlayerTaskType.HERO_POWER, ip, 0,
-                                    GetPosition(targets[i], controllerId));
+                                    GetPosition(targets[i], controllerId), source: c.Hero.HeroPower, target: targets[i]);
                         else
-                            ip = MarshalOption(PlayerTaskType.HERO_POWER, ip);
+                            ip = MarshalOption(PlayerTaskType.HERO_POWER, ip, source: c.Hero.HeroPower);
                     }
 				}
 			}
@@ -149,10 +186,11 @@ namespace SabberStone_gRPC.MMF
 
                 for (int i = 0; i < attackTargets.Length; i++)
                     ip = MarshalOption(PlayerTaskType.MINION_ATTACK, ip, j + 1,
-                        GetEnemyPosition(attackTargets[i]));
+                        GetEnemyPosition(attackTargets[i]), source: minion, target: attackTargets[i]);
 
                 if (isOpHeroValidAttackTarget && !(minion.CantAttackHeroes || minion.AttackableByRush))
-                    ip = MarshalOption(PlayerTaskType.MINION_ATTACK, ip, j + 1, OP_HERO_POSITION);
+                    ip = MarshalOption(PlayerTaskType.MINION_ATTACK, ip, j + 1, OP_HERO_POSITION,
+                        source: minion, target: c.Opponent.Hero);
             }
 			#endregion
 
@@ -165,10 +203,12 @@ namespace SabberStone_gRPC.MMF
 				GenerateAttackTargets();
 
                 for (int i = 0; i < attackTargets.Length; i++)
-                    ip = MarshalOption(PlayerTaskType.HERO_ATTACK, ip, 0, GetEnemyPosition(attackTargets[i]));
+                    ip = MarshalOption(PlayerTaskType.HERO_ATTACK, ip, 0, GetEnemyPosition(attackTargets[i]),
+                        source: c.Hero, target: attackTargets[i]);
 
                 if (isOpHeroValidAttackTarget && !hero.CantAttackHeroes)
-                    ip = MarshalOption(PlayerTaskType.HERO_ATTACK, ip, 0, OP_HERO_POSITION);
+                    ip = MarshalOption(PlayerTaskType.HERO_ATTACK, ip, 0, OP_HERO_POSITION, 
+                        source: c.Hero, target: c.Opponent.Hero);
             }
 			#endregion
 
@@ -224,9 +264,11 @@ namespace SabberStone_gRPC.MMF
                         if (playable is Minion)
                             for (int i = 0; i <= zonePosRange; i++)
 
-                                ptr = MarshalOption(PlayerTaskType.PLAY_CARD, ptr, sourcePosition, i + 1, subOption);
+                                ptr = MarshalOption(PlayerTaskType.PLAY_CARD, ptr, sourcePosition, i + 1, subOption,
+                                    source: playable);
                         else
-                            ptr = MarshalOption(PlayerTaskType.PLAY_CARD, ptr, sourcePosition, 0, subOption);
+                            ptr = MarshalOption(PlayerTaskType.PLAY_CARD, ptr, sourcePosition, 0, subOption,
+                                source: playable);
                     }
 					else
 					{
@@ -237,9 +279,11 @@ namespace SabberStone_gRPC.MMF
 
 							if (playable is Minion)
                                 for (int i = 0; i <= zonePosRange; i++)
-                                    ptr = MarshalOption(PlayerTaskType.PLAY_CARD, ptr, sourcePosition, i + 1, subOption);
+                                    ptr = MarshalOption(PlayerTaskType.PLAY_CARD, ptr, sourcePosition, i + 1, subOption,
+                                        source: playable);
 							else
-                                ptr = MarshalOption(PlayerTaskType.PLAY_CARD, ptr, sourcePosition, 0, subOption);
+                                ptr = MarshalOption(PlayerTaskType.PLAY_CARD, ptr, sourcePosition, 0, subOption,
+                                    source: playable);
 						}
 						else
 						{
@@ -253,7 +297,7 @@ namespace SabberStone_gRPC.MMF
                                     continue;
                                 else
                                     ptr = MarshalOption(PlayerTaskType.PLAY_CARD, ptr, sourcePosition, 
-                                        GetPosition(target, controllerId), subOption);
+                                        GetPosition(target, controllerId), subOption, source: playable, target: target);
                             }
                         }
                     }
