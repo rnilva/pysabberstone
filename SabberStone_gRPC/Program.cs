@@ -180,9 +180,9 @@ namespace SabberStone_gRPC
                 SabberResponse response = tcs.Task.Result;
 
                 Console.WriteLine($"Client {Name} gets a response {response.Message}.");
-
+#pragma warning disable CS4014
                 _responseStream.WriteAsync(response);
-
+#pragma warning restore CS4014
                 Console.WriteLine("Message \"" + response.Message + "\" is sent to " + Name);
             }
         }

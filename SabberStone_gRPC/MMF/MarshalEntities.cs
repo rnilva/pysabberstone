@@ -45,7 +45,7 @@ namespace SabberStone_gRPC.MMF
             return ip;
         }
 
-        private static unsafe int* MarshalHero(SModel.Entities.Hero playable, int* ip, out int size)
+        private static unsafe int* MarshalHero(SModel.Entities.Hero playable, int* ip)
         {
             *ip++ = (int)playable.Card.Class;
             *ip++ = playable.AttackDamage;
@@ -218,7 +218,7 @@ namespace SabberStone_gRPC.MMF
             *ip++ = span.Length; // Count
             for (int i = 0; i < span.Length; i++) 
                 ip = MarshalPlayable(span[i], ip, false);
-                
+
             return ip;
         }
     }
