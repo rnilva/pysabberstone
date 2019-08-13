@@ -20,6 +20,8 @@ namespace SabberStone_gRPC.MMF
         public static List<Task> RunningThreads = new List<Task>();
         private static CancellationTokenSource CTS = new CancellationTokenSource();
 
+        public static string GetTempPath(string id) => Path.GetTempFileName() + Guid.NewGuid().ToString() + id + ".mmf";
+
         public static unsafe void Run(string id = "", bool isTask = false)
         {
             StreamWriter outputFile;
@@ -31,12 +33,14 @@ namespace SabberStone_gRPC.MMF
                 stdout = Console.Out;
                 Console.SetOut(outputFile);
             }
+
+            string mmf_file_path = GetTempPath(id);
             
             while (true)
             {
                 using (var pipe = new NamedPipeServerStream(PIPE_NAME_PREFIX + id, PipeDirection.InOut, 99))
                 using (var mmf = MemoryMappedFile.CreateFromFile(
-                    File.Open(Path.Combine("../", id + MMF_NAME_POSTFIX), FileMode.OpenOrCreate),
+                    File.Open(mmf_file_path, FileMode.OpenOrCreate),
                     null, 10000, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, false))
                 using (MemoryMappedViewAccessor view = mmf.CreateViewAccessor())
                 {
@@ -53,6 +57,7 @@ namespace SabberStone_gRPC.MMF
                         using (BinaryWriter bw = new BinaryWriter(pipe))
                         using (BinaryReader br = new BinaryReader(pipe))
                         {
+                            bw.Write(Encoding.Default.GetBytes(mmf_file_path));
                             while (true)
                             {
                                 byte function_id = br.ReadByte();
