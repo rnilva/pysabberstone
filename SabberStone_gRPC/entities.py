@@ -1,80 +1,70 @@
 # automatically generated source
 # SabberStoneServer entities
 from struct import *
+import numpy as np
 
 
 class Playable:
-    fmt = 'iiii?i'
-    size = 17
-
-    def __init__(self, data_bytes):
-        fields = unpack(Playable.fmt, data_bytes)
-        (
-            self.card_id,
-            self.cost,
-            self.atk,
-            self.base_health,
-            self.ghostly,
-            self.size
-        ) = fields
-
+    dtype = np.dtype([
+        ('card_id', 'i'),
+        ('cost', 'i'),
+        ('atk', 'i'),
+        ('base_health', 'i'),
+        ('ghostly', 'b')
+    ])
+    size = dtype.itemsize
 
 class HeroPower:
-    fmt = 'ii?'
-    size = 9
-
-    def __init__(self, data_bytes):
-        fields = unpack(HeroPower.fmt, data_bytes)
-        (
-            self.card_id,
-            self.cost,
-            self.exhausted
-        ) = fields
-
+    dtype = np.dtype([
+        ('card_id', 'i'),
+        ('cost', 'i'),
+        ('exhausted', 'b')
+    ])
+    size = dtype.itemsize
 
 class Weapon:
-    fmt = 'iiii???'
-    size = 19
-
-    def __init__(self, data_bytes):
-        fields = unpack(Weapon.fmt, data_bytes)
-        (
-            self.card_id,
-            self.atk,
-            self.durability,
-            self.damage,
-            self.windfury,
-            self.lifesteal,
-            self.immune
-        ) = fields
-
+    dtype = np.dtype([
+        ('card_id', 'i'),
+        ('atk', 'i'),
+        ('durability', 'i'),
+        ('damage', 'i'),
+        ('windfury', 'b'),
+        ('lifesteal', 'b'),
+        ('immune', 'b')
+    ])
+    size = dtype.itemsize
 
 class Minion:
-    fmt = 'iiiiiii?????????????'
-    size = 41
+    dtype = np.dtype([
+        ('card_id', 'i'),
+        ('atk', 'i'),
+        ('base_health', 'i'),
+        ('damage', 'i'),
+        ('num_attacks_this_turn', 'i'),
+        ('zone_position', 'i'),
+        ('order_of_play', 'i'),
+        ('exhausted', 'b'),
+        ('stealth', 'b'),
+        ('immune', 'b'),
+        ('charge', 'b'),
+        ('attackable_by_rush', 'b'),
+        ('windfury', 'b'),
+        ('lifesteal', 'b'),
+        ('taunt', 'b'),
+        ('divine_shield', 'b'),
+        ('elusive', 'b'),
+        ('frozen', 'b'),
+        ('deathrattle', 'b'),
+        ('silenced', 'b')
+    ])
+    size = dtype.itemsize
 
-    def __init__(self, data_bytes):
-        fields = unpack(Minion.fmt, data_bytes)
-        (
-            self.card_id,
-            self.atk,
-            self.base_health,
-            self.damage,
-            self.num_attacks_this_turn,
-            self.zone_position,
-            self.order_of_play,
-            self.exhausted,
-            self.stealth,
-            self.immune,
-            self.charge,
-            self.attackable_by_rush,
-            self.windfury,
-            self.lifesteal,
-            self.taunt,
-            self.divine_shield,
-            self.elusive,
-            self.frozen,
-            self.deathrattle,
-            self.silenced
-        ) = fields
-
+class Option:
+    dtype = np.dtype([
+        ('type', 'i'),
+        ('source_position', 'i'),
+        ('target_position', 'i'),
+        ('sub_option', 'i'),
+        ('choice', 'i')
+    ])
+    size = dtype.itemsize

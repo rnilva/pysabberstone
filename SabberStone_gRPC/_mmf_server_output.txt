@@ -8,3 +8,6 @@ NewGame service is called!
 Deckstring #1: AAEBAf0EAA8MLU1xwwG7ApUDrgO/A4AEtATmBO0EoAW5BgA=
 Deckstring #2: AAEBAf0EAA8MLU1xwwG7ApUDrgO/A4AEtATmBO0EoAW5BgA=
 New Game of size 1209 is created
+ERROR: Unable to read beyond the end of the stream.
+Connection closed.
+Server started. Waiting for the client.....

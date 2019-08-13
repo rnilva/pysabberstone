@@ -108,8 +108,8 @@ namespace SabberStone_gRPC.MMF.Functions
 
             game.StartGame();
 
-            MarshalEntities.MarshalHandZone(game.CurrentPlayer.HandZone, (int*) mmfPtr, out int count);
-            return 4 + count * MMFEntities.Playable.Size;
+            int* ip = MarshalEntities.MarshalHandZone(game.CurrentPlayer.HandZone, (int*) mmfPtr);
+            return (int) ((byte*)ip - mmfPtr);
         }
 
         private static int WriteStructure<T>(in byte* mmfPtr, in T structure) where T : struct

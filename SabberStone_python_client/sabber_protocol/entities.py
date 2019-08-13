@@ -1,15 +1,25 @@
 # automatically generated source
 # SabberStoneServer entities
 from struct import *
+import numpy as np
 import itertools
 
 
 class Playable:
     fmt = '4i?'
+    dtype = np.dtype([
+        ('card_id', 'i'),
+        ('cost', 'i'),
+        ('atk', 'i'),
+        ('base_health', 'i'),
+        ('ghostly', '?')
+    ])
+    unpack = Struct(fmt).unpack
     size = 17
 
     def __init__(self, data_bytes):
-        fields = unpack(Playable.fmt, data_bytes)
+        # fields = Playable.struct.unpack(Playable.fmt, data_bytes)
+        fields = Playable.unpack(data_bytes)
         (
             self.card_id,
             self.cost,
@@ -81,6 +91,28 @@ class Hero:
 
 class Minion:
     fmt = 'iiiiiii?????????????'
+    dtype = np.dtype([
+        ('card_id', 'i'),
+        ('atk', 'i'),
+        ('base_health', 'i'),
+        ('damage', 'i'),
+        ('num_attacks_this_turn', 'i'),
+        ('zone_position', 'i'),
+        ('order_of_play', 'i'),
+        ('exhausted', 'b'),
+        ('stealth', 'b'),
+        ('immune', 'b'),
+        ('charge', 'b'),
+        ('attackable_by_rush', 'b'),
+        ('windfury', 'b'),
+        ('lifesteal', 'b'),
+        ('taunt', 'b'),
+        ('divine_shield', 'b'),
+        ('elusive', 'b'),
+        ('frozen', 'b'),
+        ('deathrattle', 'b'),
+        ('silenced', 'b'),
+    ])
     size = 41
 
     def __init__(self, data_bytes):
@@ -137,12 +169,13 @@ class HandZone:
 
     def __init__(self, data_bytes):
         self.count = unpack('i', data_bytes[0:4])[0]
-        self.Playables = []
-        i = 4
-        for _ in itertools.repeat(None, self.count):
-            self.Playables.append(Playable(data_bytes[i:i + Playable.size]))
-            i += Playable.size
-        self.size = i
+        # self.Playables = []
+        # i = 4
+        # for _ in itertools.repeat(None, self.count):
+        #     self.Playables.append(Playable(data_bytes[i:i + Playable.size]))
+        #     i += Playable.size
+        self.playables = np.frombuffer(data_bytes, Playable.dtype, self.count, 4)
+        self.size = 4 + self.count * Playable.size
 
     def __str__(self):
         string = ""
@@ -191,9 +224,11 @@ class DeckZone:
 
     def __init__(self, data_bytes):
         self.count = unpack('i', data_bytes[0:4])[0]
-        self.Playables = []
-        i = 4
-        for _ in itertools.repeat(None, self.count):
-            self.Playables.append(Playable(data_bytes[i:i + Playable.size]))
-            i += Playable.size
-        self.size = i
+        # self.Playables = []
+        # i = 4
+        # for _ in itertools.repeat(None, self.count):
+        #     self.Playables.append(Playable(data_bytes[i:i + Playable.size]))
+        #     i += Playable.size
+        # self.size = i
+        self.playables = np.frombuffer(data_bytes, Playable.dtype, self.count, 4)
+        self.size = 4 + self.count * Playable.size
