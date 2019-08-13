@@ -15,25 +15,20 @@ namespace SabberStone_gRPC.MMF
     {
         public static unsafe int MarshalGameToMMF(SModel.Game game, in byte* mmfPtr, int id)
         {
-            const int BaseSize = 4 * 3;
-
             int* ip = (int*)mmfPtr;
 
             *ip++ = id;
             *ip++ = (int)game.State;
             *ip++ = game.Turn;
 
-            ip = MarshalController(game.CurrentPlayer, ip, out int cpSize);
-            MarshalController(game.CurrentOpponent, ip, out int opSize);
+            ip = MarshalController(game.CurrentPlayer, ip);
+            ip = MarshalController(game.CurrentOpponent, ip);
 
-            return BaseSize + cpSize + opSize;
-            
+            return (int) ((byte*)ip - mmfPtr);
         }
 
-        private static unsafe int* MarshalController(SModel.Entities.Controller controller, int* ip, out int size)
+        private static unsafe int* MarshalController(SModel.Entities.Controller controller, int* ip)
         {
-            const int BaseSize = 4 * 10;
-
             *ip++ = controller.PlayerId;
             *ip++ = (int)controller.PlayState;
             *ip++ = controller.BaseMana;
@@ -41,27 +36,17 @@ namespace SabberStone_gRPC.MMF
             *ip++ = controller.OverloadLocked;
             *ip++ = controller.OverloadOwed;
 
-            ip = MarshalHero(controller.Hero, ip, out int heroSize);
-            ip = MarshalHandZone(controller.HandZone, ip, out int handCount);
-            ip = MarshalBoardZone(controller.BoardZone, ip, out int boardCount);
-            ip = MarshalSecretZone(controller.SecretZone, ip, out int secretCount);
-            ip = MarshalDeckZone(controller.DeckZone, ip, out int deckCount);
+            ip = MarshalHero(controller.Hero, ip);
+            ip = MarshalHandZone(controller.HandZone, ip);
+            ip = MarshalBoardZone(controller.BoardZone, ip);
+            ip = MarshalSecretZone(controller.SecretZone, ip);
+            ip = MarshalDeckZone(controller.DeckZone, ip);
 
-            int pSize = MMFEntities.Playable.Size;
-            int mSize = MMFEntities.Minion.Size;
-            size = BaseSize + heroSize + (handCount + secretCount + deckCount) * pSize + boardCount * mSize;
             return ip;
         }
 
         private static unsafe int* MarshalHero(SModel.Entities.Hero playable, int* ip, out int size)
         {
-            const int IntCount = 6;
-            const int ByteCount = 3;
-            const int HeroPowerSize = 9;
-            const int WeaponSize = 19;
-
-            const int BaseSize = 4 * IntCount + 1 * ByteCount + HeroPowerSize;
-
             *ip++ = (int)playable.Card.Class;
             *ip++ = playable.AttackDamage;
             *ip++ = playable.BaseHealth;
@@ -78,7 +63,6 @@ namespace SabberStone_gRPC.MMF
             ip = MarshalHeroPowerPtr(playable.HeroPower, ip);
             ip = MarshalWeaponPtr(playable.Weapon, ip, out bool exist);
 
-            size = BaseSize + (exist ? WeaponSize : 4);
             return ip;
         }
         public static unsafe int* MarshalHeroPower(SModel.Entities.HeroPower playable, byte* bp)
@@ -194,7 +178,7 @@ namespace SabberStone_gRPC.MMF
             return (int*)bp;
         }
 
-        public static unsafe int* MarshalHandZone(SModel.Zones.HandZone zone, int* ip, out int count)
+        public static unsafe int* MarshalHandZone(SModel.Zones.HandZone zone, int* ip)
         {
             ReadOnlySpan<IPlayable> span = zone.GetSpan();
 
@@ -202,11 +186,10 @@ namespace SabberStone_gRPC.MMF
             for (int i = 0; i < span.Length; i++) 
                 ip = MarshalPlayable(span[i], ip, true);
 
-            count = span.Length;
             return ip;
         }
 
-        public static unsafe int* MarshalBoardZone(SModel.Zones.BoardZone zone, int* ip, out int count)
+        public static unsafe int* MarshalBoardZone(SModel.Zones.BoardZone zone, int* ip)
         {
             ReadOnlySpan<Minion> span = zone.GetSpan();
 
@@ -214,11 +197,10 @@ namespace SabberStone_gRPC.MMF
             for (int i = 0; i < span.Length; i++) 
                 ip = MarshalMinionPtr(span[i], ip);
 
-            count = span.Length;
             return ip;
         }
 
-        public static unsafe int* MarshalSecretZone(SModel.Zones.SecretZone zone, int* ip, out int count)
+        public static unsafe int* MarshalSecretZone(SModel.Zones.SecretZone zone, int* ip)
         {
             ReadOnlySpan<Spell> span = zone.GetSpan();
 
@@ -226,19 +208,17 @@ namespace SabberStone_gRPC.MMF
             for (int i = 0; i < span.Length; i++) 
                 ip = MarshalPlayable(span[i], ip, false);
 
-            count = span.Length;
             return ip;
         }
 
-        public static unsafe int* MarshalDeckZone(SModel.Zones.DeckZone zone, int* ip, out int count)
+        public static unsafe int* MarshalDeckZone(SModel.Zones.DeckZone zone, int* ip)
         {
             ReadOnlySpan<IPlayable> span = zone.GetSpan();
 
             *ip++ = span.Length; // Count
             for (int i = 0; i < span.Length; i++) 
                 ip = MarshalPlayable(span[i], ip, false);
-
-            count = span.Length;
+                
             return ip;
         }
     }
