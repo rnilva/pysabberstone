@@ -7,6 +7,7 @@ import os
 import signal
 import time
 import mmap
+import struct
 from sabber_protocol.entities import *
 from sabber_protocol.game import Game
 from sabber_protocol.function import *
@@ -44,15 +45,6 @@ class SabberStoneServer:
         
         timeout = time.time() + TIMEOUT
         while True:
-            if (os.path.isfile(mmf_path)):
-                break
-            if time.time() > timeout:
-                raise Exception('Can\'t connect to the server. (mmf timeout)')
-        self.mmf_fd = open(mmf_path, 'r+')
-        # self.mmf = numpy.memmap(self.mmf_fd, dtype='byte', mode='r+',
-        #                     shape=(10000))
-        self.mmf = mmap.mmap(self.mmf_fd.fileno(), 0)
-        while True:
             try:
                 self.socket.connect(uds_path)
                 break
@@ -62,8 +54,15 @@ class SabberStoneServer:
                 (uds timeout)''')
                 pass
 
-        print('Connected to SabberStoneServer')
-        print('mmf length: {0}'.format(len(self.mmf)))
+        mmf_path = self.socket.recv(1024).decode()
+        self.mmf_fd = open(mmf_path, 'r+')
+        self.mmf_fd.write("0")
+        self.mmf_fd.flush()
+        self.mmf = mmap.mmap(self.mmf_fd.fileno(), 0)
+        # self.mmf = numpy.memmap(self.mmf_fd, dtype='byte', mode='r+',
+        #                         shape=(10000))
+
+        print('Connected to SabberStoneServer ({0})'.format(mmf_path))
 
     def new_thread(self, thread_id: int):
         call_function_void_return_int_arg(self.socket, 9, thread_id)

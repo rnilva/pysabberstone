@@ -13,7 +13,7 @@ class Playable:
         ('atk', 'i'),
         ('base_health', 'i'),
         ('ghostly', '?')
-    ])
+    ], copy=True)
     unpack = Struct(fmt).unpack
     size = 17
 
@@ -112,7 +112,7 @@ class Minion:
         ('frozen', 'b'),
         ('deathrattle', 'b'),
         ('silenced', 'b'),
-    ])
+    ], copy=True)
     size = 41
 
     def __init__(self, data_bytes):
