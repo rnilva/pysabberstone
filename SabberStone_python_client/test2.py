@@ -33,8 +33,8 @@ print(game)
 
 # Options Test
 options = server.options(game)
-for option in options:
-    print(option)
+print(options)
+sabber_protocol.option.print_options(options)
 
 
 def full_random_game(server, deck1, deck2):

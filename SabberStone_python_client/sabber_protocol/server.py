@@ -6,10 +6,12 @@ import subprocess
 import os
 import signal
 import time
+import mmap
 from sabber_protocol.entities import *
 from sabber_protocol.game import Game
 from sabber_protocol.function import *
 from sabber_protocol.option import *
+from sabber_protocol.controller import unpack_zone
 
 
 SERVER_ADDRESS = '/tmp/CoreFxPipe_sabberstoneserver_'
@@ -46,9 +48,10 @@ class SabberStoneServer:
                 break
             if time.time() > timeout:
                 raise Exception('Can\'t connect to the server. (mmf timeout)')
-        self.mmf_fd = open(mmf_path, 'r')
-        self.mmf = numpy.memmap(self.mmf_fd, dtype='byte', mode='r',
-                            shape=(10000))
+        self.mmf_fd = open(mmf_path, 'r+')
+        # self.mmf = numpy.memmap(self.mmf_fd, dtype='byte', mode='r+',
+        #                     shape=(10000))
+        self.mmf = mmap.mmap(self.mmf_fd.fileno(), 0)
         while True:
             try:
                 self.socket.connect(uds_path)
@@ -95,7 +98,7 @@ class SabberStoneServer:
 
     def _test_zone_with_playables(self):
         data_bytes = call_function(self.socket, self.mmf, 3, 0)
-        return HandZone(data_bytes)
+        return unpack_zone(data_bytes, Playable.dtype, 0)
 
     def __del__(self):
         if not self.is_thread:

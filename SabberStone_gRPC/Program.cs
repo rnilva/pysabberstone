@@ -52,6 +52,10 @@ namespace SabberStone_gRPC
                 else
                     MMFServer.Run();
             }
+            else if (command == "generate")
+            {
+                PythonHelper.WritePythonEntities();
+            }
             else
             {
                 Console.WriteLine(FALLBACK_HELP);
@@ -181,7 +185,9 @@ namespace SabberStone_gRPC
 
                 Console.WriteLine($"Client {Name} gets a response {response.Message}.");
 
+#pragma warning disable CS4014
                 _responseStream.WriteAsync(response);
+#pragma warning restore CS4014
 
                 Console.WriteLine("Message \"" + response.Message + "\" is sent to " + Name);
             }
