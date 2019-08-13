@@ -31,7 +31,7 @@ class Option:
         ('target_position', 'i'),
         ('sub_option', 'i'),
         ('choice', 'i')
-    ])
+    ], copy=True)
     size = 20
 
     def __init__(self, data_bytes):

@@ -83,6 +83,10 @@ namespace SabberStone_gRPC.MMF.Functions
             PlayerTask task = SabberHelper.OptionToPlayerTask(game.CurrentPlayer, option);
             game.Process(task);
 
+            // Console.WriteLine(SabberStonePython.SabberHelpers.Printers.PrintAction(task));
+            // if (option.Type == PlayerTaskType.END_TURN)
+            //     Console.WriteLine(SabberStonePython.SabberHelpers.Printers.PrintGame(game));
+
             return MarshalEntities.MarshalGameToMMF(game, in mmfPtr, gameId);
         }
 

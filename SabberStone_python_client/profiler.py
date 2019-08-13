@@ -21,4 +21,4 @@ def random_games_mmf(server, deck, count):
             option = options[random.randrange(len(options))]
             game = server.process(game, option)
         game = server.reset(game)
-        print("{0}th game is finished.".format(i + 1))
+        # print("{0}th game is finished.".format(i + 1))
