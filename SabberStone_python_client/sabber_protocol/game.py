@@ -1,6 +1,6 @@
-from collections import namedtuple
 from struct import *
-from sabber_protocol.controller import Controller
+
+from .controller import Controller
 
 
 class Game:
