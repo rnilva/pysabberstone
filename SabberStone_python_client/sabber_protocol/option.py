@@ -1,9 +1,8 @@
+from enum import IntEnum
 from struct import unpack, pack
-import itertools
-from enum import Enum
 
 
-class PlayerTaskType(Enum):
+class PlayerTaskType(IntEnum):
     CHOOSE = 0
     CONCEDE = 1
     END_TURN = 2
@@ -26,9 +25,9 @@ class Option:
             self.sub_option,
             self.choice
         ) = fields[1:5]
-        length = unpack('i', data_bytes[Option.size_self:Option.size_self+4])[0]
+        length = unpack('i', data_bytes[Option.size_self:Option.size_self + 4])[0]
         self.size = Option.size_self + 4 + length
-        self.print = data_bytes[Option.size_self+4:self.size].decode()
+        self.print = data_bytes[Option.size_self + 4:self.size].decode()
 
     def __str__(self):
         return "[{0}] {1} => {2}".format(self.type, self.source_position,

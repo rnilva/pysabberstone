@@ -1,7 +1,6 @@
 # automatically generated source
 # SabberStoneServer entities
 from struct import *
-import itertools
 
 
 class Playable:
@@ -137,52 +136,51 @@ class HandZone:
 
     def __init__(self, data_bytes):
         self.count = unpack('i', data_bytes[0:4])[0]
-        self.Playables = []
+        self.entities = []
         i = 4
-        for _ in itertools.repeat(None, self.count):
-            self.Playables.append(Playable(data_bytes[i:i + Playable.size]))
-            i += Playable.size
+        for _ in range(self.count):
+            self.entities.append(Playable(data_bytes[i:i + Playable.size]))
+            i = Playable.size
+
         self.size = i
 
     def __str__(self):
         string = ""
-        for playable in self.Playables:
+        for playable in self.entities:
             string += str(playable)
         return string
 
 
 class BoardZone:
-
     def __init__(self, data_bytes):
         self.count = unpack('i', data_bytes[0:4])[0]
-        self.Playables = []
+        self.minions = []
         i = 4
-        for _ in itertools.repeat(None, self.count):
-            self.Playables.append(Minion(data_bytes[i:i + Minion.size]))
+        for _ in range(self.count):
+            self.minions.append(Minion(data_bytes[i:i + Minion.size]))
             i += Minion.size
         self.size = i
 
     def __str__(self):
         string = ""
-        for playable in self.Playables:
+        for playable in self.minions:
             string += str(playable)
         return string
 
 
 class SecretZone:
-
     def __init__(self, data_bytes):
         self.count = unpack('i', data_bytes[0:4])[0]
-        self.Playables = []
+        self.entities = []
         i = 4
-        for _ in itertools.repeat(None, self.count):
-            self.Playables.append(Playable(data_bytes[i:i + Playable.size]))
+        for _ in range(self.count):
+            self.entities.append(Playable(data_bytes[i:i + Playable.size]))
             i += Playable.size
         self.size = i
 
     def __str__(self):
         string = ""
-        for playable in self.Playables:
+        for playable in self.entities:
             string += str(playable)
         return string
 
@@ -191,9 +189,9 @@ class DeckZone:
 
     def __init__(self, data_bytes):
         self.count = unpack('i', data_bytes[0:4])[0]
-        self.Playables = []
+        self.entities = []
         i = 4
-        for _ in itertools.repeat(None, self.count):
-            self.Playables.append(Playable(data_bytes[i:i + Playable.size]))
+        for _ in range(self.count):
+            self.entities.append(Playable(data_bytes[i:i + Playable.size]))
             i += Playable.size
         self.size = i

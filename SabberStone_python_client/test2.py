@@ -1,7 +1,7 @@
-import sabber_protocol.server
 import random
-import cProfile
 from multiprocessing import Process
+
+import sabber_protocol.server
 
 server = sabber_protocol.server.SabberStoneServer(id="test")
 
@@ -53,6 +53,7 @@ def full_random_game(server, deck1, deck2):
         print("Player{0} Wins!".format(co.id))
     else:
         print("Tied!")
+
 
 print("Full Random Game Test")
 full_random_game(server, string1, string2)

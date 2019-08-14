@@ -1,5 +1,4 @@
-from struct import *
-from sabber_protocol.entities import *
+from .entities import *
 
 
 class Controller:
