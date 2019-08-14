@@ -24,6 +24,7 @@ namespace SabberStone_gRPC.MMF
         public readonly int TargetPosition;
         public readonly int SubOption;
         public readonly int Choice;
+        public readonly bool IsPlayingSpell;
     }
 
     public static class MarshalOptions
@@ -40,6 +41,8 @@ namespace SabberStone_gRPC.MMF
             *ip++ = targetPosition;
             *ip++ = subOption;
             ip++;
+            byte* bp = (byte*)ip;
+            *bp++ = Convert.ToByte(type == PlayerTaskType.PLAY_CARD && source.Card.Type == CardType.SPELL);
 
             var sb = new StringBuilder();
             switch (type)
@@ -68,9 +71,9 @@ namespace SabberStone_gRPC.MMF
 
             var str = sb.ToString();
 
+            ip = (int*)bp;
             *ip++ = str.Length;
-
-			byte* bp = (byte*)ip;
+            bp = (byte*)ip;
 
             fixed (char* chPtr = str)
             {
