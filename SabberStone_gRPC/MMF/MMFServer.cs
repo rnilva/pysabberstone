@@ -118,7 +118,6 @@ namespace SabberStone_gRPC.MMF
                                         Console.WriteLine("Undefined value is received: " + type);
                                         break;
                                     }
-
                                 }
 
                                 try
