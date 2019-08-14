@@ -37,7 +37,8 @@ class Option:
 
     def __bytes__(self):
         return pack(Option.fmt, self.type.value, self.source_position,
-                    self.target_position, self.sub_option, self.choice)
+                    self.target_position, self.sub_option, self.choice,
+                    self.is_playing_spell)
 
 
 def get_options_list(data_bytes):
