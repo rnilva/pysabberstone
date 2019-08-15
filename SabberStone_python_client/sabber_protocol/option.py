@@ -13,8 +13,8 @@ class PlayerTaskType(IntEnum):
 
 
 class Option:
-    fmt = '5i'
-    size_self = 20
+    fmt = '5i?'
+    size_self = 21
 
     def __init__(self, data_bytes):
         fields = unpack(Option.fmt, data_bytes[0:Option.size_self])
@@ -23,8 +23,9 @@ class Option:
             self.source_position,
             self.target_position,
             self.sub_option,
-            self.choice
-        ) = fields[1:5]
+            self.choice,
+            self.is_playing_spell
+        ) = fields[1:6]
         length = unpack('i', data_bytes[Option.size_self:Option.size_self + 4])[0]
         self.size = Option.size_self + 4 + length
         self.print = data_bytes[Option.size_self + 4:self.size].decode()
@@ -35,7 +36,8 @@ class Option:
 
     def __bytes__(self):
         return pack(Option.fmt, self.type.value, self.source_position,
-                    self.target_position, self.sub_option, self.choice)
+                    self.target_position, self.sub_option, self.choice,
+                    self.is_playing_spell)
 
 
 def get_options_list(data_bytes):

@@ -1,7 +1,7 @@
-import random
-from multiprocessing import Process
-
 import sabber_protocol.server
+import random
+import cProfile
+from multiprocessing import Process
 
 server = sabber_protocol.server.SabberStoneServer(id="test")
 
@@ -37,8 +37,8 @@ for option in options:
     print(option.print)
 
 
-def full_random_game(server, deck1, deck2):
-    # game = stub.NewGame(python_pb2.DeckStrings(deck1=deck1, deck2=deck2))
+def full_random_game(id, deck1, deck2):
+    server = sabber_protocol.server.SabberStoneServer(id=id)
     game = server.new_game(deck1, deck2)
     while game.state != 3:
         options = server.options(game)
@@ -54,23 +54,15 @@ def full_random_game(server, deck1, deck2):
     else:
         print("Tied!")
 
+# print("Full Random Game Test")
+# full_random_game(server, string1, string2)
 
-print("Full Random Game Test")
-full_random_game(server, string1, string2)
-
-print("New Thread Test")
-thread1 = server.new_thread(thread_id=1)
-thread2 = server.new_thread(thread_id=2)
-thread3 = server.new_thread(thread_id=3)
-thread4 = server.new_thread(thread_id=4)
-
-server.get_server_status()
-
+print("Multithreading Test")
 processes = [
-    Process(target=full_random_game, args=(thread1, string1, string2)),
-    Process(target=full_random_game, args=(thread2, string1, string2)),
-    Process(target=full_random_game, args=(thread3, string1, string2)),
-    Process(target=full_random_game, args=(thread4, string1, string2))]
+    Process(target=full_random_game, args=("thread1", string1, string2)),
+    Process(target=full_random_game, args=("thread2", string1, string2)),
+    Process(target=full_random_game, args=("thread3", string1, string2)),
+    Process(target=full_random_game, args=("thread4", string1, string2)),]
 
 for p in processes:
     p.start()
@@ -78,4 +70,4 @@ for p in processes:
 for p in processes:
     p.join()
 
-server.get_server_status()
+# server.get_server_status()

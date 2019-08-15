@@ -24,6 +24,8 @@ namespace SabberStone_gRPC.MMF
         public readonly int TargetPosition;
         public readonly int SubOption;
         public readonly int Choice;
+		[MarshalAs(UnmanagedType.U1)]
+		public readonly bool IsPlayingSpell;
     }
 
     public static class MarshalOptions
@@ -40,6 +42,8 @@ namespace SabberStone_gRPC.MMF
             *ip++ = targetPosition;
             *ip++ = subOption;
             ip++;
+            byte* bp = (byte*)ip;
+            *bp++ = Convert.ToByte(type == PlayerTaskType.PLAY_CARD && source.Card.Type == CardType.SPELL);
 
             var sb = new StringBuilder();
             switch (type)
@@ -68,9 +72,9 @@ namespace SabberStone_gRPC.MMF
 
             var str = sb.ToString();
 
+            ip = (int*)bp;
             *ip++ = str.Length;
-
-			byte* bp = (byte*)ip;
+            bp = (byte*)ip;
 
             fixed (char* chPtr = str)
             {
@@ -86,7 +90,9 @@ namespace SabberStone_gRPC.MMF
             *ip++ = (int) PlayerTaskType.CHOOSE;
             ip += 3;
             *ip++ = choice;
-
+			byte* bp = (byte*)ip;
+			bp++;
+			ip = (int*)bp;
 			string str = string.Format("[CHOOSE] {0}", cardName);
 
 			*ip++ = str.Length;
@@ -102,9 +108,11 @@ namespace SabberStone_gRPC.MMF
         {
             *ip++ = (int) PlayerTaskType.END_TURN;
             ip += 4;
-
-			*ip++ = EndTurnPrint.Length;
 			byte* bp = (byte*)ip;
+			bp++;
+			ip = (int*)bp;
+			*ip++ = EndTurnPrint.Length;
+			bp = (byte*)ip;
 			fixed (char* ptr = EndTurnPrint)
 			{
                 Encoding.Default.GetBytes(ptr, EndTurnPrint.Length, bp, 1000);
