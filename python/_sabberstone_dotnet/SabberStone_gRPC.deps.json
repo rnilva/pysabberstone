@@ -1,0 +1,256 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v2.2",
+    "signature": "b8a9b9e63453dc3bd41d20a1adca10f668582fd5"
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v2.2": {
+      "SabberStone_gRPC/1.0.0": {
+        "dependencies": {
+          "Google.Protobuf": "3.7.0",
+          "Grpc": "1.20.1",
+          "Grpc.Tools": "1.20.1",
+          "protobuf-net": "2.4.0",
+          "SabberStoneCore": "2.1.0.0"
+        },
+        "runtime": {
+          "SabberStone_gRPC.dll": {}
+        }
+      },
+      "Google.Protobuf/3.7.0": {
+        "runtime": {
+          "lib/netstandard1.0/Google.Protobuf.dll": {
+            "assemblyVersion": "3.7.0.0",
+            "fileVersion": "3.7.0.0"
+          }
+        }
+      },
+      "Grpc/1.20.1": {
+        "dependencies": {
+          "Grpc.Core": "1.20.1"
+        }
+      },
+      "Grpc.Core/1.20.1": {
+        "dependencies": {
+          "Grpc.Core.Api": "1.20.1",
+          "System.Interactive.Async": "3.2.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Grpc.Core.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.20.1.0"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/linux/native/libgrpc_csharp_ext.x64.so": {
+            "rid": "linux",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/linux/native/libgrpc_csharp_ext.x86.so": {
+            "rid": "linux",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/osx/native/libgrpc_csharp_ext.x64.dylib": {
+            "rid": "osx",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/osx/native/libgrpc_csharp_ext.x86.dylib": {
+            "rid": "osx",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win/native/grpc_csharp_ext.x64.dll": {
+            "rid": "win",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win/native/grpc_csharp_ext.x86.dll": {
+            "rid": "win",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Grpc.Core.Api/1.20.1": {
+        "dependencies": {
+          "System.Interactive.Async": "3.2.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Grpc.Core.Api.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.20.1.0"
+          }
+        }
+      },
+      "Grpc.Tools/1.20.1": {},
+      "protobuf-net/2.4.0": {
+        "dependencies": {
+          "System.ServiceModel.Primitives": "4.5.3"
+        },
+        "runtime": {
+          "lib/netcoreapp2.1/protobuf-net.dll": {
+            "assemblyVersion": "2.4.0.0",
+            "fileVersion": "2.4.0.8641"
+          }
+        }
+      },
+      "System.Interactive.Async/3.2.0": {
+        "runtime": {
+          "lib/netstandard2.0/System.Interactive.Async.dll": {
+            "assemblyVersion": "3.2.0.0",
+            "fileVersion": "3.2.0.702"
+          }
+        }
+      },
+      "System.Private.ServiceModel/4.5.3": {
+        "dependencies": {
+          "System.Reflection.DispatchProxy": "4.5.0",
+          "System.Security.Principal.Windows": "4.5.0"
+        },
+        "runtimeTargets": {
+          "runtimes/unix/lib/netstandard2.0/System.Private.ServiceModel.dll": {
+            "rid": "unix",
+            "assetType": "runtime",
+            "assemblyVersion": "4.5.0.3",
+            "fileVersion": "4.6.26720.1"
+          },
+          "runtimes/win/lib/netstandard2.0/System.Private.ServiceModel.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "4.5.0.3",
+            "fileVersion": "4.6.26720.1"
+          }
+        }
+      },
+      "System.Reflection.DispatchProxy/4.5.0": {},
+      "System.Security.Principal.Windows/4.5.0": {
+        "runtimeTargets": {
+          "runtime/unix/lib/_._": {
+            "rid": "unix",
+            "assetType": "runtime"
+          },
+          "runtime/win/lib/_._": {
+            "rid": "win",
+            "assetType": "runtime"
+          }
+        }
+      },
+      "System.ServiceModel.Primitives/4.5.3": {
+        "dependencies": {
+          "System.Private.ServiceModel": "4.5.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.ServiceModel.Primitives.dll": {
+            "assemblyVersion": "4.5.0.3",
+            "fileVersion": "4.6.26720.1"
+          },
+          "lib/netstandard2.0/System.ServiceModel.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "4.6.26720.1"
+          }
+        }
+      },
+      "SabberStoneCore/2.1.0.0": {
+        "runtime": {
+          "SabberStoneCore.dll": {
+            "assemblyVersion": "2.1.0.0",
+            "fileVersion": "2.1.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "SabberStone_gRPC/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Google.Protobuf/3.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OvssyqQTrpJgdH4fjztsCV9AhUo9jgGpDbZ5XAAqC+X6MIUsifHk8Woeom1HXlHdqo/XebiEMpYySE9AxybJ9g==",
+      "path": "google.protobuf/3.7.0",
+      "hashPath": "google.protobuf.3.7.0.nupkg.sha512"
+    },
+    "Grpc/1.20.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-hI2uprHIaXWmPduVScql6lLDtiTuKy3ig2eOjoS62bS3N7+q0/Ceqi3dcH1zW+jYHFd2CyNBmQNxjrSIZw9rwQ==",
+      "path": "grpc/1.20.1",
+      "hashPath": "grpc.1.20.1.nupkg.sha512"
+    },
+    "Grpc.Core/1.20.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-69bHUrKzD8O6js+aFzU8mEWMF0Nt7jEqlloONcVpauuxsg/1pDdIxBAisWu/K+IY5SEeshn+4oAchf9rJoFQzw==",
+      "path": "grpc.core/1.20.1",
+      "hashPath": "grpc.core.1.20.1.nupkg.sha512"
+    },
+    "Grpc.Core.Api/1.20.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-gXJoNYR97iQ3mlQ34TCCENJWQUTEl61Y/23/Sjv3dmYv59MppAPUjgSaXzHa20Rj4mNNvddgxTgwOGB+srprEQ==",
+      "path": "grpc.core.api/1.20.1",
+      "hashPath": "grpc.core.api.1.20.1.nupkg.sha512"
+    },
+    "Grpc.Tools/1.20.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7b/1diAOafIm7Kl4oUVvp/3wG39aLlPp/R/48E5vGTbt7vkgoHAR/PbJH2zIXrfUkas4+CUYlMyeNgrPVCEqnA==",
+      "path": "grpc.tools/1.20.1",
+      "hashPath": "grpc.tools.1.20.1.nupkg.sha512"
+    },
+    "protobuf-net/2.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-j37MD1p1s9NdX8P5+IaY2J9p2382xiL1VP3mxYu0g+G/kf2YM2grFa1jJPO+0WDJNl1XhNPO0Q5yBEcbX77hBQ==",
+      "path": "protobuf-net/2.4.0",
+      "hashPath": "protobuf-net.2.4.0.nupkg.sha512"
+    },
+    "System.Interactive.Async/3.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-C07p0dAA5lGqYUPiPCK3paR709gqS4aMDDsje0v0pvffwzLaxmsn5YQTfZbyNG5qrudPx+BCxTqISnncQ3wIoQ==",
+      "path": "system.interactive.async/3.2.0",
+      "hashPath": "system.interactive.async.3.2.0.nupkg.sha512"
+    },
+    "System.Private.ServiceModel/4.5.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ancrQgJagx+yC4SZbuE+eShiEAUIF0E1d21TRSoy1C/rTwafAVcBr/fKibkq5TQzyy9uNil2tx2/iaUxsy0S9g==",
+      "path": "system.private.servicemodel/4.5.3",
+      "hashPath": "system.private.servicemodel.4.5.3.nupkg.sha512"
+    },
+    "System.Reflection.DispatchProxy/4.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+UW1hq11TNSeb+16rIk8hRQ02o339NFyzMc4ma/FqmxBzM30l1c2IherBB4ld1MNcenS48fz8tbt50OW4rVULA==",
+      "path": "system.reflection.dispatchproxy/4.5.0",
+      "hashPath": "system.reflection.dispatchproxy.4.5.0.nupkg.sha512"
+    },
+    "System.Security.Principal.Windows/4.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-U77HfRXlZlOeIXd//Yoj6Jnk8AXlbeisf1oq1os+hxOGVnuG+lGSfGqTwTZBoORFF6j/0q7HXIl8cqwQ9aUGqQ==",
+      "path": "system.security.principal.windows/4.5.0",
+      "hashPath": "system.security.principal.windows.4.5.0.nupkg.sha512"
+    },
+    "System.ServiceModel.Primitives/4.5.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Wc9Hgg4Cmqi416zvEgq2sW1YYCGuhwWzspDclJWlFZqY6EGhFUPZU+kVpl5z9kAgrSOQP7/Uiik+PtSQtmq+5A==",
+      "path": "system.servicemodel.primitives/4.5.3",
+      "hashPath": "system.servicemodel.primitives.4.5.3.nupkg.sha512"
+    },
+    "SabberStoneCore/2.1.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

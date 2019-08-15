@@ -71,8 +71,9 @@ class Hero:
         ) = fields
         self.power = HeroPower(data_bytes[27:27 + HeroPower.size])
 
-        if data_bytes[27+HeroPower.size] != 0:
-            self.weapon = Weapon(data_bytes[27+HeroPower.size:27+HeroPower.size+Weapon.size])
+        if unpack('i', data_bytes[Hero.size_self:Hero.size_self + 4])[0] != 0:
+            self.weapon = Weapon(
+                data_bytes[Hero.size_self:Hero.size_self + Weapon.size])
             self.size = Hero.size_self + Weapon.size
         else:
             self.size = Hero.size_self + 4
@@ -140,7 +141,7 @@ class HandZone:
         i = 4
         for _ in range(self.count):
             self.entities.append(Playable(data_bytes[i:i + Playable.size]))
-            i = Playable.size
+            i += Playable.size
 
         self.size = i
 

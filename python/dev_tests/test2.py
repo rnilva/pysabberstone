@@ -1,9 +1,9 @@
-import sabber_protocol.server
+import pysabberstone.python.server
 import random
 import cProfile
 from multiprocessing import Process
 
-server = sabber_protocol.server.SabberStoneServer(id="test")
+server = pysabberstone.python.server.SabberStoneServer(id="test")
 
 server.get_server_status()
 
@@ -38,7 +38,7 @@ for option in options:
 
 
 def full_random_game(id, deck1, deck2):
-    server = sabber_protocol.server.SabberStoneServer(id=id)
+    server = pysabberstone.python.server.SabberStoneServer(id=id)
     game = server.new_game(deck1, deck2)
     while game.state != 3:
         options = server.options(game)
@@ -62,7 +62,7 @@ processes = [
     Process(target=full_random_game, args=("thread1", string1, string2)),
     Process(target=full_random_game, args=("thread2", string1, string2)),
     Process(target=full_random_game, args=("thread3", string1, string2)),
-    Process(target=full_random_game, args=("thread4", string1, string2)),]
+    Process(target=full_random_game, args=("thread4", string1, string2))]
 
 for p in processes:
     p.start()

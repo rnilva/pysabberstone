@@ -25,3 +25,5 @@ Because I have not decide how to call it, I call it 'new system' in the rest of 
 
 7. New system currently only works in Unix-based systems.
 
+## Building .NET Core project
+`cd dotnet_core && dotnet build -c Release -o ../python/_sabberstone_dotnet`
