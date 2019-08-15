@@ -3,15 +3,15 @@ import socket
 import subprocess
 import time
 
-from . import entities
+from ..sabber_protocol import entities
 from ..sabber_protocol import function
-from ..sabber_protocol import option
 from ..sabber_protocol.game import Game
+from ..sabber_protocol import option
 
 SERVER_ADDRESS = '/tmp/CoreFxPipe_sabberstoneserver_'
 MMF_NAME_POSTFIX = '_sabberstoneserver.mmf'
 DEFAULT_SERVER_PATH = 'sb_mm_env/SabberStone_gRPC/'
-TIMEOUT = 10
+TIMEOUT = 50
 
 
 class SabberStoneServer:
@@ -34,14 +34,15 @@ class SabberStoneServer:
             self.is_thread = True
 
         timeout = time.time() + TIMEOUT
-        while True:
+        for retry_nr in range(10000):
+            time.sleep(1.0)
             try:
                 self.socket.connect(uds_path)
                 break
             except socket.error as e:
                 if time.time() > timeout:
-                    raise Exception('''Can\'t connect to the server.
-                      (uds timeout)''')
+                    print(id, 'stopped retrying (uds timeout)', retry_nr)
+                    raise e
 
         mmf_path = self.socket.recv(1024).decode()
         self.mmf_fd = open(mmf_path, 'r+')
@@ -50,7 +51,9 @@ class SabberStoneServer:
         self.mmf = mmap.mmap(self.mmf_fd.fileno(), 0)
         # self.mmf = numpy.memmap(self.mmf_fd, dtype='byte', mode='r+',
         #                         shape=(10000))
-        print('Connected to SabberStoneServer ({0})'.format(mmf_path))
+
+        print(id, 'Connected to SabberStoneServer ({0}), sleeping(2)'.format(mmf_path))
+        time.sleep(2)
 
     def new_thread(self, thread_id: int):
         function.call_function_void_return_int_arg(self.socket, 9, thread_id)
@@ -59,20 +62,19 @@ class SabberStoneServer:
         return SabberStoneServer(id=id, run_csharp_process=False)
 
     def new_game(self, deckstr1, deckstr2):
-        data_bytes = function.call_function_multiargs(self.socket, self.mmf, 4,
-                                                      deckstr1, deckstr2)
+        data_bytes = function.call_function_multiargs(self.socket, self.mmf, 4, deckstr1, deckstr2)
         return Game(data_bytes)
 
     def reset(self, game):
-        data_bytes = function.call_function(self.socket, self.mmf, 5, game)
+        data_bytes = function.call_function(self.socket, self.mmf, 5, game.id)
         return game.reset_with_bytes(data_bytes)
 
     def options(self, game):
-        data_bytes = function.call_function(self.socket, self.mmf, 6, game)
+        data_bytes = function.call_function(self.socket, self.mmf, 6, game.id)
         return option.get_options_list(data_bytes)
 
     def process(self, game, option):
-        data_bytes = function.send_option(self.socket, self.mmf, game, option)
+        data_bytes = function.send_option(self.socket, self.mmf, game.id, option)
         return Game(data_bytes)
 
     def get_server_status(self):
@@ -94,4 +96,4 @@ class SabberStoneServer:
                 function.call_function_void_return(self.socket, 8)
             except:
                 pass
-        print(f'server {self.id} closed')
+        print('server {0} closed'.format(self.id))

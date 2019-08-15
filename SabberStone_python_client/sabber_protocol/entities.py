@@ -69,7 +69,7 @@ class Hero:
             self.stealth,
             self.immune
         ) = fields
-        self.hero_power = HeroPower(data_bytes[27:27+HeroPower.size])
+        self.power = HeroPower(data_bytes[27:27 + HeroPower.size])
 
         if data_bytes[27+HeroPower.size] != 0:
             self.weapon = Weapon(data_bytes[27+HeroPower.size:27+HeroPower.size+Weapon.size])
