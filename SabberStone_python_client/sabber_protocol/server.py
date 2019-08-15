@@ -17,25 +17,28 @@ from sabber_protocol.option import *
 SERVER_ADDRESS = '/tmp/CoreFxPipe_sabberstoneserver_'
 MMF_NAME_POSTFIX = '_sabberstoneserver.mmf'
 DEFAULT_SERVER_PATH = '../SabberStone_gRPC/'
+DEFAULT_DLL_PATH = '../SabberStone_gRPC.dll'
 TIMEOUT = 10
 
 
 class SabberStoneServer:
 
     def __init__(self,
-                 server_path=DEFAULT_SERVER_PATH,
                  id: str = "",
+                 server_path=DEFAULT_SERVER_PATH,
                  run_csharp_process=True):
         self.id = id
         self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        mmf_path = '../' + id + MMF_NAME_POSTFIX
+        # mmf_path = '../' + id + MMF_NAME_POSTFIX
         uds_path = SERVER_ADDRESS + id
         if run_csharp_process:
-            csharp_server = subprocess.Popen(["dotnet", "run",
-                                              "-p", server_path,
-                                              "-v", "m",
-                                              "-c", "Release",
-                                              "mmf", id],
+            # csharp_server = subprocess.Popen(["dotnet", "run",
+            #                                   "-p", server_path,
+            #                                   "-v", "m",
+            #                                   "-c", "Release",
+            #                                   "mmf", id],
+            #                                  stdout=subprocess.DEVNULL)
+            csharp_server = subprocess.Popen(["dotnet", DEFAULT_DLL_PATH, "mmf", id],
                                              stdout=subprocess.DEVNULL)
             self.csharp_server = csharp_server
             self.is_thread = False

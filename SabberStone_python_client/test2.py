@@ -37,8 +37,8 @@ for option in options:
     print(option.print)
 
 
-def full_random_game(server, deck1, deck2):
-    # game = stub.NewGame(python_pb2.DeckStrings(deck1=deck1, deck2=deck2))
+def full_random_game(id, deck1, deck2):
+    server = sabber_protocol.server.SabberStoneServer(id=id)
     game = server.new_game(deck1, deck2)
     while game.state != 3:
         options = server.options(game)
@@ -54,22 +54,25 @@ def full_random_game(server, deck1, deck2):
     else:
         print("Tied!")
 
-print("Full Random Game Test")
-full_random_game(server, string1, string2)
+# print("Full Random Game Test")
+# full_random_game(server, string1, string2)
 
 print("New Thread Test")
-thread1 = server.new_thread(thread_id=1)
-thread2 = server.new_thread(thread_id=2)
-thread3 = server.new_thread(thread_id=3)
-thread4 = server.new_thread(thread_id=4)
-
-server.get_server_status()
+# server2 = sabber_protocol.server.SabberStoneServer(id="test2")
+# thread1 = server.new_thread(thread_id=1)
+# thread2 = server.new_thread(thread_id=2)
+# thread3 = server.new_thread(thread_id=3)
+# thread4 = server.new_thread(thread_id=4)
+# thread1 = sabber_protocol.server.SabberStoneServer("1")
+# thread2 = sabber_protocol.server.SabberStoneServer("2")
+# thread3 = sabber_protocol.server.SabberStoneServer("3")
+# thread4 = sabber_protocol.server.SabberStoneServer("4")
 
 processes = [
-    Process(target=full_random_game, args=(thread1, string1, string2)),
-    Process(target=full_random_game, args=(thread2, string1, string2)),
-    Process(target=full_random_game, args=(thread3, string1, string2)),
-    Process(target=full_random_game, args=(thread4, string1, string2))]
+    Process(target=full_random_game, args=("thread1", string1, string2)),
+    Process(target=full_random_game, args=("thread2", string1, string2)),
+    Process(target=full_random_game, args=("thread3", string1, string2)),
+    Process(target=full_random_game, args=("thread4", string1, string2)),]
 
 for p in processes:
     p.start()

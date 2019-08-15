@@ -38,7 +38,7 @@ namespace SabberStone_gRPC.MMF
             
             while (true)
             {
-                using (var pipe = new NamedPipeServerStream(PIPE_NAME_PREFIX + id, PipeDirection.InOut, 99))
+                using (var pipe = new NamedPipeServerStream(PIPE_NAME_PREFIX + id, PipeDirection.InOut, 1))
                 using (var mmf = MemoryMappedFile.CreateFromFile(
                     File.Open(mmf_file_path, FileMode.OpenOrCreate),
                     null, 10000, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, false))
@@ -47,7 +47,7 @@ namespace SabberStone_gRPC.MMF
                     byte* mmfPtr = null;
                     view.SafeMemoryMappedViewHandle.AcquirePointer(ref mmfPtr);
 
-                    Console.WriteLine("Server started. Waiting for the client.....");
+                    Console.WriteLine($"Server({id}) started. Waiting for the client.....");
 
                     pipe.WaitForConnection();
 
