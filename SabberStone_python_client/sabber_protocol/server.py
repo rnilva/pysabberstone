@@ -15,7 +15,6 @@ from sabber_protocol.option import *
 
 
 SERVER_ADDRESS = '/tmp/CoreFxPipe_sabberstoneserver_'
-MMF_NAME_POSTFIX = '_sabberstoneserver.mmf'
 DEFAULT_SERVER_PATH = '../SabberStone_gRPC/'
 DEFAULT_DLL_PATH = '../SabberStone_gRPC.dll'
 TIMEOUT = 10
@@ -25,20 +24,13 @@ class SabberStoneServer:
 
     def __init__(self,
                  id: str = "",
-                 server_path=DEFAULT_SERVER_PATH,
+                 dll_path=DEFAULT_DLL_PATH,
                  run_csharp_process=True):
         self.id = id
         self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        # mmf_path = '../' + id + MMF_NAME_POSTFIX
         uds_path = SERVER_ADDRESS + id
         if run_csharp_process:
-            # csharp_server = subprocess.Popen(["dotnet", "run",
-            #                                   "-p", server_path,
-            #                                   "-v", "m",
-            #                                   "-c", "Release",
-            #                                   "mmf", id],
-            #                                  stdout=subprocess.DEVNULL)
-            csharp_server = subprocess.Popen(["dotnet", DEFAULT_DLL_PATH, "mmf", id],
+            csharp_server = subprocess.Popen(["dotnet", dll_path, "mmf", id],
                                              stdout=subprocess.DEVNULL)
             self.csharp_server = csharp_server
             self.is_thread = False
@@ -89,9 +81,9 @@ class SabberStoneServer:
         data_bytes = send_option(self.socket, self.mmf, game.id, option)
         return Game(data_bytes)
 
-    def get_server_status(self):
-        data_bytes = call_function_multiargs(self.socket, self.mmf, 10)
-        print(data_bytes.decode())
+    # def get_server_status(self):
+    #     data_bytes = call_function_multiargs(self.socket, self.mmf, 10)
+    #     print(data_bytes.decode())
 
     def _test_get_one_playable(self):
         data_bytes = call_function(self.socket, self.mmf, 2, 0)

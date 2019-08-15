@@ -57,17 +57,7 @@ def full_random_game(id, deck1, deck2):
 # print("Full Random Game Test")
 # full_random_game(server, string1, string2)
 
-print("New Thread Test")
-# server2 = sabber_protocol.server.SabberStoneServer(id="test2")
-# thread1 = server.new_thread(thread_id=1)
-# thread2 = server.new_thread(thread_id=2)
-# thread3 = server.new_thread(thread_id=3)
-# thread4 = server.new_thread(thread_id=4)
-# thread1 = sabber_protocol.server.SabberStoneServer("1")
-# thread2 = sabber_protocol.server.SabberStoneServer("2")
-# thread3 = sabber_protocol.server.SabberStoneServer("3")
-# thread4 = sabber_protocol.server.SabberStoneServer("4")
-
+print("Multithreading Test")
 processes = [
     Process(target=full_random_game, args=("thread1", string1, string2)),
     Process(target=full_random_game, args=("thread2", string1, string2)),
@@ -80,4 +70,4 @@ for p in processes:
 for p in processes:
     p.join()
 
-server.get_server_status()
+# server.get_server_status()
