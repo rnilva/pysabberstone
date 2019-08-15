@@ -2,23 +2,24 @@ import mmap
 import socket
 import subprocess
 import time
+import os
 
-from sabber_protocol.entities import *
-from sabber_protocol.function import *
-from sabber_protocol.option import *
-from ..sabber_protocol.game import Game
+from .entities import *
+from .function import *
+from .option import *
+from .game import Game
 
 SERVER_ADDRESS = '/tmp/CoreFxPipe_sabberstoneserver_'
-DEFAULT_SERVER_PATH = 'sb_mm_env/SabberStone_gRPC/'
-DEFAULT_DLL_PATH = 'sb_mm_env/SabberStone_gRPC.dll'
+DEFAULT_DLL_PATH = os.path.join(os.path.dirname(__file__),
+                                '_sabberstone_dotnet/SabberStone_gRPC.dll')
 TIMEOUT = 50
 
 
 class SabberStoneServer:
 
     def __init__(self,
-                 dll_path=DEFAULT_DLL_PATH,
                  id: str = "",
+                 dll_path=DEFAULT_DLL_PATH,
                  run_csharp_process=True):
         self.id = id
         self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
