@@ -21,6 +21,9 @@ namespace SabberStone_gRPC
 
         static void Main(string[] args)
         {
+            PerformanceComparison.FullGame();
+            return;
+
             if (args.Length < 1)
             {
                 Console.WriteLine(FALLBACK_HELP);

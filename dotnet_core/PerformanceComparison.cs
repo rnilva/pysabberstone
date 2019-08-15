@@ -13,6 +13,7 @@ using SabberStoneCore.Model;
 using SabberEntities = SabberStoneCore.Model.Entities;
 using MMFEntities = SabberStone_gRPC.MMF.Entities;
 using SabberGame = SabberStoneCore.Model.Game;
+using static SabberStone_gRPC.MMF.Functions.API;
 
 namespace SabberStone_gRPC
 {
@@ -112,6 +113,34 @@ namespace SabberStone_gRPC
             Console.WriteLine($"Marshal Minion using raw pointer: {watch2.ElapsedMilliseconds} ms");
             Console.WriteLine($"Marshal HeroPower using Marshal.StructureToPtr: {watch3.ElapsedMilliseconds} ms");
             Console.WriteLine($"Marshal HeroPower using raw pointer: {watch4.ElapsedMilliseconds} ms");
+        }
+
+        public unsafe static void FullGame()
+        {
+            const string deck = @"AAEBAf0EAA8MLU1xwwG7ApUDrgO/A4AEtATmBO0EoAW5BgA=";
+            const int count = 100;
+
+            //MMF.SabberHelper.GenerateGame(deck, deck, true);
+            byte* ptr = (byte*)Marshal.AllocHGlobal(10000);
+            NewGame(deck, deck, in ptr);
+            var game = ManagedObjects.Games[0];
+            var rnd = new Random();
+            var watch = Stopwatch.StartNew();
+            for (int i = 0; i < count; i++)
+            {
+                do
+                {
+                    var options = game.CurrentPlayer.Options();
+                    GetOptions(0, in ptr);
+                    game.Process(options[rnd.Next(options.Count)]);
+                    MarshalEntities.MarshalGameToMMF(game, in ptr, 0);
+                } while (game.State == State.COMPLETE);
+
+                Reset(0, in ptr);
+            }
+            watch.Stop();
+
+            Console.WriteLine("100 games: " + watch.ElapsedMilliseconds + " ms");
         }
     }
 }

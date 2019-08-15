@@ -13,7 +13,7 @@ namespace SabberStone_gRPC.MMF.Functions
 {
     public static unsafe class API
     {
-        private static class ManagedObjects
+        internal static class ManagedObjects
         {
             public static ConcurrentDictionary<int, Game> Games = new ConcurrentDictionary<int, Game>();
             public static ConcurrentDictionary<int, Game> InitialGames = new ConcurrentDictionary<int, Game>();
