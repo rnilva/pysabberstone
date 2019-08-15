@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.28803.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SabberStone_gRPC", "SabberStone_gRPC.csproj", "{C64B060C-6055-46B2-9C2F-11DACC74D8C6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SabberStone_gRPC_Client", "..\SabberStone_gRPC_Client\SabberStone_gRPC_Client.csproj", "{416D6CD0-188C-43C6-B89E-B176734518F0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
