@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO.MemoryMappedFiles;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -29,8 +30,21 @@ namespace SabberStone_gRPC.MMF.Functions
 
     public static unsafe class FunctionTable
     {
+        public static Dictionary<FunctionId, Stopwatch> Watches = new Dictionary<FunctionId, Stopwatch>
+        {
+            [FunctionId.Process] = new Stopwatch(),
+            [FunctionId.Options] = new Stopwatch(),
+            [FunctionId.Reset] = new Stopwatch()
+        };
+
         public static int CallById(FunctionId id, List<dynamic> arguments, in byte* mmfPtr)
         {
+            Stopwatch watch;
+            if (Watches.TryGetValue(id, out watch))
+                watch.Start();
+            
+            int value = 0;
+
             try
             {
                 switch (id)
@@ -42,22 +56,29 @@ namespace SabberStone_gRPC.MMF.Functions
                         TestMultiArgument(arguments[0], arguments[1], arguments[2]);
                         break;
                     case FunctionId.TestSendOnePlayable:
-                        return TestSendOnePlayable(in mmfPtr);
+                        value = TestSendOnePlayable(in mmfPtr);
+                        break;
                     case FunctionId.TestSendZoneWithPlayables:
-                        return TestSendZoneWithPlayables(in mmfPtr);
+                        value =  TestSendZoneWithPlayables(in mmfPtr);
+                        break;
                     case FunctionId.NewGame:
-                        return API.NewGame((string)arguments[0], (string)arguments[1], in mmfPtr);
+                        value =  API.NewGame((string)arguments[0], (string)arguments[1], in mmfPtr);
+                        break;
                     case FunctionId.Reset:
-                        return API.Reset((int)arguments[0], in mmfPtr);
+                        value =  API.Reset((int)arguments[0], in mmfPtr);
+                        break;
                     case FunctionId.Options:
-                        return API.GetOptions((int)arguments[0], in mmfPtr);
+                        value =  API.GetOptions((int)arguments[0], in mmfPtr);
+                        break;
                     case FunctionId.Process:
-                        return API.Process((int)arguments[0], (Option)arguments[1], in mmfPtr);
+                        value =  API.Process((int)arguments[0], (Option)arguments[1], in mmfPtr);
+                        break;
                     case FunctionId.Terminate:
                         Environment.Exit(1);
                         break;
                     case FunctionId.Status:
-                        return API.Status(in mmfPtr);
+                        value =  API.Status(in mmfPtr);
+                        break;
                     default:
                         throw new NotImplementedException();
                 }
@@ -70,7 +91,9 @@ namespace SabberStone_gRPC.MMF.Functions
                 return -1;
             }
 
-            return 0;
+            watch?.Stop();
+
+            return value;
         }
 
         public static void Test()
