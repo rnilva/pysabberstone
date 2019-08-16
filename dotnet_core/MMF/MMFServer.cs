@@ -7,6 +7,7 @@ using System.IO.Pipes;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using SabberStoneCore;
 using SabberStone_gRPC.MMF.Functions;
 
 namespace SabberStone_gRPC.MMF
@@ -35,7 +36,12 @@ namespace SabberStone_gRPC.MMF
             }
 
             string mmf_file_path = GetTempPath(id);
-            
+
+            var watchArguments = new Stopwatch();
+            var watchGetOption = new Stopwatch();
+            var watchFunctionCall = new Stopwatch();
+            var watchSenSsize = new Stopwatch();
+
             while (true)
             {
                 using (var pipe = new NamedPipeServerStream(PIPE_NAME_PREFIX + id, PipeDirection.InOut, 1))
@@ -49,9 +55,13 @@ namespace SabberStone_gRPC.MMF
 
                     Console.WriteLine($"Server({id}) started. Waiting for the client.....");
 
+                    Task.Run(() => 
+                        System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(SabberStoneCore.Model.Cards).TypeHandle));
+
                     pipe.WaitForConnection();
 
                     Console.WriteLine("Python client connected!");
+
                     try
                     {
                         using (BinaryWriter bw = new BinaryWriter(pipe))
@@ -62,10 +72,23 @@ namespace SabberStone_gRPC.MMF
                             {
                                 byte function_id = br.ReadByte();
 
+                                watchArguments.Start();
                                 if (function_id == (byte)FunctionId.Terminate)
                                 {
+                                    watchArguments.Stop();
+                                    Console.WriteLine("Arguments " + watchArguments.ElapsedMilliseconds + " ms");
+                                    Console.WriteLine("Option parsing " + watchGetOption.ElapsedMilliseconds + " ms");
+                                    Console.WriteLine("Functions " + watchFunctionCall.ElapsedMilliseconds + " ms");
+                                    Console.WriteLine("Writing " + watchSenSsize.ElapsedMilliseconds + " ms");
+                                    foreach (var pair in FunctionTable.Watches)
+                                    {
+                                        Console.WriteLine($"{pair.Key} {pair.Value.ElapsedMilliseconds} ms");
+                                    }
+                                    Console.WriteLine("Server({id}) is terminated.");
+
                                     CTS.Cancel();
                                     if (!isTask) Console.SetOut(stdout);
+
                                     return;
                                 }
                                 else if (function_id == (byte) FunctionId.NewThread)
@@ -80,10 +103,7 @@ namespace SabberStone_gRPC.MMF
                                     bw.Write((byte) 4);
                                     continue;
                                 }
-
-
-                                //Debug.WriteLine($"Function {function_id} is requested");
-
+                                
                                 List<dynamic> arguments = new List<dynamic>();
 
                                 while (true)
@@ -101,6 +121,7 @@ namespace SabberStone_gRPC.MMF
                                     }
                                     else if (type == 'o')
                                     {
+                                        watchGetOption.Start();
                                         var bytes = br.ReadBytes(Option.Size);
                                         unsafe
                                         {
@@ -110,6 +131,7 @@ namespace SabberStone_gRPC.MMF
                                                 arguments.Add(*opPtr);
                                             }
                                         }
+                                        watchGetOption.Stop();
                                     }
                                     else if (type == '4') // End of Transmission
                                         break;
@@ -120,13 +142,16 @@ namespace SabberStone_gRPC.MMF
                                     }
                                 }
 
+                                watchArguments.Stop();
+                                watchFunctionCall.Start();
                                 try
                                 {
                                     int size = FunctionTable.CallById((FunctionId) function_id, arguments, in mmfPtr);
 
-                                    //Debug.WriteLine($"Server writes a structure of size {size} to mmf");
-
+                                    watchFunctionCall.Stop();
+                                    watchSenSsize.Start();
                                     bw.Write(size); // Send the size of returned structure.
+                                    watchSenSsize.Stop();
                                 }
                                 catch (Exception e)
                                 {
