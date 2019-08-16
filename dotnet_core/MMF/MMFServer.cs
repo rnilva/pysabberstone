@@ -62,6 +62,7 @@ namespace SabberStone_gRPC.MMF
 
                     Console.WriteLine("Python client connected!");
 
+                    Span<byte> localBuffer = stackalloc byte[1000];
                     try
                     {
                         using (BinaryWriter bw = new BinaryWriter(pipe))
@@ -70,7 +71,10 @@ namespace SabberStone_gRPC.MMF
                             bw.Write(Encoding.Default.GetBytes(mmf_file_path));
                             while (true)
                             {
-                                byte function_id = br.ReadByte();
+                                pipe.Read(localBuffer);
+
+                                //byte function_id = br.ReadByte();
+                                byte function_id = localBuffer[0];
 
                                 watchArguments.Start();
                                 if (function_id == (byte)FunctionId.Terminate)
@@ -106,23 +110,37 @@ namespace SabberStone_gRPC.MMF
                                 
                                 List<dynamic> arguments = new List<dynamic>();
 
+                                int offset = 1;
                                 while (true)
                                 {
-                                    char type = br.ReadChar();
+                                    //char type = br.ReadChar();
+                                    char type = (char)localBuffer[offset++];
                                     if (type == 'i')
-                                        arguments.Add(br.ReadInt32());
+                                    {
+                                        var bytes = localBuffer.Slice(offset, 4);
+                                        offset += 4;
+                                        arguments.Add(BitConverter.ToInt32(bytes));
+                                    }
                                     else if (type == 'b')
                                         arguments.Add(br.ReadBoolean());
                                     else if (type == 's')
                                     {
-                                        int len = br.ReadInt32();
-                                        string str = Encoding.Default.GetString(br.ReadBytes(len));
+                                        // int len = br.ReadInt32();
+                                        var bytes = localBuffer.Slice(offset, 4);
+                                        offset += 4;
+                                        int len = BitConverter.ToInt32(bytes);
+                                        bytes = localBuffer.Slice(offset, len);
+                                        offset += len;
+                                        // string str = Encoding.Default.GetString(br.ReadBytes(len));
+                                        string str = Encoding.Default.GetString(bytes);
                                         arguments.Add(str);
                                     }
                                     else if (type == 'o')
                                     {
                                         watchGetOption.Start();
-                                        var bytes = br.ReadBytes(Option.Size);
+                                        // var bytes = br.ReadBytes(Option.Size);
+                                        var bytes = localBuffer.Slice(offset, Option.Size);
+                                        offset += Option.Size;
                                         unsafe
                                         {
                                             fixed (byte* ptr = bytes)
@@ -150,7 +168,9 @@ namespace SabberStone_gRPC.MMF
 
                                     watchFunctionCall.Stop();
                                     watchSenSsize.Start();
-                                    bw.Write(size); // Send the size of returned structure.
+                                    
+                                    pipe.Write(BitConverter.GetBytes(size), 0, 4);
+                                    // bw.Write(size); // Send the size of returned structure.
                                     watchSenSsize.Stop();
                                 }
                                 catch (Exception e)
@@ -158,6 +178,7 @@ namespace SabberStone_gRPC.MMF
                                     Console.WriteLine(e.Message);
                                     Console.WriteLine(e.StackTrace);
                                 }
+                                localBuffer.Clear();
                             }
                         }
                     }
