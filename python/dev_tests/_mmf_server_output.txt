@@ -1,0 +1,14 @@
+Server() started. Waiting for the client.....
+Python client connected!
+NewGame service is called!
+Deckstring #1: AAEBAf0EAA8MLU1xwwG7ApUDrgO/A4AEtATmBO0EoAW5BgA=
+Deckstring #2: AAEBAf0EAA8MLU1xwwG7ApUDrgO/A4AEtATmBO0EoAW5BgA=
+New Game of size 1209 is created
+Arguments 50 ms
+Option parsing 4 ms
+Functions 1170 ms
+Writing 287 ms
+Process 468 ms
+Options 539 ms
+Reset 14 ms
+Server({id}) is terminated.
