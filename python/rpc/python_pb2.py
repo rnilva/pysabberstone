@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=_b('\252\002\025SabberStonePython.API'),
-  serialized_pb=_b('\n\x0cpython.proto\"\x07\n\x05\x45mpty\"\x17\n\x06GameId\x12\r\n\x05value\x18\x01 \x01(\x05\"\x19\n\x08\x45ntityId\x12\r\n\x05value\x18\x01 \x01(\x05\"\xc6\x02\n\x06Option\x12$\n\x04type\x18\x01 \x01(\x0e\x32\x16.Option.PlayerTaskType\x12\x11\n\tsource_id\x18\x02 \x01(\x05\x12\x11\n\ttarget_id\x18\x03 \x01(\x05\x12\x12\n\nsub_option\x18\x04 \x01(\x05\x12\x0e\n\x06\x63hoice\x18\x06 \x01(\x05\x12\x0f\n\x07game_id\x18\x07 \x01(\x05\x12\r\n\x05print\x18\x08 \x01(\t\x12\x17\n\x0fsource_position\x18\t \x01(\x05\x12\x17\n\x0ftarget_position\x18\n \x01(\x05\"z\n\x0ePlayerTaskType\x12\n\n\x06\x43HOOSE\x10\x00\x12\x0b\n\x07\x43ONCEDE\x10\x01\x12\x0c\n\x08\x45ND_TURN\x10\x02\x12\x0f\n\x0bHERO_ATTACK\x10\x03\x12\x0e\n\nHERO_POWER\x10\x04\x12\x11\n\rMINION_ATTACK\x10\x05\x12\r\n\tPLAY_CARD\x10\x06\" \n\x07Options\x12\x15\n\x04list\x18\x01 \x03(\x0b\x32\x07.Option\"\t\n\x07GameTag\"K\n\x04\x43\x61rd\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x11\n\tstring_id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\x16\n\x04tags\x18\x04 \x03(\x0b\x32\x08.GameTag\"^\n\x05\x43\x61rds\x12 \n\x05\x63\x61rds\x18\x01 \x03(\x0b\x32\x11.Cards.CardsEntry\x1a\x33\n\nCardsEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\x14\n\x05value\x18\x02 \x01(\x0b\x32\x05.Card:\x02\x38\x01\"+\n\x0b\x44\x65\x63kStrings\x12\r\n\x05\x64\x65\x63k1\x18\x01 \x01(\t\x12\r\n\x05\x64\x65\x63k2\x18\x02 \x01(\t\"\xcd\x01\n\x04Game\x12\x13\n\x02id\x18\x01 \x01(\x0b\x32\x07.GameId\x12\"\n\rCurrentPlayer\x18\x02 \x01(\x0b\x32\x0b.Controller\x12$\n\x0f\x43urrentOpponent\x18\x03 \x01(\x0b\x32\x0b.Controller\x12\x1a\n\x05state\x18\x04 \x01(\x0e\x32\x0b.Game.State\x12\x0c\n\x04turn\x18\x05 \x01(\x05\"<\n\x05State\x12\x0b\n\x07INVALID\x10\x00\x12\x0b\n\x07LOADING\x10\x01\x12\x0b\n\x07RUNNING\x10\x02\x12\x0c\n\x08\x43OMPLETE\x10\x03\"\xf5\x02\n\nController\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x13\n\x04hero\x18\x02 \x01(\x0b\x32\x05.Hero\x12\x1e\n\nboard_zone\x18\x03 \x01(\x0b\x32\n.BoardZone\x12\x1c\n\thand_zone\x18\x04 \x01(\x0b\x32\t.HandZone\x12 \n\x0bsecret_zone\x18\x05 \x01(\x0b\x32\x0b.SecretZone\x12\x1c\n\tdeck_zone\x18\x06 \x01(\x0b\x32\t.DeckZone\x12)\n\nplay_state\x18\x07 \x01(\x0e\x32\x15.Controller.PlayState\x12\x11\n\tbase_mana\x18\x08 \x01(\x05\x12\x16\n\x0eremaining_mana\x18\t \x01(\x05\x12\x17\n\x0foverload_locked\x18\n \x01(\x05\x12\x15\n\roverload_owed\x18\x0b \x01(\x05\"B\n\tPlayState\x12\x0b\n\x07INVALID\x10\x00\x12\x0b\n\x07PLAYING\x10\x01\x12\x07\n\x03WON\x10\x04\x12\x08\n\x04LOST\x10\x05\x12\x08\n\x04TIED\x10\x06\"%\n\tBoardZone\x12\x18\n\x07minions\x18\x01 \x03(\x0b\x32\x07.Minion\"\xfd\x02\n\x06Minion\x12\x0f\n\x07\x63\x61rd_id\x18\x01 \x01(\x05\x12\x0b\n\x03\x61tk\x18\x02 \x01(\x05\x12\x13\n\x0b\x62\x61se_health\x18\x03 \x01(\x05\x12\x0e\n\x06\x64\x61mage\x18\x04 \x01(\x05\x12\x1d\n\x15num_attacks_this_turn\x18\x05 \x01(\x05\x12\x11\n\texhausted\x18\x06 \x01(\x08\x12\x1a\n\x12\x61ttackable_by_rush\x18\x07 \x01(\x08\x12\x0e\n\x06\x63harge\x18\x08 \x01(\x08\x12\x10\n\x08windfury\x18\t \x01(\x08\x12\x11\n\tlifesteal\x18\n \x01(\x08\x12\x11\n\tpoisonous\x18\x0b \x01(\x08\x12\x0f\n\x07stealth\x18\x0c \x01(\x08\x12\x15\n\rdivine_shield\x18\r \x01(\x08\x12\x0e\n\x06immune\x18\x0e \x01(\x08\x12\x0f\n\x07\x65lusive\x18\x0f \x01(\x08\x12\x0e\n\x06\x66rozen\x18\x10 \x01(\x08\x12\x13\n\x0b\x64\x65\x61thrattle\x18\x11 \x01(\x08\x12\x15\n\rzone_position\x18\x19 \x01(\x05\x12\x15\n\rorder_of_play\x18\x1a \x01(\x05\"\'\n\x08HandZone\x12\x1b\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\t.Playable\")\n\nSecretZone\x12\x1b\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\t.Playable\"\'\n\x08\x44\x65\x63kZone\x12\x1b\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\t.Playable\"\\\n\x08Playable\x12\x0f\n\x07\x63\x61rd_id\x18\x01 \x01(\x05\x12\x0c\n\x04\x63ost\x18\x02 \x01(\x05\x12\x0b\n\x03\x61tk\x18\x03 \x01(\x05\x12\x13\n\x0b\x62\x61se_health\x18\x04 \x01(\x05\x12\x0f\n\x07ghostly\x18\x05 \x01(\x08\"\xe2\x01\n\x04Hero\x12\x12\n\ncard_class\x18\x01 \x01(\x05\x12\x0b\n\x03\x61tk\x18\x02 \x01(\x05\x12\x13\n\x0b\x62\x61se_health\x18\x03 \x01(\x05\x12\x0e\n\x06\x64\x61mage\x18\x04 \x01(\x05\x12\x1d\n\x15num_attacks_this_turn\x18\x05 \x01(\x05\x12\r\n\x05\x61rmor\x18\x14 \x01(\x05\x12\x11\n\texhausted\x18\x06 \x01(\x08\x12\x0f\n\x07stealth\x18\x0c \x01(\x08\x12\x0e\n\x06immune\x18\x0e \x01(\x08\x12\x19\n\x05power\x18\x0f \x01(\x0b\x32\n.HeroPower\x12\x17\n\x06weapon\x18\x10 \x01(\x0b\x32\x07.Weapon\"=\n\tHeroPower\x12\x0f\n\x07\x63\x61rd_id\x18\x01 \x01(\x05\x12\x0c\n\x04\x63ost\x18\x02 \x01(\x05\x12\x11\n\texhausted\x18\x03 \x01(\x08\"\x92\x01\n\x06Weapon\x12\x0f\n\x07\x63\x61rd_id\x18\x01 \x01(\x05\x12\x0b\n\x03\x61tk\x18\x02 \x01(\x05\x12\x12\n\ndurability\x18\x03 \x01(\x05\x12\x0e\n\x06\x64\x61mage\x18\x04 \x01(\x05\x12\x10\n\x08windfury\x18\t \x01(\x08\x12\x11\n\tlifesteal\x18\n \x01(\x08\x12\x11\n\tpoisonous\x18\x0b \x01(\x08\x12\x0e\n\x06immune\x18\x0e \x01(\x08\x32\xb5\x01\n\x11SabberStonePython\x12 \n\x07NewGame\x12\x0c.DeckStrings\x1a\x05.Game\"\x00\x12!\n\nGetOptions\x12\x07.GameId\x1a\x08.Options\"\x00\x12\x1b\n\x07Process\x12\x07.Option\x1a\x05.Game\"\x00\x12%\n\x11GetCardDictionary\x12\x06.Empty\x1a\x06.Cards\"\x00\x12\x17\n\x05Reset\x12\x07.GameId\x1a\x05.Game2)\n\x0cServerHandle\x12\x19\n\x05\x43lose\x12\x06.Empty\x1a\x06.Empty\"\x00\x42\x18\xaa\x02\x15SabberStonePython.APIb\x06proto3')
+  serialized_pb=_b('\n\x0cpython.proto\"\x07\n\x05\x45mpty\"\x17\n\x06GameId\x12\r\n\x05value\x18\x01 \x01(\x05\"\x19\n\x08\x45ntityId\x12\r\n\x05value\x18\x01 \x01(\x05\"\xc6\x02\n\x06Option\x12$\n\x04type\x18\x01 \x01(\x0e\x32\x16.Option.PlayerTaskType\x12\x11\n\tsource_id\x18\x02 \x01(\x05\x12\x11\n\ttarget_id\x18\x03 \x01(\x05\x12\x12\n\nsub_option\x18\x04 \x01(\x05\x12\x0e\n\x06\x63hoice\x18\x06 \x01(\x05\x12\x0f\n\x07game_id\x18\x07 \x01(\x05\x12\r\n\x05print\x18\x08 \x01(\t\x12\x17\n\x0fsource_position\x18\t \x01(\x05\x12\x17\n\x0ftarget_position\x18\n \x01(\x05\"z\n\x0ePlayerTaskType\x12\n\n\x06\x43HOOSE\x10\x00\x12\x0b\n\x07\x43ONCEDE\x10\x01\x12\x0c\n\x08\x45ND_TURN\x10\x02\x12\x0f\n\x0bHERO_ATTACK\x10\x03\x12\x0e\n\nHERO_POWER\x10\x04\x12\x11\n\rMINION_ATTACK\x10\x05\x12\r\n\tPLAY_CARD\x10\x06\" \n\x07Options\x12\x15\n\x04list\x18\x01 \x03(\x0b\x32\x07.Option\"\t\n\x07GameTag\"K\n\x04\x43\x61rd\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x11\n\tstring_id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\x16\n\x04tags\x18\x04 \x03(\x0b\x32\x08.GameTag\"^\n\x05\x43\x61rds\x12 \n\x05\x63\x61rds\x18\x01 \x03(\x0b\x32\x11.Cards.CardsEntry\x1a\x33\n\nCardsEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\x14\n\x05value\x18\x02 \x01(\x0b\x32\x05.Card:\x02\x38\x01\"+\n\x0b\x44\x65\x63kStrings\x12\r\n\x05\x64\x65\x63k1\x18\x01 \x01(\t\x12\r\n\x05\x64\x65\x63k2\x18\x02 \x01(\t\"\xcd\x01\n\x04Game\x12\x13\n\x02id\x18\x01 \x01(\x0b\x32\x07.GameId\x12\"\n\rCurrentPlayer\x18\x02 \x01(\x0b\x32\x0b.Controller\x12$\n\x0f\x43urrentOpponent\x18\x03 \x01(\x0b\x32\x0b.Controller\x12\x1a\n\x05state\x18\x04 \x01(\x0e\x32\x0b.Game.State\x12\x0c\n\x04turn\x18\x05 \x01(\x05\"<\n\x05State\x12\x0b\n\x07INVALID\x10\x00\x12\x0b\n\x07LOADING\x10\x01\x12\x0b\n\x07RUNNING\x10\x02\x12\x0c\n\x08\x43OMPLETE\x10\x03\"\xf5\x02\n\nController\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x13\n\x04hero\x18\x02 \x01(\x0b\x32\x05.Hero\x12\x1e\n\nboard_zone\x18\x03 \x01(\x0b\x32\n.BoardZone\x12\x1c\n\thand_zone\x18\x04 \x01(\x0b\x32\t.HandZone\x12 \n\x0bsecret_zone\x18\x05 \x01(\x0b\x32\x0b.SecretZone\x12\x1c\n\tdeck_zone\x18\x06 \x01(\x0b\x32\t.DeckZone\x12)\n\nplay_state\x18\x07 \x01(\x0e\x32\x15.Controller.PlayState\x12\x11\n\tbase_mana\x18\x08 \x01(\x05\x12\x16\n\x0eremaining_mana\x18\t \x01(\x05\x12\x17\n\x0foverload_locked\x18\n \x01(\x05\x12\x15\n\roverload_owed\x18\x0b \x01(\x05\"B\n\tPlayState\x12\x0b\n\x07INVALID\x10\x00\x12\x0b\n\x07PLAYING\x10\x01\x12\x07\n\x03WON\x10\x04\x12\x08\n\x04LOST\x10\x05\x12\x08\n\x04TIED\x10\x06\"%\n\tBoardZone\x12\x18\n\x07minions\x18\x01 \x03(\x0b\x32\x07.Minion\"\x8c\x03\n\x06Minion\x12\x0f\n\x07\x63\x61rd_id\x18\x01 \x01(\x05\x12\x0b\n\x03\x61tk\x18\x02 \x01(\x05\x12\x13\n\x0b\x62\x61se_health\x18\x03 \x01(\x05\x12\x0e\n\x06\x64\x61mage\x18\x04 \x01(\x05\x12\x1d\n\x15num_attacks_this_turn\x18\x05 \x01(\x05\x12\x11\n\texhausted\x18\x06 \x01(\x08\x12\x1a\n\x12\x61ttackable_by_rush\x18\x07 \x01(\x08\x12\x0e\n\x06\x63harge\x18\x08 \x01(\x08\x12\x10\n\x08windfury\x18\t \x01(\x08\x12\x11\n\tlifesteal\x18\n \x01(\x08\x12\x11\n\tpoisonous\x18\x0b \x01(\x08\x12\x0f\n\x07stealth\x18\x0c \x01(\x08\x12\x15\n\rdivine_shield\x18\r \x01(\x08\x12\x0e\n\x06immune\x18\x0e \x01(\x08\x12\x0f\n\x07\x65lusive\x18\x0f \x01(\x08\x12\x0e\n\x06\x66rozen\x18\x10 \x01(\x08\x12\x13\n\x0b\x64\x65\x61thrattle\x18\x11 \x01(\x08\x12\r\n\x05taunt\x18\x12 \x01(\x08\x12\x15\n\rzone_position\x18\x19 \x01(\x05\x12\x15\n\rorder_of_play\x18\x1a \x01(\x05\"\'\n\x08HandZone\x12\x1b\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\t.Playable\")\n\nSecretZone\x12\x1b\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\t.Playable\"\'\n\x08\x44\x65\x63kZone\x12\x1b\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\t.Playable\"\\\n\x08Playable\x12\x0f\n\x07\x63\x61rd_id\x18\x01 \x01(\x05\x12\x0c\n\x04\x63ost\x18\x02 \x01(\x05\x12\x0b\n\x03\x61tk\x18\x03 \x01(\x05\x12\x13\n\x0b\x62\x61se_health\x18\x04 \x01(\x05\x12\x0f\n\x07ghostly\x18\x05 \x01(\x08\"\xe2\x01\n\x04Hero\x12\x12\n\ncard_class\x18\x01 \x01(\x05\x12\x0b\n\x03\x61tk\x18\x02 \x01(\x05\x12\x13\n\x0b\x62\x61se_health\x18\x03 \x01(\x05\x12\x0e\n\x06\x64\x61mage\x18\x04 \x01(\x05\x12\x1d\n\x15num_attacks_this_turn\x18\x05 \x01(\x05\x12\r\n\x05\x61rmor\x18\x14 \x01(\x05\x12\x11\n\texhausted\x18\x06 \x01(\x08\x12\x0f\n\x07stealth\x18\x0c \x01(\x08\x12\x0e\n\x06immune\x18\x0e \x01(\x08\x12\x19\n\x05power\x18\x0f \x01(\x0b\x32\n.HeroPower\x12\x17\n\x06weapon\x18\x10 \x01(\x0b\x32\x07.Weapon\"=\n\tHeroPower\x12\x0f\n\x07\x63\x61rd_id\x18\x01 \x01(\x05\x12\x0c\n\x04\x63ost\x18\x02 \x01(\x05\x12\x11\n\texhausted\x18\x03 \x01(\x08\"\x92\x01\n\x06Weapon\x12\x0f\n\x07\x63\x61rd_id\x18\x01 \x01(\x05\x12\x0b\n\x03\x61tk\x18\x02 \x01(\x05\x12\x12\n\ndurability\x18\x03 \x01(\x05\x12\x0e\n\x06\x64\x61mage\x18\x04 \x01(\x05\x12\x10\n\x08windfury\x18\t \x01(\x08\x12\x11\n\tlifesteal\x18\n \x01(\x08\x12\x11\n\tpoisonous\x18\x0b \x01(\x08\x12\x0e\n\x06immune\x18\x0e \x01(\x08\x32\xb5\x01\n\x11SabberStonePython\x12 \n\x07NewGame\x12\x0c.DeckStrings\x1a\x05.Game\"\x00\x12!\n\nGetOptions\x12\x07.GameId\x1a\x08.Options\"\x00\x12\x1b\n\x07Process\x12\x07.Option\x1a\x05.Game\"\x00\x12%\n\x11GetCardDictionary\x12\x06.Empty\x1a\x06.Cards\"\x00\x12\x17\n\x05Reset\x12\x07.GameId\x1a\x05.Game2)\n\x0cServerHandle\x12\x19\n\x05\x43lose\x12\x06.Empty\x1a\x06.Empty\"\x00\x42\x18\xaa\x02\x15SabberStonePython.APIb\x06proto3')
 )
 
 
@@ -839,14 +839,21 @@ _MINION = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='zone_position', full_name='Minion.zone_position', index=17,
+      name='taunt', full_name='Minion.taunt', index=17,
+      number=18, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='zone_position', full_name='Minion.zone_position', index=18,
       number=25, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='order_of_play', full_name='Minion.order_of_play', index=18,
+      name='order_of_play', full_name='Minion.order_of_play', index=19,
       number=26, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -865,7 +872,7 @@ _MINION = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=1293,
-  serialized_end=1674,
+  serialized_end=1689,
 )
 
 
@@ -895,8 +902,8 @@ _HANDZONE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1676,
-  serialized_end=1715,
+  serialized_start=1691,
+  serialized_end=1730,
 )
 
 
@@ -926,8 +933,8 @@ _SECRETZONE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1717,
-  serialized_end=1758,
+  serialized_start=1732,
+  serialized_end=1773,
 )
 
 
@@ -957,8 +964,8 @@ _DECKZONE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1760,
-  serialized_end=1799,
+  serialized_start=1775,
+  serialized_end=1814,
 )
 
 
@@ -1016,8 +1023,8 @@ _PLAYABLE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1801,
-  serialized_end=1893,
+  serialized_start=1816,
+  serialized_end=1908,
 )
 
 
@@ -1117,8 +1124,8 @@ _HERO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1896,
-  serialized_end=2122,
+  serialized_start=1911,
+  serialized_end=2137,
 )
 
 
@@ -1162,8 +1169,8 @@ _HEROPOWER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2124,
-  serialized_end=2185,
+  serialized_start=2139,
+  serialized_end=2200,
 )
 
 
@@ -1242,8 +1249,8 @@ _WEAPON = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2188,
-  serialized_end=2334,
+  serialized_start=2203,
+  serialized_end=2349,
 )
 
 _OPTION.fields_by_name['type'].enum_type = _OPTION_PLAYERTASKTYPE
@@ -1293,152 +1300,152 @@ DESCRIPTOR.message_types_by_name['HeroPower'] = _HEROPOWER
 DESCRIPTOR.message_types_by_name['Weapon'] = _WEAPON
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
-Empty = _reflection.GeneratedProtocolMessageType('Empty', (_message.Message,), dict(
-  DESCRIPTOR = _EMPTY,
-  __module__ = 'python_pb2'
+Empty = _reflection.GeneratedProtocolMessageType('Empty', (_message.Message,), {
+  'DESCRIPTOR' : _EMPTY,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Empty)
-  ))
+  })
 _sym_db.RegisterMessage(Empty)
 
-GameId = _reflection.GeneratedProtocolMessageType('GameId', (_message.Message,), dict(
-  DESCRIPTOR = _GAMEID,
-  __module__ = 'python_pb2'
+GameId = _reflection.GeneratedProtocolMessageType('GameId', (_message.Message,), {
+  'DESCRIPTOR' : _GAMEID,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:GameId)
-  ))
+  })
 _sym_db.RegisterMessage(GameId)
 
-EntityId = _reflection.GeneratedProtocolMessageType('EntityId', (_message.Message,), dict(
-  DESCRIPTOR = _ENTITYID,
-  __module__ = 'python_pb2'
+EntityId = _reflection.GeneratedProtocolMessageType('EntityId', (_message.Message,), {
+  'DESCRIPTOR' : _ENTITYID,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:EntityId)
-  ))
+  })
 _sym_db.RegisterMessage(EntityId)
 
-Option = _reflection.GeneratedProtocolMessageType('Option', (_message.Message,), dict(
-  DESCRIPTOR = _OPTION,
-  __module__ = 'python_pb2'
+Option = _reflection.GeneratedProtocolMessageType('Option', (_message.Message,), {
+  'DESCRIPTOR' : _OPTION,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Option)
-  ))
+  })
 _sym_db.RegisterMessage(Option)
 
-Options = _reflection.GeneratedProtocolMessageType('Options', (_message.Message,), dict(
-  DESCRIPTOR = _OPTIONS,
-  __module__ = 'python_pb2'
+Options = _reflection.GeneratedProtocolMessageType('Options', (_message.Message,), {
+  'DESCRIPTOR' : _OPTIONS,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Options)
-  ))
+  })
 _sym_db.RegisterMessage(Options)
 
-GameTag = _reflection.GeneratedProtocolMessageType('GameTag', (_message.Message,), dict(
-  DESCRIPTOR = _GAMETAG,
-  __module__ = 'python_pb2'
+GameTag = _reflection.GeneratedProtocolMessageType('GameTag', (_message.Message,), {
+  'DESCRIPTOR' : _GAMETAG,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:GameTag)
-  ))
+  })
 _sym_db.RegisterMessage(GameTag)
 
-Card = _reflection.GeneratedProtocolMessageType('Card', (_message.Message,), dict(
-  DESCRIPTOR = _CARD,
-  __module__ = 'python_pb2'
+Card = _reflection.GeneratedProtocolMessageType('Card', (_message.Message,), {
+  'DESCRIPTOR' : _CARD,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Card)
-  ))
+  })
 _sym_db.RegisterMessage(Card)
 
-Cards = _reflection.GeneratedProtocolMessageType('Cards', (_message.Message,), dict(
+Cards = _reflection.GeneratedProtocolMessageType('Cards', (_message.Message,), {
 
-  CardsEntry = _reflection.GeneratedProtocolMessageType('CardsEntry', (_message.Message,), dict(
-    DESCRIPTOR = _CARDS_CARDSENTRY,
-    __module__ = 'python_pb2'
+  'CardsEntry' : _reflection.GeneratedProtocolMessageType('CardsEntry', (_message.Message,), {
+    'DESCRIPTOR' : _CARDS_CARDSENTRY,
+    '__module__' : 'python_pb2'
     # @@protoc_insertion_point(class_scope:Cards.CardsEntry)
-    ))
+    })
   ,
-  DESCRIPTOR = _CARDS,
-  __module__ = 'python_pb2'
+  'DESCRIPTOR' : _CARDS,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Cards)
-  ))
+  })
 _sym_db.RegisterMessage(Cards)
 _sym_db.RegisterMessage(Cards.CardsEntry)
 
-DeckStrings = _reflection.GeneratedProtocolMessageType('DeckStrings', (_message.Message,), dict(
-  DESCRIPTOR = _DECKSTRINGS,
-  __module__ = 'python_pb2'
+DeckStrings = _reflection.GeneratedProtocolMessageType('DeckStrings', (_message.Message,), {
+  'DESCRIPTOR' : _DECKSTRINGS,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:DeckStrings)
-  ))
+  })
 _sym_db.RegisterMessage(DeckStrings)
 
-Game = _reflection.GeneratedProtocolMessageType('Game', (_message.Message,), dict(
-  DESCRIPTOR = _GAME,
-  __module__ = 'python_pb2'
+Game = _reflection.GeneratedProtocolMessageType('Game', (_message.Message,), {
+  'DESCRIPTOR' : _GAME,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Game)
-  ))
+  })
 _sym_db.RegisterMessage(Game)
 
-Controller = _reflection.GeneratedProtocolMessageType('Controller', (_message.Message,), dict(
-  DESCRIPTOR = _CONTROLLER,
-  __module__ = 'python_pb2'
+Controller = _reflection.GeneratedProtocolMessageType('Controller', (_message.Message,), {
+  'DESCRIPTOR' : _CONTROLLER,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Controller)
-  ))
+  })
 _sym_db.RegisterMessage(Controller)
 
-BoardZone = _reflection.GeneratedProtocolMessageType('BoardZone', (_message.Message,), dict(
-  DESCRIPTOR = _BOARDZONE,
-  __module__ = 'python_pb2'
+BoardZone = _reflection.GeneratedProtocolMessageType('BoardZone', (_message.Message,), {
+  'DESCRIPTOR' : _BOARDZONE,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:BoardZone)
-  ))
+  })
 _sym_db.RegisterMessage(BoardZone)
 
-Minion = _reflection.GeneratedProtocolMessageType('Minion', (_message.Message,), dict(
-  DESCRIPTOR = _MINION,
-  __module__ = 'python_pb2'
+Minion = _reflection.GeneratedProtocolMessageType('Minion', (_message.Message,), {
+  'DESCRIPTOR' : _MINION,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Minion)
-  ))
+  })
 _sym_db.RegisterMessage(Minion)
 
-HandZone = _reflection.GeneratedProtocolMessageType('HandZone', (_message.Message,), dict(
-  DESCRIPTOR = _HANDZONE,
-  __module__ = 'python_pb2'
+HandZone = _reflection.GeneratedProtocolMessageType('HandZone', (_message.Message,), {
+  'DESCRIPTOR' : _HANDZONE,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:HandZone)
-  ))
+  })
 _sym_db.RegisterMessage(HandZone)
 
-SecretZone = _reflection.GeneratedProtocolMessageType('SecretZone', (_message.Message,), dict(
-  DESCRIPTOR = _SECRETZONE,
-  __module__ = 'python_pb2'
+SecretZone = _reflection.GeneratedProtocolMessageType('SecretZone', (_message.Message,), {
+  'DESCRIPTOR' : _SECRETZONE,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:SecretZone)
-  ))
+  })
 _sym_db.RegisterMessage(SecretZone)
 
-DeckZone = _reflection.GeneratedProtocolMessageType('DeckZone', (_message.Message,), dict(
-  DESCRIPTOR = _DECKZONE,
-  __module__ = 'python_pb2'
+DeckZone = _reflection.GeneratedProtocolMessageType('DeckZone', (_message.Message,), {
+  'DESCRIPTOR' : _DECKZONE,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:DeckZone)
-  ))
+  })
 _sym_db.RegisterMessage(DeckZone)
 
-Playable = _reflection.GeneratedProtocolMessageType('Playable', (_message.Message,), dict(
-  DESCRIPTOR = _PLAYABLE,
-  __module__ = 'python_pb2'
+Playable = _reflection.GeneratedProtocolMessageType('Playable', (_message.Message,), {
+  'DESCRIPTOR' : _PLAYABLE,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Playable)
-  ))
+  })
 _sym_db.RegisterMessage(Playable)
 
-Hero = _reflection.GeneratedProtocolMessageType('Hero', (_message.Message,), dict(
-  DESCRIPTOR = _HERO,
-  __module__ = 'python_pb2'
+Hero = _reflection.GeneratedProtocolMessageType('Hero', (_message.Message,), {
+  'DESCRIPTOR' : _HERO,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Hero)
-  ))
+  })
 _sym_db.RegisterMessage(Hero)
 
-HeroPower = _reflection.GeneratedProtocolMessageType('HeroPower', (_message.Message,), dict(
-  DESCRIPTOR = _HEROPOWER,
-  __module__ = 'python_pb2'
+HeroPower = _reflection.GeneratedProtocolMessageType('HeroPower', (_message.Message,), {
+  'DESCRIPTOR' : _HEROPOWER,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:HeroPower)
-  ))
+  })
 _sym_db.RegisterMessage(HeroPower)
 
-Weapon = _reflection.GeneratedProtocolMessageType('Weapon', (_message.Message,), dict(
-  DESCRIPTOR = _WEAPON,
-  __module__ = 'python_pb2'
+Weapon = _reflection.GeneratedProtocolMessageType('Weapon', (_message.Message,), {
+  'DESCRIPTOR' : _WEAPON,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Weapon)
-  ))
+  })
 _sym_db.RegisterMessage(Weapon)
 
 
@@ -1451,8 +1458,8 @@ _SABBERSTONEPYTHON = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=2337,
-  serialized_end=2518,
+  serialized_start=2352,
+  serialized_end=2533,
   methods=[
   _descriptor.MethodDescriptor(
     name='NewGame',
@@ -1511,8 +1518,8 @@ _SERVERHANDLE = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=1,
   serialized_options=None,
-  serialized_start=2520,
-  serialized_end=2561,
+  serialized_start=2535,
+  serialized_end=2576,
   methods=[
   _descriptor.MethodDescriptor(
     name='Close',
