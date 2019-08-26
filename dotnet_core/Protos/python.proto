@@ -134,6 +134,7 @@ message Minion {
     bool elusive = 15;
     bool frozen = 16;
     bool deathrattle = 17;
+    bool taunt = 18;
     // race
     // trigger or aura
     // enchantments
