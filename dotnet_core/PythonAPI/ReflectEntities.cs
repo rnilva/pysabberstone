@@ -131,6 +131,7 @@ namespace SabberStonePython.API
             elusive_ = minion.CantBeTargetedBySpells;
             frozen_ = minion.IsFrozen;
             deathrattle_ = minion.HasDeathrattle;
+            taunt_ = minion.HasTaunt;
 
             zonePosition_ = minion.ZonePosition;
             orderOfPlay_ = minion.OrderOfPlay;
