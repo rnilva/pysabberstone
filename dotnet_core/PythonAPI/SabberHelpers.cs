@@ -76,7 +76,7 @@ namespace SabberStonePython
             if (c.Choice != null)
             {
                 if (c.Choice.ChoiceType == ChoiceType.GENERAL)
-                    return c.Choice.Choices.Select(p => new Option(gameId, p)).ToList();
+                    return c.Choice.Choices.Select(p => new Option(gameId, p, c.Game.IdEntityDic[p].Card.Name)).ToList();
 
                 throw new NotImplementedException();
             }
@@ -121,11 +121,11 @@ namespace SabberStonePython
 				if (heroPowerCard.ChooseOne)
 				{
                     if (c.ChooseBoth)
-                        allOptions.Add(new Option(gameId, API.Option.Types.PlayerTaskType.HeroPower));
+                        allOptions.Add(new Option(gameId, API.Option.Types.PlayerTaskType.HeroPower, source: power));
                     else
                     {
-                        allOptions.Add(new Option(gameId, API.Option.Types.PlayerTaskType.HeroPower, 0, 0, 1));
-                        allOptions.Add(new Option(gameId, API.Option.Types.PlayerTaskType.HeroPower, 0, 0, 2));
+                        allOptions.Add(new Option(gameId, API.Option.Types.PlayerTaskType.HeroPower, 0, 0, 1, source: power));
+                        allOptions.Add(new Option(gameId, API.Option.Types.PlayerTaskType.HeroPower, 0, 0, 2, source: power));
                     }
                 }
 				else
@@ -136,9 +136,10 @@ namespace SabberStonePython
 						if (targets != null)
 							for (int i = 0; i < targets.Length; i++)
                                 allOptions.Add(new Option(gameId, API.Option.Types.PlayerTaskType.HeroPower, 
-                                    0, Option.getPosition(targets[i], controllerId)));
+                                    0, Option.getPosition(targets[i], controllerId),
+                                    source: power, target: targets[i]));
 						else
-                            allOptions.Add(new Option(gameId, API.Option.Types.PlayerTaskType.HeroPower));
+                            allOptions.Add(new Option(gameId, API.Option.Types.PlayerTaskType.HeroPower, source: power));
                     }
 				}
 			}
@@ -161,10 +162,11 @@ namespace SabberStonePython
 
                 for (int i = 0; i < attackTargets.Length; i++)
                     allOptions.Add(new Option(gameId, MinionAttack, j + 1, 
-                        Option.getEnemyPosition(attackTargets[i])));
+                        Option.getEnemyPosition(attackTargets[i]), source: minion, target: attackTargets[i]));
 
                 if (isOpHeroValidAttackTarget && !(minion.CantAttackHeroes || minion.AttackableByRush))
-                    allOptions.Add(new Option(gameId, MinionAttack, j + 1, Option.OP_HERO_POSITION));
+                    allOptions.Add(new Option(gameId, MinionAttack, j + 1, Option.OP_HERO_POSITION,
+                        source: minion, target: c.Opponent.Hero));
             }
 			#endregion
 
@@ -178,10 +180,11 @@ namespace SabberStonePython
 
                 for (int i = 0; i < attackTargets.Length; i++)
                     allOptions.Add(new Option(gameId, HeroAttack, 0, 
-                        Option.getEnemyPosition(attackTargets[i])));
+                        Option.getEnemyPosition(attackTargets[i]), source: hero, target: attackTargets[i]));
 
                 if (isOpHeroValidAttackTarget && !hero.CantAttackHeroes)
-                    allOptions.Add(new Option(gameId, HeroAttack, 0, Option.OP_HERO_POSITION));
+                    allOptions.Add(new Option(gameId, HeroAttack, 0, Option.OP_HERO_POSITION,
+                        source: hero, target: c.Opponent.Hero));
             }
 			#endregion
 
@@ -236,9 +239,11 @@ namespace SabberStonePython
 					{
                         if (playable is Minion)
                             for (int i = 0; i <= zonePosRange; i++)
-                                allOptions.Add(new Option(gameId, PlayCard, sourcePosition, i + 1, subOption));
+                                allOptions.Add(new Option(gameId, PlayCard, sourcePosition, i + 1, subOption,
+                                    source: playable));
                         else
-                            allOptions.Add(new Option(gameId, PlayCard, sourcePosition, 0, subOption));
+                            allOptions.Add(new Option(gameId, PlayCard, sourcePosition, 0, subOption,
+                                source: playable));
                     }
 					else
 					{
@@ -249,9 +254,11 @@ namespace SabberStonePython
 
 							if (playable is Minion)
                                 for (int i = 0; i <= zonePosRange; i++)
-                                    allOptions.Add(new Option(gameId, PlayCard, sourcePosition, i + 1, subOption));
+                                    allOptions.Add(new Option(gameId, PlayCard, sourcePosition, i + 1, subOption,
+                                        source: playable));
 							else
-								allOptions.Add(new Option(gameId, PlayCard, sourcePosition, 0, subOption));
+								allOptions.Add(new Option(gameId, PlayCard, sourcePosition, 0, subOption,
+                                    source: playable));
 						}
 						else
 						{
@@ -265,7 +272,8 @@ namespace SabberStonePython
                                     continue;
                                 else
                                     allOptions.Add(new Option(gameId, PlayCard, sourcePosition,
-                                        Option.getPosition(target, controllerId), subOption));
+                                        Option.getPosition(target, controllerId), subOption,
+                                        source: playable, target: target));
                             }
                         }
                     }
