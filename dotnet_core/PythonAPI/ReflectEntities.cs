@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Google.Protobuf.Collections;
+using SabberStoneCore.Enums;
 using SabberStoneCore.Model.Entities;
 
 namespace SabberStonePython.API
@@ -203,20 +204,55 @@ namespace SabberStonePython.API
         public const int HERO_POSITION = 0;
         public const int OP_HERO_POSITION = 8;
 
-        public Option(int gameId, Types.PlayerTaskType type, int sourcePosition = 0, int targetPosition = 0, int subOption = 0)
+        public Option(int gameId, Types.PlayerTaskType type, 
+            int sourcePosition = 0, int targetPosition = 0, int subOption = 0,
+            IPlayable source = null, ICharacter target = null)
         {
             gameId_ = gameId;
             type_ = type;
             sourcePosition_ = sourcePosition;
             targetPosition_ = targetPosition;
             subOption_ = subOption;
+
+            var sb = new StringBuilder();
+            switch (type)
+            {
+                case Types.PlayerTaskType.EndTurn:
+                    sb.Append($"[END_TURN]");
+                    break;
+                case Types.PlayerTaskType.MinionAttack:
+                case Types.PlayerTaskType.HeroAttack:
+                    sb.Append($"[ATTACK] {source} => {target}");
+                    break;
+                case Types.PlayerTaskType.HeroPower:
+                    sb.Append($"[HEROPOWER]{source}");
+                    if (target != null)
+                        sb.Append($" => {target}");
+                    break;
+                case Types.PlayerTaskType.PlayCard:
+                    sb.Append($"[PLAY_CARD] {source}");
+                    if (target != null)
+                        sb.Append($" => {target}");
+                    if (source.Card.Type == CardType.MINION)
+                        sb.Append($"(Pos {targetPosition})");
+                    else if (source.Card.Type == CardType.SPELL)
+                        isSpell_ = true;
+                    if (subOption > 0)
+                        sb.Append($"(Opt {subOption}");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            print_ = sb.ToString();
         }
 
-        public Option(int gameId, int choice)
+        public Option(int gameId, int choice, string cardName)
         {
             gameId_ = gameId;
             type_ = Types.PlayerTaskType.Choose;
             choice_ = choice;
+            print_ = $"[CHOOSE] {cardName}";
         }
 
         public Option(SabberStoneCore.Tasks.PlayerTasks.PlayerTask playerTask, int gameId)

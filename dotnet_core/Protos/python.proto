@@ -48,6 +48,8 @@ message Option {
 
     int32 source_position = 9;
     int32 target_position = 10;
+
+	bool is_spell = 11;
 }
 
 message Options {
