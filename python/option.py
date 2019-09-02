@@ -24,7 +24,7 @@ class Option:
             self.target_position,
             self.sub_option,
             self.choice,
-            self.is_playing_spell
+            self.is_spell
         ) = fields[1:6]
         length = unpack('i', data_bytes[Option.size_self:Option.size_self + 4])[0]
         self.size = Option.size_self + 4 + length
