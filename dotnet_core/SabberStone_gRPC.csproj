@@ -45,8 +45,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="SabberStoneContract\**" />
+    <EmbeddedResource Remove="SabberStoneContract\**" />
+    <None Remove="SabberStoneContract\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="SabberStoneContract\SabberStoneContract.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="SabberStoneCore">
-      <HintPath>SabberStoneCore.dll</HintPath>
+      <HintPath>SabberStoneContract\SabberStoneCore.dll</HintPath>
     </Reference>
   </ItemGroup>
 

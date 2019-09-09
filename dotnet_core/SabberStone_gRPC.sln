@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.28803.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SabberStone_gRPC", "SabberStone_gRPC.csproj", "{C64B060C-6055-46B2-9C2F-11DACC74D8C6}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SabberStoneContract", "SabberStoneContract\SabberStoneContract.csproj", "{A149358C-0BE3-4BFB-B00B-10B3B3E81C2F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,18 +20,12 @@ Global
 		{C64B060C-6055-46B2-9C2F-11DACC74D8C6}.NoSpan|Any CPU.Build.0 = Release|Any CPU
 		{C64B060C-6055-46B2-9C2F-11DACC74D8C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C64B060C-6055-46B2-9C2F-11DACC74D8C6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{416D6CD0-188C-43C6-B89E-B176734518F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{416D6CD0-188C-43C6-B89E-B176734518F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{416D6CD0-188C-43C6-B89E-B176734518F0}.NoSpan|Any CPU.ActiveCfg = Release|Any CPU
-		{416D6CD0-188C-43C6-B89E-B176734518F0}.NoSpan|Any CPU.Build.0 = Release|Any CPU
-		{416D6CD0-188C-43C6-B89E-B176734518F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{416D6CD0-188C-43C6-B89E-B176734518F0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3C5B4570-A747-4555-AD27-ACC617488ED7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3C5B4570-A747-4555-AD27-ACC617488ED7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3C5B4570-A747-4555-AD27-ACC617488ED7}.NoSpan|Any CPU.ActiveCfg = NoSpan|Any CPU
-		{3C5B4570-A747-4555-AD27-ACC617488ED7}.NoSpan|Any CPU.Build.0 = NoSpan|Any CPU
-		{3C5B4570-A747-4555-AD27-ACC617488ED7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3C5B4570-A747-4555-AD27-ACC617488ED7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A149358C-0BE3-4BFB-B00B-10B3B3E81C2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A149358C-0BE3-4BFB-B00B-10B3B3E81C2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A149358C-0BE3-4BFB-B00B-10B3B3E81C2F}.NoSpan|Any CPU.ActiveCfg = Debug|Any CPU
+		{A149358C-0BE3-4BFB-B00B-10B3B3E81C2F}.NoSpan|Any CPU.Build.0 = Debug|Any CPU
+		{A149358C-0BE3-4BFB-B00B-10B3B3E81C2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A149358C-0BE3-4BFB-B00B-10B3B3E81C2F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

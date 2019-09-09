@@ -18,6 +18,31 @@ service ServerHandle {
     rpc Close(Empty) returns (Empty) {}
 }
 
+service MatchService {
+	rpc Initialise(MatchRequest) returns (Empty) {}
+	// Wait until queueing ends and return the initial state.
+	rpc Queue(QueueRequest) returns (Empty) {}
+	rpc GetState(Empty) returns (Game) {}
+	rpc SendOption(Option) returns (Empty) {}
+}
+
+service PythonAIInterface {
+	rpc GetMove(Game) returns (Option) {}
+}
+
+message MatchRequest {
+	string ip = 1;
+	int32 port = 2;
+	string id = 3;
+	string password = 4;
+}
+
+message QueueRequest {
+	string deckstring = 1;
+	string id = 2;
+	string password = 3;
+}
+
 message GameId {
     int32 value = 1;
 }

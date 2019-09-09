@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
+using SabberStone_gRPC.MatchService;
 using SabberStone_gRPC.MMF;
 using SabberStone_gRPC.MMF.Entities;
 using SabberStonePython.API;
@@ -21,6 +22,14 @@ namespace SabberStone_gRPC
 
         static void Main(string[] args)
         {
+            var svr = new ServerHandleImpl(DEFAULT_PORT);
+
+            svr.Start();
+
+            svr.Shutdown().Wait();
+
+            return;
+
             if (args.Length < 1)
             {
                 Console.WriteLine(FALLBACK_HELP);
@@ -71,7 +80,8 @@ namespace SabberStone_gRPC
                 Services =
                 {
                     SabberStonePython.API.SabberStonePython.BindService(new API()),
-                    SabberStonePython.API.ServerHandle.BindService(this)
+                    SabberStonePython.API.ServerHandle.BindService(this),
+                    SabberStonePython.API.MatchService.BindService(new Services())
                 },
                 Ports = {new ServerPort("0.0.0.0", port, ServerCredentials.Insecure)}
             };
