@@ -59,25 +59,5 @@ namespace SabberStone_gRPC.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] SabberStoneCore {
-            get {
-                object obj = ResourceManager.GetObject("SabberStoneCore", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] SabberStoneCore1 {
-            get {
-                object obj = ResourceManager.GetObject("SabberStoneCore1", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }

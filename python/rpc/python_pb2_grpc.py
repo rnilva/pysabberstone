@@ -154,3 +154,155 @@ def add_ServerHandleServicer_to_server(servicer, server):
   generic_handler = grpc.method_handlers_generic_handler(
       'ServerHandle', rpc_method_handlers)
   server.add_generic_rpc_handlers((generic_handler,))
+
+
+class MatchServiceStub(object):
+  # missing associated documentation comment in .proto file
+  pass
+
+  def __init__(self, channel):
+    """Constructor.
+
+    Args:
+      channel: A grpc.Channel.
+    """
+    self.Initialise = channel.unary_unary(
+        '/MatchService/Initialise',
+        request_serializer=python__pb2.MatchRequest.SerializeToString,
+        response_deserializer=python__pb2.Empty.FromString,
+        )
+    self.Queue = channel.unary_unary(
+        '/MatchService/Queue',
+        request_serializer=python__pb2.QueueRequest.SerializeToString,
+        response_deserializer=python__pb2.Empty.FromString,
+        )
+    self.GetState = channel.unary_unary(
+        '/MatchService/GetState',
+        request_serializer=python__pb2.Empty.SerializeToString,
+        response_deserializer=python__pb2.Game.FromString,
+        )
+    self.SendOption = channel.unary_unary(
+        '/MatchService/SendOption',
+        request_serializer=python__pb2.Option.SerializeToString,
+        response_deserializer=python__pb2.Empty.FromString,
+        )
+    self.MatchStream = channel.stream_stream(
+        '/MatchService/MatchStream',
+        request_serializer=python__pb2.Option.SerializeToString,
+        response_deserializer=python__pb2.Game.FromString,
+        )
+
+
+class MatchServiceServicer(object):
+  # missing associated documentation comment in .proto file
+  pass
+
+  def Initialise(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def Queue(self, request, context):
+    """Wait until queueing ends and return the initial state.
+    """
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def GetState(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def SendOption(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def MatchStream(self, request_iterator, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+
+def add_MatchServiceServicer_to_server(servicer, server):
+  rpc_method_handlers = {
+      'Initialise': grpc.unary_unary_rpc_method_handler(
+          servicer.Initialise,
+          request_deserializer=python__pb2.MatchRequest.FromString,
+          response_serializer=python__pb2.Empty.SerializeToString,
+      ),
+      'Queue': grpc.unary_unary_rpc_method_handler(
+          servicer.Queue,
+          request_deserializer=python__pb2.QueueRequest.FromString,
+          response_serializer=python__pb2.Empty.SerializeToString,
+      ),
+      'GetState': grpc.unary_unary_rpc_method_handler(
+          servicer.GetState,
+          request_deserializer=python__pb2.Empty.FromString,
+          response_serializer=python__pb2.Game.SerializeToString,
+      ),
+      'SendOption': grpc.unary_unary_rpc_method_handler(
+          servicer.SendOption,
+          request_deserializer=python__pb2.Option.FromString,
+          response_serializer=python__pb2.Empty.SerializeToString,
+      ),
+      'MatchStream': grpc.stream_stream_rpc_method_handler(
+          servicer.MatchStream,
+          request_deserializer=python__pb2.Option.FromString,
+          response_serializer=python__pb2.Game.SerializeToString,
+      ),
+  }
+  generic_handler = grpc.method_handlers_generic_handler(
+      'MatchService', rpc_method_handlers)
+  server.add_generic_rpc_handlers((generic_handler,))
+
+
+class PythonAIInterfaceStub(object):
+  # missing associated documentation comment in .proto file
+  pass
+
+  def __init__(self, channel):
+    """Constructor.
+
+    Args:
+      channel: A grpc.Channel.
+    """
+    self.GetMove = channel.unary_unary(
+        '/PythonAIInterface/GetMove',
+        request_serializer=python__pb2.Game.SerializeToString,
+        response_deserializer=python__pb2.Option.FromString,
+        )
+
+
+class PythonAIInterfaceServicer(object):
+  # missing associated documentation comment in .proto file
+  pass
+
+  def GetMove(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+
+def add_PythonAIInterfaceServicer_to_server(servicer, server):
+  rpc_method_handlers = {
+      'GetMove': grpc.unary_unary_rpc_method_handler(
+          servicer.GetMove,
+          request_deserializer=python__pb2.Game.FromString,
+          response_serializer=python__pb2.Option.SerializeToString,
+      ),
+  }
+  generic_handler = grpc.method_handlers_generic_handler(
+      'PythonAIInterface', rpc_method_handlers)
+  server.add_generic_rpc_handlers((generic_handler,))
