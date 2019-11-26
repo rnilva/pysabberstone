@@ -9,6 +9,7 @@ using SabberStone_gRPC.MatchService;
 using SabberStone_gRPC.MMF;
 using SabberStone_gRPC.MMF.Entities;
 using SabberStonePython.API;
+using SabberStonePython.DotnetAIService;
 using SabberStonePython.Tests;
 
 namespace SabberStone_gRPC
@@ -22,6 +23,9 @@ namespace SabberStone_gRPC
 
         static void Main(string[] args)
         {
+            var ai = FindAI.GetAI("MonteCarloGraphSearch");
+            return;
+
             var svr = new ServerHandleImpl(DEFAULT_PORT);
 
             svr.Start();

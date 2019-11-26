@@ -45,12 +45,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="ai\**" />
     <Compile Remove="SabberStoneContract\**" />
+    <EmbeddedResource Remove="ai\**" />
     <EmbeddedResource Remove="SabberStoneContract\**" />
+    <None Remove="ai\**" />
     <None Remove="SabberStoneContract\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <!--<ProjectReference Include="ai\Hearthstone-MonteCarloGraphSearch\MonteCarloGraphSearch\MonteCarloGraphSearch.csproj" />-->
     <ProjectReference Include="SabberStoneContract\SabberStoneContract.csproj" />
   </ItemGroup>
 
