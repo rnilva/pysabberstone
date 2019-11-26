@@ -9,8 +9,6 @@ namespace SabberStonePython.DotnetAIService
 {
     public static class FindAI
     {
-        private const string AI_DIR = "ai";
-
         private static Assembly[] FindAssembly()
         {
             // Get all *.dll files
@@ -65,7 +63,12 @@ namespace SabberStonePython.DotnetAIService
                 if (aiType.AssemblyQualifiedName.Contains(name, StringComparison.InvariantCultureIgnoreCase))
                     return (IGameAI) Activator.CreateInstance(aiType);
 
-            throw new Exception("Can't find an ai agent of name " + name);
+            throw new AINotFoundException("Can't find an ai agent of name " + name);
+        }
+
+        public class AINotFoundException : Exception
+        {
+            public AINotFoundException(string message) : base(message) { }
         }
     }
 }

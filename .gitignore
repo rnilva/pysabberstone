@@ -339,6 +339,14 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 
+
+###################################################################
+
+# IDE files
 .vscode/
 
+# Temporary files
 *.mmf
+
+# Build outputs
+python/_sabberstone_dotnet/*

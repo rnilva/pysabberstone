@@ -27,12 +27,25 @@ service MatchService {
 }
 
 service DotnetAIService {
-    rpc Request(DotnetAIRequest) returns (Empty) {}
+    rpc Request(DotnetAIRequest) returns (DotnetAIResponse) {}
+	rpc SendPythonAIOption(Option) returns (Game) {}
 }
 
 message DotnetAIRequest {
-    string ai_name = 1;
-    string ai_deckstring = 2;
+    string dotnet_ai_name = 1;
+    string dotnet_ai_deckstring = 2;
+	string python_ai_deckstring = 3;
+}
+
+message DotnetAIResponse {
+	enum Type {
+		SUCCESS = 0;
+		NOT_FOUND = 1;
+		OCCUPIED = 2;
+		INVALID_DECKSTRING = 3;
+	}
+	Type type = 1;
+	Game game = 2;
 }
 
 service PythonAIInterface {

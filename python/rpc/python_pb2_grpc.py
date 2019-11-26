@@ -186,11 +186,6 @@ class MatchServiceStub(object):
         request_serializer=python__pb2.Option.SerializeToString,
         response_deserializer=python__pb2.Empty.FromString,
         )
-    self.MatchStream = channel.stream_stream(
-        '/MatchService/MatchStream',
-        request_serializer=python__pb2.Option.SerializeToString,
-        response_deserializer=python__pb2.Game.FromString,
-        )
 
 
 class MatchServiceServicer(object):
@@ -225,13 +220,6 @@ class MatchServiceServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def MatchStream(self, request_iterator, context):
-    # missing associated documentation comment in .proto file
-    pass
-    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-    context.set_details('Method not implemented!')
-    raise NotImplementedError('Method not implemented!')
-
 
 def add_MatchServiceServicer_to_server(servicer, server):
   rpc_method_handlers = {
@@ -255,14 +243,68 @@ def add_MatchServiceServicer_to_server(servicer, server):
           request_deserializer=python__pb2.Option.FromString,
           response_serializer=python__pb2.Empty.SerializeToString,
       ),
-      'MatchStream': grpc.stream_stream_rpc_method_handler(
-          servicer.MatchStream,
+  }
+  generic_handler = grpc.method_handlers_generic_handler(
+      'MatchService', rpc_method_handlers)
+  server.add_generic_rpc_handlers((generic_handler,))
+
+
+class DotnetAIServiceStub(object):
+  # missing associated documentation comment in .proto file
+  pass
+
+  def __init__(self, channel):
+    """Constructor.
+
+    Args:
+      channel: A grpc.Channel.
+    """
+    self.Request = channel.unary_unary(
+        '/DotnetAIService/Request',
+        request_serializer=python__pb2.DotnetAIRequest.SerializeToString,
+        response_deserializer=python__pb2.DotnetAIResponse.FromString,
+        )
+    self.SendPythonAIOption = channel.unary_unary(
+        '/DotnetAIService/SendPythonAIOption',
+        request_serializer=python__pb2.Option.SerializeToString,
+        response_deserializer=python__pb2.Game.FromString,
+        )
+
+
+class DotnetAIServiceServicer(object):
+  # missing associated documentation comment in .proto file
+  pass
+
+  def Request(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def SendPythonAIOption(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+
+def add_DotnetAIServiceServicer_to_server(servicer, server):
+  rpc_method_handlers = {
+      'Request': grpc.unary_unary_rpc_method_handler(
+          servicer.Request,
+          request_deserializer=python__pb2.DotnetAIRequest.FromString,
+          response_serializer=python__pb2.DotnetAIResponse.SerializeToString,
+      ),
+      'SendPythonAIOption': grpc.unary_unary_rpc_method_handler(
+          servicer.SendPythonAIOption,
           request_deserializer=python__pb2.Option.FromString,
           response_serializer=python__pb2.Game.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(
-      'MatchService', rpc_method_handlers)
+      'DotnetAIService', rpc_method_handlers)
   server.add_generic_rpc_handlers((generic_handler,))
 
 

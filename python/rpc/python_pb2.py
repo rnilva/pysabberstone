@@ -20,10 +20,40 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=_b('\252\002\025SabberStonePython.API'),
-  serialized_pb=_b('\n\x0cpython.proto\"\x07\n\x05\x45mpty\"F\n\x0cMatchRequest\x12\n\n\x02ip\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\x05\x12\n\n\x02id\x18\x03 \x01(\t\x12\x10\n\x08password\x18\x04 \x01(\t\"@\n\x0cQueueRequest\x12\x12\n\ndeckstring\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\"\x17\n\x06GameId\x12\r\n\x05value\x18\x01 \x01(\x05\"\x19\n\x08\x45ntityId\x12\r\n\x05value\x18\x01 \x01(\x05\"\xd8\x02\n\x06Option\x12$\n\x04type\x18\x01 \x01(\x0e\x32\x16.Option.PlayerTaskType\x12\x11\n\tsource_id\x18\x02 \x01(\x05\x12\x11\n\ttarget_id\x18\x03 \x01(\x05\x12\x12\n\nsub_option\x18\x04 \x01(\x05\x12\x0e\n\x06\x63hoice\x18\x06 \x01(\x05\x12\x0f\n\x07game_id\x18\x07 \x01(\x05\x12\r\n\x05print\x18\x08 \x01(\t\x12\x17\n\x0fsource_position\x18\t \x01(\x05\x12\x17\n\x0ftarget_position\x18\n \x01(\x05\x12\x10\n\x08is_spell\x18\x0b \x01(\x08\"z\n\x0ePlayerTaskType\x12\n\n\x06\x43HOOSE\x10\x00\x12\x0b\n\x07\x43ONCEDE\x10\x01\x12\x0c\n\x08\x45ND_TURN\x10\x02\x12\x0f\n\x0bHERO_ATTACK\x10\x03\x12\x0e\n\nHERO_POWER\x10\x04\x12\x11\n\rMINION_ATTACK\x10\x05\x12\r\n\tPLAY_CARD\x10\x06\" \n\x07Options\x12\x15\n\x04list\x18\x01 \x03(\x0b\x32\x07.Option\"\t\n\x07GameTag\"K\n\x04\x43\x61rd\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x11\n\tstring_id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\x16\n\x04tags\x18\x04 \x03(\x0b\x32\x08.GameTag\"^\n\x05\x43\x61rds\x12 \n\x05\x63\x61rds\x18\x01 \x03(\x0b\x32\x11.Cards.CardsEntry\x1a\x33\n\nCardsEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\x14\n\x05value\x18\x02 \x01(\x0b\x32\x05.Card:\x02\x38\x01\"+\n\x0b\x44\x65\x63kStrings\x12\r\n\x05\x64\x65\x63k1\x18\x01 \x01(\t\x12\r\n\x05\x64\x65\x63k2\x18\x02 \x01(\t\"\xcd\x01\n\x04Game\x12\x13\n\x02id\x18\x01 \x01(\x0b\x32\x07.GameId\x12\"\n\rCurrentPlayer\x18\x02 \x01(\x0b\x32\x0b.Controller\x12$\n\x0f\x43urrentOpponent\x18\x03 \x01(\x0b\x32\x0b.Controller\x12\x1a\n\x05state\x18\x04 \x01(\x0e\x32\x0b.Game.State\x12\x0c\n\x04turn\x18\x05 \x01(\x05\"<\n\x05State\x12\x0b\n\x07INVALID\x10\x00\x12\x0b\n\x07LOADING\x10\x01\x12\x0b\n\x07RUNNING\x10\x02\x12\x0c\n\x08\x43OMPLETE\x10\x03\"\xf5\x02\n\nController\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x13\n\x04hero\x18\x02 \x01(\x0b\x32\x05.Hero\x12\x1e\n\nboard_zone\x18\x03 \x01(\x0b\x32\n.BoardZone\x12\x1c\n\thand_zone\x18\x04 \x01(\x0b\x32\t.HandZone\x12 \n\x0bsecret_zone\x18\x05 \x01(\x0b\x32\x0b.SecretZone\x12\x1c\n\tdeck_zone\x18\x06 \x01(\x0b\x32\t.DeckZone\x12)\n\nplay_state\x18\x07 \x01(\x0e\x32\x15.Controller.PlayState\x12\x11\n\tbase_mana\x18\x08 \x01(\x05\x12\x16\n\x0eremaining_mana\x18\t \x01(\x05\x12\x17\n\x0foverload_locked\x18\n \x01(\x05\x12\x15\n\roverload_owed\x18\x0b \x01(\x05\"B\n\tPlayState\x12\x0b\n\x07INVALID\x10\x00\x12\x0b\n\x07PLAYING\x10\x01\x12\x07\n\x03WON\x10\x04\x12\x08\n\x04LOST\x10\x05\x12\x08\n\x04TIED\x10\x06\"%\n\tBoardZone\x12\x18\n\x07minions\x18\x01 \x03(\x0b\x32\x07.Minion\"\x8c\x03\n\x06Minion\x12\x0f\n\x07\x63\x61rd_id\x18\x01 \x01(\x05\x12\x0b\n\x03\x61tk\x18\x02 \x01(\x05\x12\x13\n\x0b\x62\x61se_health\x18\x03 \x01(\x05\x12\x0e\n\x06\x64\x61mage\x18\x04 \x01(\x05\x12\x1d\n\x15num_attacks_this_turn\x18\x05 \x01(\x05\x12\x11\n\texhausted\x18\x06 \x01(\x08\x12\x1a\n\x12\x61ttackable_by_rush\x18\x07 \x01(\x08\x12\x0e\n\x06\x63harge\x18\x08 \x01(\x08\x12\x10\n\x08windfury\x18\t \x01(\x08\x12\x11\n\tlifesteal\x18\n \x01(\x08\x12\x11\n\tpoisonous\x18\x0b \x01(\x08\x12\x0f\n\x07stealth\x18\x0c \x01(\x08\x12\x15\n\rdivine_shield\x18\r \x01(\x08\x12\x0e\n\x06immune\x18\x0e \x01(\x08\x12\x0f\n\x07\x65lusive\x18\x0f \x01(\x08\x12\x0e\n\x06\x66rozen\x18\x10 \x01(\x08\x12\x13\n\x0b\x64\x65\x61thrattle\x18\x11 \x01(\x08\x12\r\n\x05taunt\x18\x12 \x01(\x08\x12\x15\n\rzone_position\x18\x19 \x01(\x05\x12\x15\n\rorder_of_play\x18\x1a \x01(\x05\"\'\n\x08HandZone\x12\x1b\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\t.Playable\")\n\nSecretZone\x12\x1b\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\t.Playable\"\'\n\x08\x44\x65\x63kZone\x12\x1b\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\t.Playable\"\\\n\x08Playable\x12\x0f\n\x07\x63\x61rd_id\x18\x01 \x01(\x05\x12\x0c\n\x04\x63ost\x18\x02 \x01(\x05\x12\x0b\n\x03\x61tk\x18\x03 \x01(\x05\x12\x13\n\x0b\x62\x61se_health\x18\x04 \x01(\x05\x12\x0f\n\x07ghostly\x18\x05 \x01(\x08\"\xe2\x01\n\x04Hero\x12\x12\n\ncard_class\x18\x01 \x01(\x05\x12\x0b\n\x03\x61tk\x18\x02 \x01(\x05\x12\x13\n\x0b\x62\x61se_health\x18\x03 \x01(\x05\x12\x0e\n\x06\x64\x61mage\x18\x04 \x01(\x05\x12\x1d\n\x15num_attacks_this_turn\x18\x05 \x01(\x05\x12\r\n\x05\x61rmor\x18\x14 \x01(\x05\x12\x11\n\texhausted\x18\x06 \x01(\x08\x12\x0f\n\x07stealth\x18\x0c \x01(\x08\x12\x0e\n\x06immune\x18\x0e \x01(\x08\x12\x19\n\x05power\x18\x0f \x01(\x0b\x32\n.HeroPower\x12\x17\n\x06weapon\x18\x10 \x01(\x0b\x32\x07.Weapon\"=\n\tHeroPower\x12\x0f\n\x07\x63\x61rd_id\x18\x01 \x01(\x05\x12\x0c\n\x04\x63ost\x18\x02 \x01(\x05\x12\x11\n\texhausted\x18\x03 \x01(\x08\"\x92\x01\n\x06Weapon\x12\x0f\n\x07\x63\x61rd_id\x18\x01 \x01(\x05\x12\x0b\n\x03\x61tk\x18\x02 \x01(\x05\x12\x12\n\ndurability\x18\x03 \x01(\x05\x12\x0e\n\x06\x64\x61mage\x18\x04 \x01(\x05\x12\x10\n\x08windfury\x18\t \x01(\x08\x12\x11\n\tlifesteal\x18\n \x01(\x08\x12\x11\n\tpoisonous\x18\x0b \x01(\x08\x12\x0e\n\x06immune\x18\x0e \x01(\x08\x32\xb5\x01\n\x11SabberStonePython\x12 \n\x07NewGame\x12\x0c.DeckStrings\x1a\x05.Game\"\x00\x12!\n\nGetOptions\x12\x07.GameId\x1a\x08.Options\"\x00\x12\x1b\n\x07Process\x12\x07.Option\x1a\x05.Game\"\x00\x12%\n\x11GetCardDictionary\x12\x06.Empty\x1a\x06.Cards\"\x00\x12\x17\n\x05Reset\x12\x07.GameId\x1a\x05.Game2)\n\x0cServerHandle\x12\x19\n\x05\x43lose\x12\x06.Empty\x1a\x06.Empty\"\x00\x32\xba\x01\n\x0cMatchService\x12%\n\nInitialise\x12\r.MatchRequest\x1a\x06.Empty\"\x00\x12 \n\x05Queue\x12\r.QueueRequest\x1a\x06.Empty\"\x00\x12\x1b\n\x08GetState\x12\x06.Empty\x1a\x05.Game\"\x00\x12\x1f\n\nSendOption\x12\x07.Option\x1a\x06.Empty\"\x00\x12#\n\x0bMatchStream\x12\x07.Option\x1a\x05.Game\"\x00(\x01\x30\x01\x32\x30\n\x11PythonAIInterface\x12\x1b\n\x07GetMove\x12\x05.Game\x1a\x07.Option\"\x00\x42\x18\xaa\x02\x15SabberStonePython.APIb\x06proto3')
+  serialized_pb=_b('\n\x0cpython.proto\"\x07\n\x05\x45mpty\"e\n\x0f\x44otnetAIRequest\x12\x16\n\x0e\x64otnet_ai_name\x18\x01 \x01(\t\x12\x1c\n\x14\x64otnet_ai_deckstring\x18\x02 \x01(\t\x12\x1c\n\x14python_ai_deckstring\x18\x03 \x01(\t\"\x97\x01\n\x10\x44otnetAIResponse\x12$\n\x04type\x18\x01 \x01(\x0e\x32\x16.DotnetAIResponse.Type\x12\x13\n\x04game\x18\x02 \x01(\x0b\x32\x05.Game\"H\n\x04Type\x12\x0b\n\x07SUCCESS\x10\x00\x12\r\n\tNOT_FOUND\x10\x01\x12\x0c\n\x08OCCUPIED\x10\x02\x12\x16\n\x12INVALID_DECKSTRING\x10\x03\"F\n\x0cMatchRequest\x12\n\n\x02ip\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\x05\x12\n\n\x02id\x18\x03 \x01(\t\x12\x10\n\x08password\x18\x04 \x01(\t\"@\n\x0cQueueRequest\x12\x12\n\ndeckstring\x18\x01 \x01(\t\x12\n\n\x02id\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\"\x17\n\x06GameId\x12\r\n\x05value\x18\x01 \x01(\x05\"\x19\n\x08\x45ntityId\x12\r\n\x05value\x18\x01 \x01(\x05\"\xd8\x02\n\x06Option\x12$\n\x04type\x18\x01 \x01(\x0e\x32\x16.Option.PlayerTaskType\x12\x11\n\tsource_id\x18\x02 \x01(\x05\x12\x11\n\ttarget_id\x18\x03 \x01(\x05\x12\x12\n\nsub_option\x18\x04 \x01(\x05\x12\x0e\n\x06\x63hoice\x18\x06 \x01(\x05\x12\x0f\n\x07game_id\x18\x07 \x01(\x05\x12\r\n\x05print\x18\x08 \x01(\t\x12\x17\n\x0fsource_position\x18\t \x01(\x05\x12\x17\n\x0ftarget_position\x18\n \x01(\x05\x12\x10\n\x08is_spell\x18\x0b \x01(\x08\"z\n\x0ePlayerTaskType\x12\n\n\x06\x43HOOSE\x10\x00\x12\x0b\n\x07\x43ONCEDE\x10\x01\x12\x0c\n\x08\x45ND_TURN\x10\x02\x12\x0f\n\x0bHERO_ATTACK\x10\x03\x12\x0e\n\nHERO_POWER\x10\x04\x12\x11\n\rMINION_ATTACK\x10\x05\x12\r\n\tPLAY_CARD\x10\x06\" \n\x07Options\x12\x15\n\x04list\x18\x01 \x03(\x0b\x32\x07.Option\"\t\n\x07GameTag\"K\n\x04\x43\x61rd\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x11\n\tstring_id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\x16\n\x04tags\x18\x04 \x03(\x0b\x32\x08.GameTag\"^\n\x05\x43\x61rds\x12 \n\x05\x63\x61rds\x18\x01 \x03(\x0b\x32\x11.Cards.CardsEntry\x1a\x33\n\nCardsEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\x14\n\x05value\x18\x02 \x01(\x0b\x32\x05.Card:\x02\x38\x01\"+\n\x0b\x44\x65\x63kStrings\x12\r\n\x05\x64\x65\x63k1\x18\x01 \x01(\t\x12\r\n\x05\x64\x65\x63k2\x18\x02 \x01(\t\"\xcd\x01\n\x04Game\x12\x13\n\x02id\x18\x01 \x01(\x0b\x32\x07.GameId\x12\"\n\rCurrentPlayer\x18\x02 \x01(\x0b\x32\x0b.Controller\x12$\n\x0f\x43urrentOpponent\x18\x03 \x01(\x0b\x32\x0b.Controller\x12\x1a\n\x05state\x18\x04 \x01(\x0e\x32\x0b.Game.State\x12\x0c\n\x04turn\x18\x05 \x01(\x05\"<\n\x05State\x12\x0b\n\x07INVALID\x10\x00\x12\x0b\n\x07LOADING\x10\x01\x12\x0b\n\x07RUNNING\x10\x02\x12\x0c\n\x08\x43OMPLETE\x10\x03\"\xf5\x02\n\nController\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x13\n\x04hero\x18\x02 \x01(\x0b\x32\x05.Hero\x12\x1e\n\nboard_zone\x18\x03 \x01(\x0b\x32\n.BoardZone\x12\x1c\n\thand_zone\x18\x04 \x01(\x0b\x32\t.HandZone\x12 \n\x0bsecret_zone\x18\x05 \x01(\x0b\x32\x0b.SecretZone\x12\x1c\n\tdeck_zone\x18\x06 \x01(\x0b\x32\t.DeckZone\x12)\n\nplay_state\x18\x07 \x01(\x0e\x32\x15.Controller.PlayState\x12\x11\n\tbase_mana\x18\x08 \x01(\x05\x12\x16\n\x0eremaining_mana\x18\t \x01(\x05\x12\x17\n\x0foverload_locked\x18\n \x01(\x05\x12\x15\n\roverload_owed\x18\x0b \x01(\x05\"B\n\tPlayState\x12\x0b\n\x07INVALID\x10\x00\x12\x0b\n\x07PLAYING\x10\x01\x12\x07\n\x03WON\x10\x04\x12\x08\n\x04LOST\x10\x05\x12\x08\n\x04TIED\x10\x06\"%\n\tBoardZone\x12\x18\n\x07minions\x18\x01 \x03(\x0b\x32\x07.Minion\"\x8c\x03\n\x06Minion\x12\x0f\n\x07\x63\x61rd_id\x18\x01 \x01(\x05\x12\x0b\n\x03\x61tk\x18\x02 \x01(\x05\x12\x13\n\x0b\x62\x61se_health\x18\x03 \x01(\x05\x12\x0e\n\x06\x64\x61mage\x18\x04 \x01(\x05\x12\x1d\n\x15num_attacks_this_turn\x18\x05 \x01(\x05\x12\x11\n\texhausted\x18\x06 \x01(\x08\x12\x1a\n\x12\x61ttackable_by_rush\x18\x07 \x01(\x08\x12\x0e\n\x06\x63harge\x18\x08 \x01(\x08\x12\x10\n\x08windfury\x18\t \x01(\x08\x12\x11\n\tlifesteal\x18\n \x01(\x08\x12\x11\n\tpoisonous\x18\x0b \x01(\x08\x12\x0f\n\x07stealth\x18\x0c \x01(\x08\x12\x15\n\rdivine_shield\x18\r \x01(\x08\x12\x0e\n\x06immune\x18\x0e \x01(\x08\x12\x0f\n\x07\x65lusive\x18\x0f \x01(\x08\x12\x0e\n\x06\x66rozen\x18\x10 \x01(\x08\x12\x13\n\x0b\x64\x65\x61thrattle\x18\x11 \x01(\x08\x12\r\n\x05taunt\x18\x12 \x01(\x08\x12\x15\n\rzone_position\x18\x19 \x01(\x05\x12\x15\n\rorder_of_play\x18\x1a \x01(\x05\"\'\n\x08HandZone\x12\x1b\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\t.Playable\")\n\nSecretZone\x12\x1b\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\t.Playable\"\'\n\x08\x44\x65\x63kZone\x12\x1b\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\t.Playable\"\\\n\x08Playable\x12\x0f\n\x07\x63\x61rd_id\x18\x01 \x01(\x05\x12\x0c\n\x04\x63ost\x18\x02 \x01(\x05\x12\x0b\n\x03\x61tk\x18\x03 \x01(\x05\x12\x13\n\x0b\x62\x61se_health\x18\x04 \x01(\x05\x12\x0f\n\x07ghostly\x18\x05 \x01(\x08\"\xe2\x01\n\x04Hero\x12\x12\n\ncard_class\x18\x01 \x01(\x05\x12\x0b\n\x03\x61tk\x18\x02 \x01(\x05\x12\x13\n\x0b\x62\x61se_health\x18\x03 \x01(\x05\x12\x0e\n\x06\x64\x61mage\x18\x04 \x01(\x05\x12\x1d\n\x15num_attacks_this_turn\x18\x05 \x01(\x05\x12\r\n\x05\x61rmor\x18\x14 \x01(\x05\x12\x11\n\texhausted\x18\x06 \x01(\x08\x12\x0f\n\x07stealth\x18\x0c \x01(\x08\x12\x0e\n\x06immune\x18\x0e \x01(\x08\x12\x19\n\x05power\x18\x0f \x01(\x0b\x32\n.HeroPower\x12\x17\n\x06weapon\x18\x10 \x01(\x0b\x32\x07.Weapon\"=\n\tHeroPower\x12\x0f\n\x07\x63\x61rd_id\x18\x01 \x01(\x05\x12\x0c\n\x04\x63ost\x18\x02 \x01(\x05\x12\x11\n\texhausted\x18\x03 \x01(\x08\"\x92\x01\n\x06Weapon\x12\x0f\n\x07\x63\x61rd_id\x18\x01 \x01(\x05\x12\x0b\n\x03\x61tk\x18\x02 \x01(\x05\x12\x12\n\ndurability\x18\x03 \x01(\x05\x12\x0e\n\x06\x64\x61mage\x18\x04 \x01(\x05\x12\x10\n\x08windfury\x18\t \x01(\x08\x12\x11\n\tlifesteal\x18\n \x01(\x08\x12\x11\n\tpoisonous\x18\x0b \x01(\x08\x12\x0e\n\x06immune\x18\x0e \x01(\x08\x32\xb5\x01\n\x11SabberStonePython\x12 \n\x07NewGame\x12\x0c.DeckStrings\x1a\x05.Game\"\x00\x12!\n\nGetOptions\x12\x07.GameId\x1a\x08.Options\"\x00\x12\x1b\n\x07Process\x12\x07.Option\x1a\x05.Game\"\x00\x12%\n\x11GetCardDictionary\x12\x06.Empty\x1a\x06.Cards\"\x00\x12\x17\n\x05Reset\x12\x07.GameId\x1a\x05.Game2)\n\x0cServerHandle\x12\x19\n\x05\x43lose\x12\x06.Empty\x1a\x06.Empty\"\x00\x32\x95\x01\n\x0cMatchService\x12%\n\nInitialise\x12\r.MatchRequest\x1a\x06.Empty\"\x00\x12 \n\x05Queue\x12\r.QueueRequest\x1a\x06.Empty\"\x00\x12\x1b\n\x08GetState\x12\x06.Empty\x1a\x05.Game\"\x00\x12\x1f\n\nSendOption\x12\x07.Option\x1a\x06.Empty\"\x00\x32k\n\x0f\x44otnetAIService\x12\x30\n\x07Request\x12\x10.DotnetAIRequest\x1a\x11.DotnetAIResponse\"\x00\x12&\n\x12SendPythonAIOption\x12\x07.Option\x1a\x05.Game\"\x00\x32\x30\n\x11PythonAIInterface\x12\x1b\n\x07GetMove\x12\x05.Game\x1a\x07.Option\"\x00\x42\x18\xaa\x02\x15SabberStonePython.APIb\x06proto3')
 )
 
 
+
+_DOTNETAIRESPONSE_TYPE = _descriptor.EnumDescriptor(
+  name='Type',
+  full_name='DotnetAIResponse.Type',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='SUCCESS', index=0, number=0,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='NOT_FOUND', index=1, number=1,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='OCCUPIED', index=2, number=2,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='INVALID_DECKSTRING', index=3, number=3,
+      serialized_options=None,
+      type=None),
+  ],
+  containing_type=None,
+  serialized_options=None,
+  serialized_start=208,
+  serialized_end=280,
+)
+_sym_db.RegisterEnumDescriptor(_DOTNETAIRESPONSE_TYPE)
 
 _OPTION_PLAYERTASKTYPE = _descriptor.EnumDescriptor(
   name='PlayerTaskType',
@@ -62,8 +92,8 @@ _OPTION_PLAYERTASKTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=438,
-  serialized_end=560,
+  serialized_start=695,
+  serialized_end=817,
 )
 _sym_db.RegisterEnumDescriptor(_OPTION_PLAYERTASKTYPE)
 
@@ -92,8 +122,8 @@ _GAME_STATE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=971,
-  serialized_end=1031,
+  serialized_start=1228,
+  serialized_end=1288,
 )
 _sym_db.RegisterEnumDescriptor(_GAME_STATE)
 
@@ -126,8 +156,8 @@ _CONTROLLER_PLAYSTATE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1341,
-  serialized_end=1407,
+  serialized_start=1598,
+  serialized_end=1664,
 )
 _sym_db.RegisterEnumDescriptor(_CONTROLLER_PLAYSTATE)
 
@@ -153,6 +183,90 @@ _EMPTY = _descriptor.Descriptor(
   ],
   serialized_start=16,
   serialized_end=23,
+)
+
+
+_DOTNETAIREQUEST = _descriptor.Descriptor(
+  name='DotnetAIRequest',
+  full_name='DotnetAIRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='dotnet_ai_name', full_name='DotnetAIRequest.dotnet_ai_name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='dotnet_ai_deckstring', full_name='DotnetAIRequest.dotnet_ai_deckstring', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='python_ai_deckstring', full_name='DotnetAIRequest.python_ai_deckstring', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=25,
+  serialized_end=126,
+)
+
+
+_DOTNETAIRESPONSE = _descriptor.Descriptor(
+  name='DotnetAIResponse',
+  full_name='DotnetAIResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='type', full_name='DotnetAIResponse.type', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='game', full_name='DotnetAIResponse.game', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+    _DOTNETAIRESPONSE_TYPE,
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=129,
+  serialized_end=280,
 )
 
 
@@ -203,8 +317,8 @@ _MATCHREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=25,
-  serialized_end=95,
+  serialized_start=282,
+  serialized_end=352,
 )
 
 
@@ -248,8 +362,8 @@ _QUEUEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=97,
-  serialized_end=161,
+  serialized_start=354,
+  serialized_end=418,
 )
 
 
@@ -279,8 +393,8 @@ _GAMEID = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=163,
-  serialized_end=186,
+  serialized_start=420,
+  serialized_end=443,
 )
 
 
@@ -310,8 +424,8 @@ _ENTITYID = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=188,
-  serialized_end=213,
+  serialized_start=445,
+  serialized_end=470,
 )
 
 
@@ -405,8 +519,8 @@ _OPTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=216,
-  serialized_end=560,
+  serialized_start=473,
+  serialized_end=817,
 )
 
 
@@ -436,8 +550,8 @@ _OPTIONS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=562,
-  serialized_end=594,
+  serialized_start=819,
+  serialized_end=851,
 )
 
 
@@ -460,8 +574,8 @@ _GAMETAG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=596,
-  serialized_end=605,
+  serialized_start=853,
+  serialized_end=862,
 )
 
 
@@ -512,8 +626,8 @@ _CARD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=607,
-  serialized_end=682,
+  serialized_start=864,
+  serialized_end=939,
 )
 
 
@@ -550,8 +664,8 @@ _CARDS_CARDSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=727,
-  serialized_end=778,
+  serialized_start=984,
+  serialized_end=1035,
 )
 
 _CARDS = _descriptor.Descriptor(
@@ -580,8 +694,8 @@ _CARDS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=684,
-  serialized_end=778,
+  serialized_start=941,
+  serialized_end=1035,
 )
 
 
@@ -618,8 +732,8 @@ _DECKSTRINGS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=780,
-  serialized_end=823,
+  serialized_start=1037,
+  serialized_end=1080,
 )
 
 
@@ -678,8 +792,8 @@ _GAME = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=826,
-  serialized_end=1031,
+  serialized_start=1083,
+  serialized_end=1288,
 )
 
 
@@ -780,8 +894,8 @@ _CONTROLLER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1034,
-  serialized_end=1407,
+  serialized_start=1291,
+  serialized_end=1664,
 )
 
 
@@ -811,8 +925,8 @@ _BOARDZONE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1409,
-  serialized_end=1446,
+  serialized_start=1666,
+  serialized_end=1703,
 )
 
 
@@ -975,8 +1089,8 @@ _MINION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1449,
-  serialized_end=1845,
+  serialized_start=1706,
+  serialized_end=2102,
 )
 
 
@@ -1006,8 +1120,8 @@ _HANDZONE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1847,
-  serialized_end=1886,
+  serialized_start=2104,
+  serialized_end=2143,
 )
 
 
@@ -1037,8 +1151,8 @@ _SECRETZONE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1888,
-  serialized_end=1929,
+  serialized_start=2145,
+  serialized_end=2186,
 )
 
 
@@ -1068,8 +1182,8 @@ _DECKZONE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1931,
-  serialized_end=1970,
+  serialized_start=2188,
+  serialized_end=2227,
 )
 
 
@@ -1127,8 +1241,8 @@ _PLAYABLE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1972,
-  serialized_end=2064,
+  serialized_start=2229,
+  serialized_end=2321,
 )
 
 
@@ -1228,8 +1342,8 @@ _HERO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2067,
-  serialized_end=2293,
+  serialized_start=2324,
+  serialized_end=2550,
 )
 
 
@@ -1273,8 +1387,8 @@ _HEROPOWER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2295,
-  serialized_end=2356,
+  serialized_start=2552,
+  serialized_end=2613,
 )
 
 
@@ -1353,10 +1467,13 @@ _WEAPON = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2359,
-  serialized_end=2505,
+  serialized_start=2616,
+  serialized_end=2762,
 )
 
+_DOTNETAIRESPONSE.fields_by_name['type'].enum_type = _DOTNETAIRESPONSE_TYPE
+_DOTNETAIRESPONSE.fields_by_name['game'].message_type = _GAME
+_DOTNETAIRESPONSE_TYPE.containing_type = _DOTNETAIRESPONSE
 _OPTION.fields_by_name['type'].enum_type = _OPTION_PLAYERTASKTYPE
 _OPTION_PLAYERTASKTYPE.containing_type = _OPTION
 _OPTIONS.fields_by_name['list'].message_type = _OPTION
@@ -1383,6 +1500,8 @@ _DECKZONE.fields_by_name['entities'].message_type = _PLAYABLE
 _HERO.fields_by_name['power'].message_type = _HEROPOWER
 _HERO.fields_by_name['weapon'].message_type = _WEAPON
 DESCRIPTOR.message_types_by_name['Empty'] = _EMPTY
+DESCRIPTOR.message_types_by_name['DotnetAIRequest'] = _DOTNETAIREQUEST
+DESCRIPTOR.message_types_by_name['DotnetAIResponse'] = _DOTNETAIRESPONSE
 DESCRIPTOR.message_types_by_name['MatchRequest'] = _MATCHREQUEST
 DESCRIPTOR.message_types_by_name['QueueRequest'] = _QUEUEREQUEST
 DESCRIPTOR.message_types_by_name['GameId'] = _GAMEID
@@ -1412,6 +1531,20 @@ Empty = _reflection.GeneratedProtocolMessageType('Empty', (_message.Message,), d
   # @@protoc_insertion_point(class_scope:Empty)
   ))
 _sym_db.RegisterMessage(Empty)
+
+DotnetAIRequest = _reflection.GeneratedProtocolMessageType('DotnetAIRequest', (_message.Message,), dict(
+  DESCRIPTOR = _DOTNETAIREQUEST,
+  __module__ = 'python_pb2'
+  # @@protoc_insertion_point(class_scope:DotnetAIRequest)
+  ))
+_sym_db.RegisterMessage(DotnetAIRequest)
+
+DotnetAIResponse = _reflection.GeneratedProtocolMessageType('DotnetAIResponse', (_message.Message,), dict(
+  DESCRIPTOR = _DOTNETAIRESPONSE,
+  __module__ = 'python_pb2'
+  # @@protoc_insertion_point(class_scope:DotnetAIResponse)
+  ))
+_sym_db.RegisterMessage(DotnetAIResponse)
 
 MatchRequest = _reflection.GeneratedProtocolMessageType('MatchRequest', (_message.Message,), dict(
   DESCRIPTOR = _MATCHREQUEST,
@@ -1578,8 +1711,8 @@ _SABBERSTONEPYTHON = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=2508,
-  serialized_end=2689,
+  serialized_start=2765,
+  serialized_end=2946,
   methods=[
   _descriptor.MethodDescriptor(
     name='NewGame',
@@ -1638,8 +1771,8 @@ _SERVERHANDLE = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=1,
   serialized_options=None,
-  serialized_start=2691,
-  serialized_end=2732,
+  serialized_start=2948,
+  serialized_end=2989,
   methods=[
   _descriptor.MethodDescriptor(
     name='Close',
@@ -1662,8 +1795,8 @@ _MATCHSERVICE = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=2,
   serialized_options=None,
-  serialized_start=2735,
-  serialized_end=2921,
+  serialized_start=2992,
+  serialized_end=3141,
   methods=[
   _descriptor.MethodDescriptor(
     name='Initialise',
@@ -1701,29 +1834,53 @@ _MATCHSERVICE = _descriptor.ServiceDescriptor(
     output_type=_EMPTY,
     serialized_options=None,
   ),
-  _descriptor.MethodDescriptor(
-    name='MatchStream',
-    full_name='MatchService.MatchStream',
-    index=4,
-    containing_service=None,
-    input_type=_OPTION,
-    output_type=_GAME,
-    serialized_options=None,
-  ),
 ])
 _sym_db.RegisterServiceDescriptor(_MATCHSERVICE)
 
 DESCRIPTOR.services_by_name['MatchService'] = _MATCHSERVICE
 
 
+_DOTNETAISERVICE = _descriptor.ServiceDescriptor(
+  name='DotnetAIService',
+  full_name='DotnetAIService',
+  file=DESCRIPTOR,
+  index=3,
+  serialized_options=None,
+  serialized_start=3143,
+  serialized_end=3250,
+  methods=[
+  _descriptor.MethodDescriptor(
+    name='Request',
+    full_name='DotnetAIService.Request',
+    index=0,
+    containing_service=None,
+    input_type=_DOTNETAIREQUEST,
+    output_type=_DOTNETAIRESPONSE,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='SendPythonAIOption',
+    full_name='DotnetAIService.SendPythonAIOption',
+    index=1,
+    containing_service=None,
+    input_type=_OPTION,
+    output_type=_GAME,
+    serialized_options=None,
+  ),
+])
+_sym_db.RegisterServiceDescriptor(_DOTNETAISERVICE)
+
+DESCRIPTOR.services_by_name['DotnetAIService'] = _DOTNETAISERVICE
+
+
 _PYTHONAIINTERFACE = _descriptor.ServiceDescriptor(
   name='PythonAIInterface',
   full_name='PythonAIInterface',
   file=DESCRIPTOR,
-  index=3,
+  index=4,
   serialized_options=None,
-  serialized_start=2923,
-  serialized_end=2971,
+  serialized_start=3252,
+  serialized_end=3300,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetMove',
