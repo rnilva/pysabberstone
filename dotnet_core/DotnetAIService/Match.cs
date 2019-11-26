@@ -27,22 +27,50 @@ namespace SabberStonePython.DotnetAIService
             PythonAgent = pythonAgent;
             _game = game;
 
-            while (game.CurrentPlayer.PlayerId != 1)
-            {   // Run dotnetAgent if it is the first player
-                var poGame = CreatePartiallyObservableGame(game);
-                game.Process(dotnetAgent.GetMove(poGame));
-            }
+            // Run dotnetAgent if it is the first player
+            GetDotnetAgentMoves();
         }
 
         public void ProcessPythonOption(API.Option apiOption)
         {
             PlayerTask playerTask = SabberHelpers.GetPlayerTask(apiOption, _game);
+
+            if (DotnetAIServiceImpl.ConsoleOutput)
+            {
+                Console.WriteLine($"Option from python is received: {SabberHelpers.Printers.PrintAction(playerTask)}");
+            }
+            
+
             _game.Process(playerTask);
+
+            if (_game.CurrentPlayer.PlayerId == 1)
+                GetDotnetAgentMoves();
         }
 
         public bool IsCompleted()
         {
             return _game.State == State.COMPLETE;
+        }
+
+        private void GetDotnetAgentMoves()
+        {
+            if (DotnetAIServiceImpl.ConsoleOutput)
+            {
+                Console.WriteLine("Dotnet AI's turn.");
+            }
+
+            while (_game.CurrentPlayer.PlayerId == 1 &&
+                   _game.State != State.COMPLETE)
+            {   
+                var poGame = CreatePartiallyObservableGame(_game);
+                _game.Process(DotnetAgent.GetMove(poGame));
+            }
+            if (DotnetAIServiceImpl.ConsoleOutput)
+            {
+                Console.WriteLine("############## State ############");
+                Console.WriteLine(SabberHelpers.Printers.PrintGame(_game));
+                Console.WriteLine("##################################");
+            }
         }
 
         private static Game CreatePartiallyObservableGame(Game fullGame)

@@ -1,5 +1,5 @@
 import grpc
-from abstract_ai import RandomAI, dotnet_ai_match
+import abstract_ai
 import python_pb2_grpc as rpc
 from python_pb2 import Empty
 import random
@@ -15,6 +15,4 @@ matchserver_ip = "127.0.0.1"
 matchserver_port = 50051
 ai = abstract_ai.RandomAI(stub, account_name)
 
-# abstract_ai.start_remote_ai_match(ai, matchserver_ip, matchserver_port, 
-# 				  account_name, deck, game_stub)
-
+abstract_ai.start_ai_match(ai, matchserver_ip, matchserver_port, account_name, deck, game_stub)

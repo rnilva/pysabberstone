@@ -1525,180 +1525,180 @@ DESCRIPTOR.message_types_by_name['HeroPower'] = _HEROPOWER
 DESCRIPTOR.message_types_by_name['Weapon'] = _WEAPON
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
-Empty = _reflection.GeneratedProtocolMessageType('Empty', (_message.Message,), dict(
-  DESCRIPTOR = _EMPTY,
-  __module__ = 'python_pb2'
+Empty = _reflection.GeneratedProtocolMessageType('Empty', (_message.Message,), {
+  'DESCRIPTOR' : _EMPTY,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Empty)
-  ))
+  })
 _sym_db.RegisterMessage(Empty)
 
-DotnetAIRequest = _reflection.GeneratedProtocolMessageType('DotnetAIRequest', (_message.Message,), dict(
-  DESCRIPTOR = _DOTNETAIREQUEST,
-  __module__ = 'python_pb2'
+DotnetAIRequest = _reflection.GeneratedProtocolMessageType('DotnetAIRequest', (_message.Message,), {
+  'DESCRIPTOR' : _DOTNETAIREQUEST,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:DotnetAIRequest)
-  ))
+  })
 _sym_db.RegisterMessage(DotnetAIRequest)
 
-DotnetAIResponse = _reflection.GeneratedProtocolMessageType('DotnetAIResponse', (_message.Message,), dict(
-  DESCRIPTOR = _DOTNETAIRESPONSE,
-  __module__ = 'python_pb2'
+DotnetAIResponse = _reflection.GeneratedProtocolMessageType('DotnetAIResponse', (_message.Message,), {
+  'DESCRIPTOR' : _DOTNETAIRESPONSE,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:DotnetAIResponse)
-  ))
+  })
 _sym_db.RegisterMessage(DotnetAIResponse)
 
-MatchRequest = _reflection.GeneratedProtocolMessageType('MatchRequest', (_message.Message,), dict(
-  DESCRIPTOR = _MATCHREQUEST,
-  __module__ = 'python_pb2'
+MatchRequest = _reflection.GeneratedProtocolMessageType('MatchRequest', (_message.Message,), {
+  'DESCRIPTOR' : _MATCHREQUEST,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:MatchRequest)
-  ))
+  })
 _sym_db.RegisterMessage(MatchRequest)
 
-QueueRequest = _reflection.GeneratedProtocolMessageType('QueueRequest', (_message.Message,), dict(
-  DESCRIPTOR = _QUEUEREQUEST,
-  __module__ = 'python_pb2'
+QueueRequest = _reflection.GeneratedProtocolMessageType('QueueRequest', (_message.Message,), {
+  'DESCRIPTOR' : _QUEUEREQUEST,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:QueueRequest)
-  ))
+  })
 _sym_db.RegisterMessage(QueueRequest)
 
-GameId = _reflection.GeneratedProtocolMessageType('GameId', (_message.Message,), dict(
-  DESCRIPTOR = _GAMEID,
-  __module__ = 'python_pb2'
+GameId = _reflection.GeneratedProtocolMessageType('GameId', (_message.Message,), {
+  'DESCRIPTOR' : _GAMEID,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:GameId)
-  ))
+  })
 _sym_db.RegisterMessage(GameId)
 
-EntityId = _reflection.GeneratedProtocolMessageType('EntityId', (_message.Message,), dict(
-  DESCRIPTOR = _ENTITYID,
-  __module__ = 'python_pb2'
+EntityId = _reflection.GeneratedProtocolMessageType('EntityId', (_message.Message,), {
+  'DESCRIPTOR' : _ENTITYID,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:EntityId)
-  ))
+  })
 _sym_db.RegisterMessage(EntityId)
 
-Option = _reflection.GeneratedProtocolMessageType('Option', (_message.Message,), dict(
-  DESCRIPTOR = _OPTION,
-  __module__ = 'python_pb2'
+Option = _reflection.GeneratedProtocolMessageType('Option', (_message.Message,), {
+  'DESCRIPTOR' : _OPTION,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Option)
-  ))
+  })
 _sym_db.RegisterMessage(Option)
 
-Options = _reflection.GeneratedProtocolMessageType('Options', (_message.Message,), dict(
-  DESCRIPTOR = _OPTIONS,
-  __module__ = 'python_pb2'
+Options = _reflection.GeneratedProtocolMessageType('Options', (_message.Message,), {
+  'DESCRIPTOR' : _OPTIONS,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Options)
-  ))
+  })
 _sym_db.RegisterMessage(Options)
 
-GameTag = _reflection.GeneratedProtocolMessageType('GameTag', (_message.Message,), dict(
-  DESCRIPTOR = _GAMETAG,
-  __module__ = 'python_pb2'
+GameTag = _reflection.GeneratedProtocolMessageType('GameTag', (_message.Message,), {
+  'DESCRIPTOR' : _GAMETAG,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:GameTag)
-  ))
+  })
 _sym_db.RegisterMessage(GameTag)
 
-Card = _reflection.GeneratedProtocolMessageType('Card', (_message.Message,), dict(
-  DESCRIPTOR = _CARD,
-  __module__ = 'python_pb2'
+Card = _reflection.GeneratedProtocolMessageType('Card', (_message.Message,), {
+  'DESCRIPTOR' : _CARD,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Card)
-  ))
+  })
 _sym_db.RegisterMessage(Card)
 
-Cards = _reflection.GeneratedProtocolMessageType('Cards', (_message.Message,), dict(
+Cards = _reflection.GeneratedProtocolMessageType('Cards', (_message.Message,), {
 
-  CardsEntry = _reflection.GeneratedProtocolMessageType('CardsEntry', (_message.Message,), dict(
-    DESCRIPTOR = _CARDS_CARDSENTRY,
-    __module__ = 'python_pb2'
+  'CardsEntry' : _reflection.GeneratedProtocolMessageType('CardsEntry', (_message.Message,), {
+    'DESCRIPTOR' : _CARDS_CARDSENTRY,
+    '__module__' : 'python_pb2'
     # @@protoc_insertion_point(class_scope:Cards.CardsEntry)
-    ))
+    })
   ,
-  DESCRIPTOR = _CARDS,
-  __module__ = 'python_pb2'
+  'DESCRIPTOR' : _CARDS,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Cards)
-  ))
+  })
 _sym_db.RegisterMessage(Cards)
 _sym_db.RegisterMessage(Cards.CardsEntry)
 
-DeckStrings = _reflection.GeneratedProtocolMessageType('DeckStrings', (_message.Message,), dict(
-  DESCRIPTOR = _DECKSTRINGS,
-  __module__ = 'python_pb2'
+DeckStrings = _reflection.GeneratedProtocolMessageType('DeckStrings', (_message.Message,), {
+  'DESCRIPTOR' : _DECKSTRINGS,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:DeckStrings)
-  ))
+  })
 _sym_db.RegisterMessage(DeckStrings)
 
-Game = _reflection.GeneratedProtocolMessageType('Game', (_message.Message,), dict(
-  DESCRIPTOR = _GAME,
-  __module__ = 'python_pb2'
+Game = _reflection.GeneratedProtocolMessageType('Game', (_message.Message,), {
+  'DESCRIPTOR' : _GAME,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Game)
-  ))
+  })
 _sym_db.RegisterMessage(Game)
 
-Controller = _reflection.GeneratedProtocolMessageType('Controller', (_message.Message,), dict(
-  DESCRIPTOR = _CONTROLLER,
-  __module__ = 'python_pb2'
+Controller = _reflection.GeneratedProtocolMessageType('Controller', (_message.Message,), {
+  'DESCRIPTOR' : _CONTROLLER,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Controller)
-  ))
+  })
 _sym_db.RegisterMessage(Controller)
 
-BoardZone = _reflection.GeneratedProtocolMessageType('BoardZone', (_message.Message,), dict(
-  DESCRIPTOR = _BOARDZONE,
-  __module__ = 'python_pb2'
+BoardZone = _reflection.GeneratedProtocolMessageType('BoardZone', (_message.Message,), {
+  'DESCRIPTOR' : _BOARDZONE,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:BoardZone)
-  ))
+  })
 _sym_db.RegisterMessage(BoardZone)
 
-Minion = _reflection.GeneratedProtocolMessageType('Minion', (_message.Message,), dict(
-  DESCRIPTOR = _MINION,
-  __module__ = 'python_pb2'
+Minion = _reflection.GeneratedProtocolMessageType('Minion', (_message.Message,), {
+  'DESCRIPTOR' : _MINION,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Minion)
-  ))
+  })
 _sym_db.RegisterMessage(Minion)
 
-HandZone = _reflection.GeneratedProtocolMessageType('HandZone', (_message.Message,), dict(
-  DESCRIPTOR = _HANDZONE,
-  __module__ = 'python_pb2'
+HandZone = _reflection.GeneratedProtocolMessageType('HandZone', (_message.Message,), {
+  'DESCRIPTOR' : _HANDZONE,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:HandZone)
-  ))
+  })
 _sym_db.RegisterMessage(HandZone)
 
-SecretZone = _reflection.GeneratedProtocolMessageType('SecretZone', (_message.Message,), dict(
-  DESCRIPTOR = _SECRETZONE,
-  __module__ = 'python_pb2'
+SecretZone = _reflection.GeneratedProtocolMessageType('SecretZone', (_message.Message,), {
+  'DESCRIPTOR' : _SECRETZONE,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:SecretZone)
-  ))
+  })
 _sym_db.RegisterMessage(SecretZone)
 
-DeckZone = _reflection.GeneratedProtocolMessageType('DeckZone', (_message.Message,), dict(
-  DESCRIPTOR = _DECKZONE,
-  __module__ = 'python_pb2'
+DeckZone = _reflection.GeneratedProtocolMessageType('DeckZone', (_message.Message,), {
+  'DESCRIPTOR' : _DECKZONE,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:DeckZone)
-  ))
+  })
 _sym_db.RegisterMessage(DeckZone)
 
-Playable = _reflection.GeneratedProtocolMessageType('Playable', (_message.Message,), dict(
-  DESCRIPTOR = _PLAYABLE,
-  __module__ = 'python_pb2'
+Playable = _reflection.GeneratedProtocolMessageType('Playable', (_message.Message,), {
+  'DESCRIPTOR' : _PLAYABLE,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Playable)
-  ))
+  })
 _sym_db.RegisterMessage(Playable)
 
-Hero = _reflection.GeneratedProtocolMessageType('Hero', (_message.Message,), dict(
-  DESCRIPTOR = _HERO,
-  __module__ = 'python_pb2'
+Hero = _reflection.GeneratedProtocolMessageType('Hero', (_message.Message,), {
+  'DESCRIPTOR' : _HERO,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Hero)
-  ))
+  })
 _sym_db.RegisterMessage(Hero)
 
-HeroPower = _reflection.GeneratedProtocolMessageType('HeroPower', (_message.Message,), dict(
-  DESCRIPTOR = _HEROPOWER,
-  __module__ = 'python_pb2'
+HeroPower = _reflection.GeneratedProtocolMessageType('HeroPower', (_message.Message,), {
+  'DESCRIPTOR' : _HEROPOWER,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:HeroPower)
-  ))
+  })
 _sym_db.RegisterMessage(HeroPower)
 
-Weapon = _reflection.GeneratedProtocolMessageType('Weapon', (_message.Message,), dict(
-  DESCRIPTOR = _WEAPON,
-  __module__ = 'python_pb2'
+Weapon = _reflection.GeneratedProtocolMessageType('Weapon', (_message.Message,), {
+  'DESCRIPTOR' : _WEAPON,
+  '__module__' : 'python_pb2'
   # @@protoc_insertion_point(class_scope:Weapon)
-  ))
+  })
 _sym_db.RegisterMessage(Weapon)
 
 

@@ -23,9 +23,6 @@ namespace SabberStone_gRPC
 
         static void Main(string[] args)
         {
-            var ai = FindAI.GetAI("MonteCarloGraphSearch");
-            return;
-
             var svr = new ServerHandleImpl(DEFAULT_PORT);
 
             svr.Start();
@@ -85,6 +82,7 @@ namespace SabberStone_gRPC
                 {
                     SabberStonePython.API.SabberStonePython.BindService(new API()),
                     SabberStonePython.API.ServerHandle.BindService(this),
+                    SabberStonePython.API.DotnetAIService.BindService(new DotnetAIServiceImpl()),
                     SabberStonePython.API.MatchService.BindService(new Services())
                 },
                 Ports = {new ServerPort("0.0.0.0", port, ServerCredentials.Insecure)}
