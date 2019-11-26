@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.156
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SabberStone_gRPC", "SabberStone_gRPC.csproj", "{C64B060C-6055-46B2-9C2F-11DACC74D8C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SabberStonePython", "SabberStonePython.csproj", "{C64B060C-6055-46B2-9C2F-11DACC74D8C6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SabberStoneContract", "SabberStoneContract\SabberStoneContract.csproj", "{A149358C-0BE3-4BFB-B00B-10B3B3E81C2F}"
 EndProject

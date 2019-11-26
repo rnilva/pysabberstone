@@ -27,7 +27,7 @@ service MatchService {
 }
 
 service DotnetAIService {
-    rpc Request(AIName) returns (Empty) {}
+    rpc Request(DotnetAIRequest) returns (Empty) {}
 }
 
 message DotnetAIRequest {
