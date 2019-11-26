@@ -11,7 +11,7 @@ from .game import Game
 
 SERVER_ADDRESS = '/tmp/CoreFxPipe_sabberstoneserver_'
 DEFAULT_DLL_PATH = os.path.join(os.path.dirname(__file__),
-                                '_sabberstone_dotnet/SabberStone_gRPC.dll')
+                                '_sabberstone_dotnet/SabberStonePython.dll')
 TIMEOUT = 50
 
 

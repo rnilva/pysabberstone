@@ -24,7 +24,7 @@ namespace SabberStonePython
 {
     public static class SabberHelpers
     {
-        public static API.Game GenerateGameAPI(string deckString1, string deckString2)
+        public static Game GenerateGame(string deckString1, string deckString2)
         {
             Deck deck1, deck2;
 
@@ -65,6 +65,13 @@ namespace SabberStonePython
                 SkipMulligan = true,
             });
             game.StartGame();
+
+            return game;
+        }
+
+        public static API.Game GenerateGameAPI(string deckString1, string deckString2)
+        {
+            var game = GenerateGame(deckString1, deckString2);
 
             Console.WriteLine(Printers.PrintGame(game));
 

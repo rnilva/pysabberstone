@@ -1,7 +1,7 @@
 from ..rpc.python_pb2 import MatchRequest, QueueRequest, Empty
 from ..rpc.python_pb2 import DeckStrings, Game, Option
-from ..rpc.python_pb2_grpc import SabberStonePythonStub, , grpc
-from abc import ABC
+from ..rpc.python_pb2_grpc import SabberStonePythonStub, grpc
+from abc import ABC, abstractmethod
 import random
 
 
@@ -68,31 +68,32 @@ def remote_ai_match(ai: AbstractAI, ip, port,
 
 def dotnet_ai_match(python_ai: AbstractAI, dotnet_ai_name: str,
                     python_ai_deckstring, dotnet_ai_deckstring,
-                    sabberstone_stub):
+                    sabber_stub: SabberStonePythonStub):
     """Run matches between python AI agent and dotnet AI agent."""
     pass
-
+    sabberstone_stub.
+    
 
 def match(ai_player_1: AbstractAI, ai_player_2: AbstractAI,
           deckstring_1, deckstring_2, sabber_stub: SabberStonePythonStub,
           count: int = 100):
     """Run matches between two python AI agents."""
-    on_match_started(ai_player_1)
-    on_match_started(ai_player_2)
+    ai_player_1.on_match_started()
+    ai_player_2.on_match_started()
     for i in range(count):
         game = sabber_stub.NewGame(DeckStrings(deck1=deckstring_1,
                                                deck2=deckstring_2))
-        on_game_started(ai_player_1)
-        on_game_started(ai_player_2)
-        id = game.id
+        ai_player_1.on_game_started()
+        ai_player_2.on_game_started()
+        # id = game.id
         while game.state != 3:   # State.COMPLETE
             if game.CurrentPlayer.id == 1:
                 option = ai_player_1.get_option(game, sabber_stub)
             else:
                 option = ai_player_2.get_option(game, sabber_stub)
             game = sabber_stub.Process(option)
-        on_game_finished(ai_player_1)
-        on_game_finished(ai_player_2)
+        ai_player_1.on_game_finished()
+        ai_player_2.on_game_finished()
 
 
 class RandomAI(AbstractAI):
