@@ -58,7 +58,7 @@ namespace SabberStonePython.DotnetAIService
             const string HISTORY_DIR = "history";
 
             Directory.CreateDirectory(HISTORY_DIR);
-            string fileName = $"{DotnetAgentName}_{DateTime.Now:ddmmyyyyHHMMSS}.log";
+            string fileName = $"{DotnetAgentName}_{DateTime.Now:ddMMyy_HHmmss}.log";
 
             string path = Path.Combine(HISTORY_DIR, fileName);
 

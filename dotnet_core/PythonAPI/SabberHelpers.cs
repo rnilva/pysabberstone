@@ -731,53 +731,52 @@ namespace SabberStonePython
 
         public static void DumpHistories(Game game, string filePath)
         {
+            if (!game.History) return;
+
             using (FileStream file = File.OpenWrite(filePath))
+            using (var writer = new StreamWriter(file))
             {
-                using (var writer = new StreamWriter(file))
+                // Create and write initialisation stream first.
+                var initialisation = new GameServerStream
                 {
-                    var initialisation = new GameServerStream
+                    MessageType = MsgType.InGame,
+                    MessageState = true,
+                    Message = JsonConvert.SerializeObject(new GameData
                     {
-                        MessageType = MsgType.InGame,
-                        MessageState = true,
-                        Message = JsonConvert.SerializeObject(new GameData
-                        {
-                            GameId = 10000,
-                            PlayerId = 2,
-                            GameDataType = GameDataType.Initialisation,
-                            GameDataObject = JsonConvert.SerializeObject(
-                                new List<UserInfo>
+                        GameId = 10000,
+                        PlayerId = 2,
+                        GameDataType = GameDataType.Initialisation,
+                        GameDataObject = JsonConvert.SerializeObject(
+                            new List<UserInfo>
+                            {
+                                new UserInfo
                                 {
-                                    new UserInfo
-                                    {
-                                        PlayerId = 1
-                                    },
-                                    new UserInfo
-                                    {
-                                        PlayerId = 2
-                                    }
-                                })
-                        })
-                    };
+                                    PlayerId = 1
+                                },
+                                new UserInfo
+                                {
+                                    PlayerId = 2
+                                }
+                            })
+                    })
+                };
+                writer.WriteLine(JsonConvert.SerializeObject(initialisation));
 
-                    writer.WriteLine(JsonConvert.SerializeObject(initialisation));
-
-                    string encodedHistories = JsonConvert.SerializeObject(game.PowerHistory.Full);
-
-                    var tempStreamObject = new GameServerStream
+                // Encode and write powerhistory entries
+                string encodedHistories = JsonConvert.SerializeObject(game.PowerHistory.Full);
+                var tempStreamObject = new GameServerStream
+                {
+                    MessageType = MsgType.InGame,
+                    MessageState = true,
+                    Message = JsonConvert.SerializeObject(new GameData
                     {
-                        MessageType = MsgType.InGame,
-                        MessageState = true,
-                        Message = JsonConvert.SerializeObject(new GameData
-                        {
-                            GameId = 10000,
-                            PlayerId = 2,
-                            GameDataType = GameDataType.PowerHistory,
-                            GameDataObject = encodedHistories
-                        })
-                    };
-
-                    writer.WriteLine(JsonConvert.SerializeObject(tempStreamObject));
-                }
+                        GameId = 10000,
+                        PlayerId = 2,
+                        GameDataType = GameDataType.PowerHistory,
+                        GameDataObject = encodedHistories
+                    })
+                };
+                writer.WriteLine(JsonConvert.SerializeObject(tempStreamObject));
             }
         }
 
