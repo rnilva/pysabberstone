@@ -37,13 +37,12 @@ namespace SabberStonePython.DotnetAIService
                 Console.WriteLine($"... Found AI '{request.DotnetAiName}'");
 
                 // Generate SabberStoneCore.Model.Game
-                Game modelGame = SabberHelpers.GenerateGame(request.DotnetAiDeckstring, request.PythonAiDeckstring);
-
-                // Create a pythonAI instance
-                IGameAI pythonAI = new PythonAIHandler();
-
+                Game modelGame = SabberHelpers.GenerateGame(request.DotnetAiDeckstring,
+                                                            request.PythonAiDeckstring,
+                                                            request.History,
+                                                            request.Seed);
                 // Create a match instance
-                CurrentMatch = new Match(dotnetAI, pythonAI, modelGame);
+                CurrentMatch = new Match(dotnetAI, modelGame, request.DotnetAiName);
 
                 if (ConsoleOutput)
                 {
@@ -81,17 +80,21 @@ namespace SabberStonePython.DotnetAIService
 
         public override Task<API.Game> SendPythonAIOption(Option request, ServerCallContext context)
         {
-            var match = CurrentMatch;
+            Match match = CurrentMatch;
 
             try
             {
                 match.ProcessPythonOption(request);
+
                 if (match.IsCompleted()) 
                 {
-                    if (DotnetAIServiceImpl.ConsoleOutput)
+                    if (ConsoleOutput)
                     {
                         Console.WriteLine("Current match is completed!");
                     }
+
+                    match.SaveHistory();
+
                     CurrentMatch = null;
                 }
             } catch (Exception e)
@@ -104,10 +107,8 @@ namespace SabberStonePython.DotnetAIService
                     Console.WriteLine(e.Message);
                     Console.WriteLine(e.StackTrace);
                 }
-                throw e;
+                throw;
             }
-
-
 
             return Task.FromResult(new API.Game(match.CurrentPartiallyObservableGame, match.APIGameId));
         }

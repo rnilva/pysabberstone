@@ -36,6 +36,10 @@ namespace SabberStonePython.API
                 //ManagedObjects.InitialGameAPIs.Add(id, this);
                 ManagedObjects.OptionBuffers.Add(id, new List<Option>(50));
             }
+            else
+            {
+                ManagedObjects.Games[id] = game;
+            }
            
             id_ = new GameId(id);
         }
@@ -141,11 +145,11 @@ namespace SabberStonePython.API
 
     public partial class Playable
     {
-        public Playable(SabberStoneCore.Model.Entities.IPlayable playable, bool hand)
+        public Playable(IPlayable playable, bool hand)
         {
             cardId_ = playable.Card.AssetId;
             cost_ = playable.Cost;
-            if (playable is SabberStoneCore.Model.Entities.Character c)
+            if (playable is Character c)
             {
                 atk_ = c.AttackDamage;
                 baseHealth_ = c.BaseHealth;
@@ -205,7 +209,7 @@ namespace SabberStonePython.API
         public const int OP_HERO_POSITION = 8;
 
         public Option(int gameId, Types.PlayerTaskType type, 
-            int sourcePosition = 0, int targetPosition = 0, int subOption = 0,
+            int sourcePosition = -1, int targetPosition = -1, int subOption = 0,
             IPlayable source = null, ICharacter target = null)
         {
             gameId_ = gameId;
@@ -266,14 +270,6 @@ namespace SabberStonePython.API
                     choice_ = chooseTask.Choices[0];
                     type_ = Types.PlayerTaskType.Choose;
                     return;
-                case SabberStoneCore.Tasks.PlayerTasks.PlayCardTask playCardTask:
-                    subOption_ = playCardTask.ChooseOne;
-                    sourcePosition_ = playCardTask.Source.ZonePosition;
-                    if (playCardTask.Source.Card.Type == SabberStoneCore.Enums.CardType.MINION)
-                        targetPosition_ = playCardTask.ZonePosition + 1;
-                    else if (playCardTask.Source.Card.Type == SabberStoneCore.Enums.CardType.SPELL)
-                        targetPosition_ = getPosition(playCardTask.Target, playCardTask.Controller.Id);
-                    break;
                 case SabberStoneCore.Tasks.PlayerTasks.MinionAttackTask minionAttackTask:
                     sourcePosition_ = getFriendlyPosition(minionAttackTask.Source);
                     targetPosition_ = getEnemyPosition(minionAttackTask.Target);
@@ -284,30 +280,40 @@ namespace SabberStonePython.API
                 case SabberStoneCore.Tasks.PlayerTasks.HeroPowerTask heroPowerTask:
                     targetPosition_ = getPosition(heroPowerTask.Target, heroPowerTask.Controller.Id);
                     break;
+                case SabberStoneCore.Tasks.PlayerTasks.PlayCardTask playCardTask:
+                    subOption_ = playCardTask.ChooseOne;
+                    sourcePosition_ = playCardTask.Source.ZonePosition;     // SourcePosition: 0-based zone position in hand
+                    if (playCardTask.Source.Card.Type == CardType.MINION)
+                        targetPosition_ = playCardTask.ZonePosition + 1;    // Target Position:
+                                                                            // Minions: 1-based zone position in board
+                    else if (playCardTask.Source.Card.Type == CardType.SPELL)
+                        targetPosition_ = getPosition(playCardTask.Target, playCardTask.Controller.Id);
+                    break;                                                  // Spells:  0    : Hero
+                                                                            //          1-7  : Minions
+                                                                            //          8    : Op Hero
+                                                                            //          9-15 : Op Minions
             }
-
             type_ = (Types.PlayerTaskType)playerTask.PlayerTaskType;
 
             if (playerTask.HasSource) sourceId_ = playerTask.Source.Id;
             if (playerTask.HasTarget) targetId_ = playerTask.Target.Id;
-
         }
 
         public static int getPosition(ICharacter character, int controllerId)
         {
             if (character == null)
-                return 0;
+                return -1;
 
             if (character.Controller.Id != controllerId)
             {
-                if (character.Card.Type == SabberStoneCore.Enums.CardType.MINION)
+                if (character.Card.Type == CardType.MINION)
                     return character.ZonePosition + 9;
                 else
                     return OP_HERO_POSITION;   // 8 for the opponent's Hero
             }
             else
             {
-                if (character.Card.Type == SabberStoneCore.Enums.CardType.MINION)
+                if (character.Card.Type == CardType.MINION)
                     return character.ZonePosition + 1;
                 else
                     return HERO_POSITION;   // 0 for the player's Hero
@@ -316,7 +322,7 @@ namespace SabberStonePython.API
 
         public static int getFriendlyPosition(IPlayable character)
         {
-            if (character.Card.Type == SabberStoneCore.Enums.CardType.MINION)
+            if (character.Card.Type == CardType.MINION)
                 return character.ZonePosition + 1;
             else
                 return HERO_POSITION;
@@ -324,7 +330,7 @@ namespace SabberStonePython.API
 
         public static int getEnemyPosition(ICharacter character)
         {
-            if (character.Card.Type == SabberStoneCore.Enums.CardType.MINION)
+            if (character.Card.Type == CardType.MINION)
                 return character.ZonePosition + 9;
             else
                 return OP_HERO_POSITION;

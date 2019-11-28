@@ -34,7 +34,9 @@ service DotnetAIService {
 message DotnetAIRequest {
     string dotnet_ai_name = 1;
     string dotnet_ai_deckstring = 2;
-	string python_ai_deckstring = 3;
+    string python_ai_deckstring = 3;
+    bool history = 4;
+    int64 seed = 5;
 }
 
 message DotnetAIResponse {
