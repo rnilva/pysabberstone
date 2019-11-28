@@ -73,6 +73,8 @@ def dotnet_ai_match(python_ai: AbstractAI, dotnet_ai_name: str,
                     python_ai_deckstring, dotnet_ai_deckstring,
                     sabber_stub: SabberStonePythonStub,
                     dotnet_ai_stub: DotnetAIServiceStub,
+                    history: bool = False,
+                    random_seed: int = 0,
                     count: int = 1):
     """Run matches between python AI agent and dotnet AI agent."""
     python_ai.on_match_started()
@@ -87,7 +89,9 @@ def dotnet_ai_match(python_ai: AbstractAI, dotnet_ai_name: str,
         response = dotnet_ai_stub.Request(
             DotnetAIRequest(dotnet_ai_name=dotnet_ai_name,
                             dotnet_ai_deckstring=dotnet_ai_deckstring,
-                            python_ai_deckstring=python_ai_deckstring))
+                            python_ai_deckstring=python_ai_deckstring,
+                            history=history,
+                            seed=random_seed))
         if response.Type == 1:  # NOT_FOUND
             print("dotnet agent with name {} is not found.".format(
                 dotnet_ai_name))

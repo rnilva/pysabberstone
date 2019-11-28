@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using SabberStoneContract.Interface;
 using SabberStoneCore.Enums;
@@ -12,19 +13,17 @@ namespace SabberStonePython.DotnetAIService
     public class Match
     {
         public readonly IGameAI DotnetAgent;
-        public readonly IGameAI PythonAgent;
-        //public readonly string DotnetAgentDeckstring;
-        //public readonly string PythonAgentDeckstring;
+        public readonly string DotnetAgentName;
 
         private readonly Game _game;
         public int APIGameId { get; set; }
 
         public Game CurrentPartiallyObservableGame => CreatePartiallyObservableGame(_game);
 
-        public Match(IGameAI dotnetAgent, IGameAI pythonAgent, Game game)
+        public Match(IGameAI dotnetAgent, Game game, string dotnetAgentName)
         {
             DotnetAgent = dotnetAgent;
-            PythonAgent = pythonAgent;
+            DotnetAgentName = dotnetAgentName;
             _game = game;
 
             // Run dotnetAgent if it is the first player
@@ -52,11 +51,25 @@ namespace SabberStonePython.DotnetAIService
             return _game.State == State.COMPLETE;
         }
 
+        public void SaveHistory()
+        {
+            if (!_game.History) return;
+
+            const string HISTORY_DIR = "history";
+
+            Directory.CreateDirectory(HISTORY_DIR);
+            string fileName = $"{DotnetAgentName}_{DateTime.Now:ddmmyyyyHHMMSS}.log";
+
+            string path = Path.Combine(HISTORY_DIR, fileName);
+
+            SabberHelpers.DumpHistories(_game, path);
+        }
+
         private void GetDotnetAgentMoves()
         {
             if (DotnetAIServiceImpl.ConsoleOutput)
             {
-                Console.WriteLine("Dotnet AI's turn.");
+                Console.WriteLine(DotnetAgentName + "'s turn.");
             }
 
             while (_game.CurrentPlayer.PlayerId == 1 &&
@@ -65,9 +78,10 @@ namespace SabberStonePython.DotnetAIService
                 var poGame = CreatePartiallyObservableGame(_game);
                 _game.Process(DotnetAgent.GetMove(poGame));
             }
+
             if (DotnetAIServiceImpl.ConsoleOutput)
             {
-                Console.WriteLine("############## State ############");
+                Console.WriteLine("############## State #############");
                 Console.WriteLine(SabberHelpers.Printers.PrintGame(_game));
                 Console.WriteLine("##################################");
             }

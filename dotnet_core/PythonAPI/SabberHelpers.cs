@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
+using SabberStoneContract.Core;
+using SabberStoneContract.Model;
 using SabberStoneCore.Enums;
+using SabberStoneCore.Kettle;
 using SabberStoneCore.Loader;
 using SabberStoneCore.Model;
 using SabberStoneCore.Model.Entities;
@@ -24,7 +29,8 @@ namespace SabberStonePython
 {
     public static class SabberHelpers
     {
-        public static Game GenerateGame(string deckString1, string deckString2)
+        public static Game GenerateGame(string deckString1, string deckString2, bool history = false,
+                                        long seed = 0)
         {
             Deck deck1, deck2;
 
@@ -48,7 +54,7 @@ namespace SabberStonePython
                 throw e;
             }
 
-
+            if (seed == 0) seed = DateTime.UtcNow.Ticks;
 
             var game = new Game(new SabberStoneCore.Config.GameConfig
             {
@@ -59,10 +65,11 @@ namespace SabberStonePython
                 Player2Deck = deck2.GetCardList(),
 
                 Logging = false,
-                History = false,
+                History = history,
                 FillDecks = false,
                 Shuffle = true,
                 SkipMulligan = true,
+                RandomSeed = seed
             });
             game.StartGame();
 
@@ -78,7 +85,7 @@ namespace SabberStonePython
             return new API.Game(game);
         }
 
-        public static List<API.Option> PythonOptions(this Controller c, int gameId)
+        public static List<Option> PythonOptions(this Controller c, int gameId)
         {
             if (c.Choice != null)
             {
@@ -89,7 +96,7 @@ namespace SabberStonePython
             }
 
             int controllerId = c.Id;
-            List<API.Option> allOptions = ManagedObjects.OptionBuffers[gameId];
+            List<Option> allOptions = ManagedObjects.OptionBuffers[gameId];
 
             allOptions.Add(new Option(gameId, EndTurn));
 
@@ -131,8 +138,8 @@ namespace SabberStonePython
                         allOptions.Add(new Option(gameId, API.Option.Types.PlayerTaskType.HeroPower, source: power));
                     else
                     {
-                        allOptions.Add(new Option(gameId, API.Option.Types.PlayerTaskType.HeroPower, 0, 0, 1, source: power));
-                        allOptions.Add(new Option(gameId, API.Option.Types.PlayerTaskType.HeroPower, 0, 0, 2, source: power));
+                        allOptions.Add(new Option(gameId, API.Option.Types.PlayerTaskType.HeroPower, subOption: 1, source: power));
+                        allOptions.Add(new Option(gameId, API.Option.Types.PlayerTaskType.HeroPower, subOption: 2, source: power));
                     }
                 }
 				else
@@ -249,7 +256,7 @@ namespace SabberStonePython
                                 allOptions.Add(new Option(gameId, PlayCard, sourcePosition, i + 1, subOption,
                                     source: playable));
                         else
-                            allOptions.Add(new Option(gameId, PlayCard, sourcePosition, 0, subOption,
+                            allOptions.Add(new Option(gameId, PlayCard, sourcePosition, -1, subOption,
                                 source: playable));
                     }
 					else
@@ -264,7 +271,7 @@ namespace SabberStonePython
                                     allOptions.Add(new Option(gameId, PlayCard, sourcePosition, i + 1, subOption,
                                         source: playable));
 							else
-								allOptions.Add(new Option(gameId, PlayCard, sourcePosition, 0, subOption,
+								allOptions.Add(new Option(gameId, PlayCard, sourcePosition, -1, subOption,
                                     source: playable));
 						}
 						else
@@ -485,26 +492,26 @@ namespace SabberStonePython
 			#endregion
         }
 
-        public static PlayerTask GetPlayerTask(API.Option option, Game g)
+        public static PlayerTask GetPlayerTask(Option option, Game g)
         {
             const bool SkipPrePhase = true;
             Controller c = g.CurrentPlayer;
 
             switch (option.Type)
             {
-                case Option.Types.PlayerTaskType.Choose:
+                case Choose:
                     return ChooseTask.Pick(c, option.Choice);
-                case Option.Types.PlayerTaskType.Concede:
+                case Concede:
                     return ConcedeTask.Any(c);
-                case Option.Types.PlayerTaskType.EndTurn:
+                case EndTurn:
                     return EndTurnTask.Any(c);
-                case Option.Types.PlayerTaskType.HeroAttack:
+                case HeroAttack:
                     return HeroAttackTask.Any(c, GetOpponentTarget(option.TargetPosition), SkipPrePhase);
                 case Option.Types.PlayerTaskType.HeroPower:
                     return HeroPowerTask.Any(c, GetTarget(option.TargetPosition), option.SubOption, SkipPrePhase);
-                case Option.Types.PlayerTaskType.MinionAttack:
+                case MinionAttack:
                     return MinionAttackTask.Any(c, c.BoardZone[option.SourcePosition - 1], GetOpponentTarget(option.TargetPosition),SkipPrePhase);
-                case Option.Types.PlayerTaskType.PlayCard:
+                case PlayCard:
                     IPlayable source = c.HandZone[option.SourcePosition];
                     if (source.Card.Type == CardType.MINION)
                         return PlayCardTask.Any(c, source, null, option.TargetPosition - 1, option.SubOption, SkipPrePhase);
@@ -523,7 +530,7 @@ namespace SabberStonePython
 
             ICharacter GetTarget(int position)
             {
-                if (position == 0)
+                if (position == -1)
                     return null;
                 if (position >= Option.OP_HERO_POSITION)
                     return GetOpponentTarget(position);
@@ -579,7 +586,7 @@ namespace SabberStonePython
                 if (opponent.SecretZone.Count > 0 || opponent.SecretZone.Quest != null)
                 {
                     sb.Append($"[Op Secrets: ");
-                    opponent.SecretZone.ToList().ForEach(p =>
+                    opponent.SecretZone.ForEach(p =>
                     {
                         var s = p;
                         if (s.IsQuest)
@@ -596,7 +603,7 @@ namespace SabberStonePython
 
                 //}
                 sb.Append("[Op Board: ");
-                opponent.BoardZone.ToList().ForEach(m =>
+                opponent.BoardZone.ForEach(m =>
                 {
                     var str = new StringBuilder();
                     str.Append($"({m.AttackDamage}/{m.Health})");
@@ -606,7 +613,7 @@ namespace SabberStonePython
                 });
                 sb.Append("]\n");
                 sb.Append("[Board: ");
-                current.BoardZone.ToList().ForEach(m =>
+                current.BoardZone.ForEach(m =>
                 {
                     var str = new StringBuilder();
                     str.Append($"({m.AttackDamage}/{m.Health})");
@@ -623,7 +630,7 @@ namespace SabberStonePython
                 if (current.SecretZone.Count > 0 || current.SecretZone.Quest != null)
                 {
                     sb.Append($"[Secrets: ");
-                    current.SecretZone.ToList().ForEach(s =>
+                    current.SecretZone.ForEach(s =>
                     {
                         if (s.IsQuest)
                             sb.Append($"{s}({s.QuestProgress})");
@@ -633,7 +640,7 @@ namespace SabberStonePython
                     sb.Append("]\n");
                 }
                 sb.Append("[Hand: ");
-                current.HandZone.ToList().ForEach(p =>
+                current.HandZone.ForEach(p =>
                 {
                     sb.Append($"({p.Cost})");
                     sb.Append(p);
@@ -721,6 +728,59 @@ namespace SabberStonePython
 
             throw new ArgumentException();
         }
+
+        public static void DumpHistories(Game game, string filePath)
+        {
+            using (FileStream file = File.OpenWrite(filePath))
+            {
+                using (var writer = new StreamWriter(file))
+                {
+                    var initialisation = new GameServerStream
+                    {
+                        MessageType = MsgType.InGame,
+                        MessageState = true,
+                        Message = JsonConvert.SerializeObject(new GameData
+                        {
+                            GameId = 10000,
+                            PlayerId = 2,
+                            GameDataType = GameDataType.Initialisation,
+                            GameDataObject = JsonConvert.SerializeObject(
+                                new List<UserInfo>
+                                {
+                                    new UserInfo
+                                    {
+                                        PlayerId = 1
+                                    },
+                                    new UserInfo
+                                    {
+                                        PlayerId = 2
+                                    }
+                                })
+                        })
+                    };
+
+                    writer.WriteLine(JsonConvert.SerializeObject(initialisation));
+
+                    string encodedHistories = JsonConvert.SerializeObject(game.PowerHistory.Full);
+
+                    var tempStreamObject = new GameServerStream
+                    {
+                        MessageType = MsgType.InGame,
+                        MessageState = true,
+                        Message = JsonConvert.SerializeObject(new GameData
+                        {
+                            GameId = 10000,
+                            PlayerId = 2,
+                            GameDataType = GameDataType.PowerHistory,
+                            GameDataObject = encodedHistories
+                        })
+                    };
+
+                    writer.WriteLine(JsonConvert.SerializeObject(tempStreamObject));
+                }
+            }
+        }
+
 
         private static int ReadVarint(byte[] bytes, ref int offset, out int length)
         {
