@@ -23,13 +23,13 @@ namespace SabberStone_gRPC
 
         static void Main(string[] args)
         {
-            var svr = new ServerHandleImpl(DEFAULT_PORT);
+			// var svr = new ServerHandleImpl(DEFAULT_PORT);
 
-            svr.Start();
+            // svr.Start();
 
-            svr.Shutdown().Wait();
+            // svr.Shutdown().Wait();
 
-            return;
+            // return;
 
             if (args.Length < 1)
             {
@@ -57,10 +57,16 @@ namespace SabberStone_gRPC
             }
             else if (command == "mmf")
             {
-                if (args.Length > 1)
+                if (args.Length > 1){
+
+					Console.WriteLine("run mmf");
                     MMFServer.Run(args[1]);
+				}
                 else
+				{
+					Console.WriteLine("run mmf");
                     MMFServer.Run();
+				}
             }
             else
             {
