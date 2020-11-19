@@ -16,25 +16,29 @@ namespace SabberStone_gRPC.MMF
         private const string PIPE_NAME_PREFIX = "sabberstoneserver_";
         private const string MMF_NAME_POSTFIX = "_sabberstoneserver.mmf";
         private const string OUTPUT_PATH = "_mmf_server_output.txt";
+        private const string SERVER_PATH = "server_file";
+        private const string LOG_PATH = "log";
 
         public static List<Task> RunningThreads = new List<Task>();
         private static CancellationTokenSource CTS = new CancellationTokenSource();
 
-        public static string GetTempPath(string id) => Path.GetTempFileName() + Guid.NewGuid().ToString() + id + ".mmf";
+        public static string GetServerPath(string id) => Path.Join(SERVER_PATH,"mmf", Guid.NewGuid().ToString() + id + ".mmf");
 
         public static unsafe void Run(string id = "", bool isTask = false)
         {
             StreamWriter outputFile;
             TextWriter stdout = null;
+            DirectoryInfo serverDir = Directory.CreateDirectory(Path.Join(SERVER_PATH, "mmf"));
+            DirectoryInfo logDir = Directory.CreateDirectory(Path.Join(SERVER_PATH, LOG_PATH));
             if (!isTask)
             {
-                outputFile = File.CreateText(id + OUTPUT_PATH);
+                outputFile = File.CreateText(Path.Join(logDir.ToString(), id + OUTPUT_PATH));
                 outputFile.AutoFlush = true;
                 stdout = Console.Out;
                 Console.SetOut(outputFile);
             }
 
-            string mmf_file_path = GetTempPath(id);
+            string mmf_file_path = GetServerPath(id);
             
             while (true)
             {
