@@ -7,6 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SabberStonePython", "Sabber
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SabberStoneContract", "SabberStoneContract\SabberStoneContract.csproj", "{A149358C-0BE3-4BFB-B00B-10B3B3E81C2F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ai", "ai", "{E746E503-1C09-4A86-BFF3-41AC5249F90E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hearthstone-MonteCarloGraphSearch", "Hearthstone-MonteCarloGraphSearch", "{4EBBF247-81BE-433D-A2F4-3DC9B19243E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonteCarloGraphSearch", "ai\Hearthstone-MonteCarloGraphSearch\MonteCarloGraphSearch\MonteCarloGraphSearch.csproj", "{AE1BB2BA-8E46-4E50-9679-4FC538997885}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,11 +32,21 @@ Global
 		{A149358C-0BE3-4BFB-B00B-10B3B3E81C2F}.NoSpan|Any CPU.Build.0 = Debug|Any CPU
 		{A149358C-0BE3-4BFB-B00B-10B3B3E81C2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A149358C-0BE3-4BFB-B00B-10B3B3E81C2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE1BB2BA-8E46-4E50-9679-4FC538997885}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE1BB2BA-8E46-4E50-9679-4FC538997885}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE1BB2BA-8E46-4E50-9679-4FC538997885}.NoSpan|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE1BB2BA-8E46-4E50-9679-4FC538997885}.NoSpan|Any CPU.Build.0 = Debug|Any CPU
+		{AE1BB2BA-8E46-4E50-9679-4FC538997885}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE1BB2BA-8E46-4E50-9679-4FC538997885}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {35ECEE53-3E0D-4468-A8A2-52137E1F0360}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4EBBF247-81BE-433D-A2F4-3DC9B19243E4} = {E746E503-1C09-4A86-BFF3-41AC5249F90E}
+		{AE1BB2BA-8E46-4E50-9679-4FC538997885} = {4EBBF247-81BE-433D-A2F4-3DC9B19243E4}
 	EndGlobalSection
 EndGlobal

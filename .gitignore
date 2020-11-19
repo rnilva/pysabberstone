@@ -350,3 +350,8 @@ healthchecksdb
 
 # Build outputs
 python/_sabberstone_dotnet/*
+/_sabberstone_dotnet/*
+
+*server_output*.txt
+test_mmf*.txt
+/viz/

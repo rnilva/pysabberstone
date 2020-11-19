@@ -3,15 +3,17 @@ import socket
 import subprocess
 import time
 import os
+import signal
 
 from .entities import *
 from .function import *
 from .option import *
 from .game import Game
 
+# TODO @milva what is this doing?
 SERVER_ADDRESS = '/tmp/CoreFxPipe_sabberstoneserver_'
-DEFAULT_DLL_PATH = os.path.join(os.path.dirname(__file__),
-                                '_sabberstone_dotnet/SabberStonePython.dll')
+# TODO @esac when you install this as a pacakge what is the root dir?
+DEFAULT_DLL_PATH = os.path.join(os.path.dirname(__file__), '_sabberstone_dotnet/SabberStonePython.dll')
 TIMEOUT = 50
 
 
@@ -25,8 +27,7 @@ class SabberStoneServer:
         self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         uds_path = SERVER_ADDRESS + id
         if run_csharp_process:
-            csharp_server = subprocess.Popen(["dotnet", dll_path, "mmf", id],
-                                             stdout=subprocess.DEVNULL)
+            csharp_server = subprocess.Popen(["dotnet", dll_path, "mmf", id], stdout=subprocess.PIPE)
             self.csharp_server = csharp_server
             self.is_thread = False
         else:
@@ -50,9 +51,9 @@ class SabberStoneServer:
         self.mmf = mmap.mmap(self.mmf_fd.fileno(), 0)
         # self.mmf = numpy.memmap(self.mmf_fd, dtype='byte', mode='r+',
         #                         shape=(10000))
-
         print(id, 'Connected to SabberStoneServer ({0}), sleeping(2)'.format(mmf_path))
         time.sleep(2)
+
 
     def new_thread(self, thread_id: int):
         call_function_void_return_int_arg(self.socket, 9, thread_id)
@@ -90,6 +91,9 @@ class SabberStoneServer:
         return HandZone(data_bytes)
 
     def __del__(self):
+        if hasattr(self, "render_proc"):
+            print(f"Found ui at {self.render_proc.pid}. Trying kill process")
+            os.killpg(os.getpgid(self.render_proc.pid), signal.SIGTERM)
         if not self.is_thread:
             try:
                 call_function_void_return(self.socket, 8)

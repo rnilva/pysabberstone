@@ -55,6 +55,7 @@
 
   <ItemGroup>
     <ProjectReference Include="SabberStoneContract\SabberStoneContract.csproj" />
+    <ProjectReference Include="ai\Hearthstone-MonteCarloGraphSearch\MonteCarloGraphSearch\MonteCarloGraphSearch.csproj" />
   </ItemGroup>
 
   <ItemGroup>
