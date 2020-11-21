@@ -5,7 +5,13 @@ import os
 import struct
 import time
 import ctypes
-from mmf_test import open_mmf
+import numpy as np
+
+def open_mmf():
+    f = open('../test.mmf', 'r')
+    mmf = np.memmap(f, dtype='byte', mode='r', shape=(1, 1000))
+    return f, mmf
+
 
 server_address = '/tmp/CoreFxPipe_testpipe'
 

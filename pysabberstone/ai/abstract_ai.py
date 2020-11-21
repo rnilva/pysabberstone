@@ -1,14 +1,16 @@
-from ..rpc.python_pb2 import MatchRequest, QueueRequest, Empty
-from ..rpc.python_pb2 import DeckStrings, Game, Option
-from ..rpc.python_pb2 import DotnetAIRequest, DotnetAIResponse
-from ..rpc.python_pb2_grpc import SabberStonePythonStub, grpc
-from ..rpc.python_pb2_grpc import DotnetAIServiceStub
-from abc import ABC, abstractmethod
 import random
+from abc import ABC, abstractmethod
+
+from ..rpc.python_pb2 import DeckStrings, Game, Option
+from ..rpc.python_pb2 import DotnetAIRequest
+from ..rpc.python_pb2 import MatchRequest, QueueRequest, Empty
+from ..rpc.python_pb2_grpc import DotnetAIServiceStub
+from ..rpc.python_pb2_grpc import MatchServiceStub
+from ..rpc.python_pb2_grpc import SabberStonePythonStub
 
 
 class AbstractAI(ABC):
-    def __init__(self, stub, account_name):
+    def __init__(self, account_name: str, stub: MatchServiceStub = None):
         self._stub = stub
         self.metadata = (('id', account_name),)
         self.game_id = ""
@@ -53,15 +55,18 @@ class AbstractAI(ABC):
         self._stub.Queue(request)
 
 
-def remote_ai_match(ai: AbstractAI, ip, port,
-                    id, deckstring, sabberstone_stub):
+def remote_ai_match(ai: AbstractAI, ip: str, port: int,
+                    id: str, deckstring: str, sabberstone_stub: SabberStonePythonStub):
     """Connect to a specified remote server with AI
     using the given deckstring.
     """
     ai.connect(ip, port)
     ai.queue(deckstring)
     stub = ai._stub
+    print("connecting to remote")
+    # TODO @milva how this sohuld work and why you made it?
     game = stub.GetState(Empty(), metadata=ai.metadata)
+    print("found opponent")
     while game.state != 3:
         stub.SendOption(ai.get_option(sabberstone_stub, game),
                         metadata=ai.metadata)
@@ -69,14 +74,19 @@ def remote_ai_match(ai: AbstractAI, ip, port,
     print("Game Finished.")
 
 
-def dotnet_ai_match(python_ai: AbstractAI, dotnet_ai_name: str,
-                    python_ai_deckstring, dotnet_ai_deckstring,
+def dotnet_ai_match(python_ai: AbstractAI,
+                    dotnet_ai_name: str,
+                    python_ai_deckstring: str,
+                    dotnet_ai_deckstring: str,
                     sabber_stub: SabberStonePythonStub,
                     dotnet_ai_stub: DotnetAIServiceStub,
                     history: bool = False,
                     random_seed: int = 0,
-                    count: int = 1):
+                    count: int = 1
+                    ):
     """Run matches between python AI agent and dotnet AI agent."""
+
+    print(f"Begin match MCTS. Players plays ID:2")
     python_ai.on_match_started()
     for i in range(count):
         python_ai.on_game_started()
@@ -93,8 +103,7 @@ def dotnet_ai_match(python_ai: AbstractAI, dotnet_ai_name: str,
                             history=history,
                             seed=random_seed))
         if response.Type == 1:  # NOT_FOUND
-            print("dotnet agent with name {} is not found.".format(
-                dotnet_ai_name))
+            print("dotnet agent with name {} is not found.".format(dotnet_ai_name))
             return
         elif response.Type == 2:  # OCCUPIED
             print("Only one match can be run.")
@@ -106,17 +115,30 @@ def dotnet_ai_match(python_ai: AbstractAI, dotnet_ai_name: str,
         game = response.game
 
         # Main loop
+        import time
+        start_game = time.time()
+        avg_time = []
         while game.state != 3:
             # Get option from the python ai
             option = python_ai.get_option(game, sabber_stub)
-
             # Send Option: If the given option is end turn option,
             #              python client receives the start of the next
             #              turn after the dotnet client plays its turn.
             #              Therefore 'game' is always python client's turn.
-            game = dotnet_ai_stub.SendPythonAIOption(option)
 
-        # TODO: winner
+            query_ai = time.time()
+            game = dotnet_ai_stub.SendPythonAIOption(option)
+            end_query_ai = time.time() - query_ai
+            # TODO @esac how to test this?
+            avg_time.append(end_query_ai)
+            print(f"game_turn:{game.turn}\tavg_time:{sum(avg_time) / len(avg_time):.3f}")
+
+        end_game = time.time() - start_game
+
+        winner = game.CurrentPlayer.id if game.CurrentPlayer.play_state == 5 else game.CurrentOpponent.id
+
+        print(
+            f"games:{count}\ttotal_time:{end_game:.2f}\tavg_time_mcts:{sum(avg_time) / len(avg_time):.3f}\twinner:{winner}")
 
         python_ai.on_game_finished(game)
 
@@ -128,12 +150,11 @@ def match(ai_player_1: AbstractAI, ai_player_2: AbstractAI,
     ai_player_1.on_match_started()
     ai_player_2.on_match_started()
     for i in range(count):
-        game = sabber_stub.NewGame(DeckStrings(deck1=deckstring_1,
-                                               deck2=deckstring_2))
+        game = sabber_stub.NewGame(DeckStrings(deck1=deckstring_1, deck2=deckstring_2))
         ai_player_1.on_game_started()
         ai_player_2.on_game_started()
         # id = game.id
-        while game.state != 3:   # State.COMPLETE
+        while game.state != 3:  # State.COMPLETE
             if game.CurrentPlayer.id == 1:
                 option = ai_player_1.get_option(game, sabber_stub)
             else:
@@ -145,8 +166,8 @@ def match(ai_player_1: AbstractAI, ai_player_2: AbstractAI,
 
 class RandomAI(AbstractAI):
     """The most basic AI in the world."""
+
     def get_option(self, game, sabberstone_stub):
-        sabberstone_stub.GetOptions(game.id)
         options = sabberstone_stub.GetOptions(game.id)
         return options.list[random.randrange(len(options.list))]
 

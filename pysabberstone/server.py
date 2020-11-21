@@ -91,9 +91,6 @@ class SabberStoneServer:
         return HandZone(data_bytes)
 
     def __del__(self):
-        if hasattr(self, "render_proc"):
-            print(f"Found ui at {self.render_proc.pid}. Trying kill process")
-            os.killpg(os.getpgid(self.render_proc.pid), signal.SIGTERM)
         if not self.is_thread:
             try:
                 call_function_void_return(self.socket, 8)
