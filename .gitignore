@@ -349,7 +349,7 @@ healthchecksdb
 *.mmf
 
 # Build outputs
-python/_sabberstone_dotnet/*
+pysabberstone/_sabberstone_dotnet/*
 /_sabberstone_dotnet/*
 
 *server_output*.txt

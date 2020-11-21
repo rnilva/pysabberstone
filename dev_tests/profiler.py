@@ -1,5 +1,6 @@
-import python_pb2
 import random
+
+from hearlstone.pysabberstone.pysabberstone.rpc import python_pb2
 
 
 def random_games_rpc(stub, deck, count):
@@ -22,3 +23,19 @@ def random_games_mmf(server, deck, count):
             game = server.process(game, option)
         game = server.reset(game)
         print("{0}th game is finished.".format(i + 1))
+
+import cProfile
+
+
+import cProfile
+import python_pb2_grpc
+import grpc
+
+import sabber_protocol.server
+
+server = sabber_protocol.server.SabberStoneServer()
+
+stats = cProfile.run('profiler.random_games_mmf(server, r"AAEBAf0EAA8MLU1xwwG7ApUDrgO/A4AEtATmBO0EoAW5BgA=", 100)')
+channel = grpc.insecure_channel('localhost:50052')
+stub = python_pb2_grpc.SabberStonePythonStub(channel)
+stats = cProfile.run('profiler.random_games_rpc(stub, r"AAEBAf0EAA8MLU1xwwG7ApUDrgO/A4AEtATmBO0EoAW5BgA=", 100)')
