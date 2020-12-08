@@ -43,7 +43,13 @@ namespace SabberStone_gRPC.MMF
             *ip++ = subOption;
             ip++;
             byte* bp = (byte*)ip;
-            *bp++ = Convert.ToByte(type == PlayerTaskType.PLAY_CARD && source.Card.Type == CardType.SPELL);
+			// is_spell
+            *bp++ = Convert.ToByte(type == PlayerTaskType.PLAY_CARD && 
+								   source.Card.Type == CardType.SPELL);
+
+#if NO_OPTION_STRING
+			return (int*)bp;
+#else
 
             var sb = new StringBuilder();
             switch (type)
@@ -83,6 +89,7 @@ namespace SabberStone_gRPC.MMF
 			
 
             return (int*)(bp + str.Length);
+#endif
         }
 
         private static unsafe void MarshalChoice(int choice, ref int* ip, string cardName)
@@ -91,7 +98,11 @@ namespace SabberStone_gRPC.MMF
             ip += 3;
             *ip++ = choice;
 			byte* bp = (byte*)ip;
-			bp++;
+			++bp;
+			ip = (int*) bp;
+#if NO_OPTION_STRING
+			return;
+#else
 			ip = (int*)bp;
 			string str = string.Format("[CHOOSE] {0}", cardName);
 
@@ -100,6 +111,7 @@ namespace SabberStone_gRPC.MMF
 				Encoding.Default.GetBytes(ptr, str.Length, (byte*)ip, 1000);
 			
 			ip = (int*)((byte*)ip + str.Length);
+#endif
         }
 
 		private const string EndTurnPrint = "[END_TURN]";
@@ -109,8 +121,11 @@ namespace SabberStone_gRPC.MMF
             *ip++ = (int) PlayerTaskType.END_TURN;
             ip += 4;
 			byte* bp = (byte*)ip;
-			bp++;
+			++bp;
 			ip = (int*)bp;
+#if NO_OPTION_STRING
+			return;
+#else
 			*ip++ = EndTurnPrint.Length;
 			bp = (byte*)ip;
 			fixed (char* ptr = EndTurnPrint)
@@ -119,6 +134,7 @@ namespace SabberStone_gRPC.MMF
             }
 
 			ip = (int*)(bp + EndTurnPrint.Length);
+#endif
         }
 
 

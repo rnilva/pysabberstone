@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.IO.MemoryMappedFiles;
 using System.Text;
@@ -23,6 +24,9 @@ namespace SabberStone_gRPC.MMF.Functions
         private static object _locker = new object();
         private static int _gameIdGen;
 
+        private static long _total_processing_time;
+        private static int _num_games_played;
+
         private static int GetNextId()
         {
             lock (_locker)
@@ -33,6 +37,11 @@ namespace SabberStone_gRPC.MMF.Functions
 
         public static int NewGame(string deck1, string deck2, in byte* mmfPtr)
         {
+            if (_num_games_played > 0)
+                Console.WriteLine("Avg processing time: " + _total_processing_time / _num_games_played + " ms");
+
+            ++_num_games_played;
+
             Console.WriteLine("NewGame service is called!");
             Console.WriteLine("Deckstring #1: " + deck1);
             Console.WriteLine("Deckstring #2: " + deck2);
@@ -74,16 +83,28 @@ namespace SabberStone_gRPC.MMF.Functions
 
         public static int GetOptions(int gameId, in byte* mmfPtr)
         {
-            return ManagedObjects.Games[gameId].CurrentPlayer.Options(in mmfPtr);
+            var watch = Stopwatch.StartNew();
+
+            var result =  ManagedObjects.Games[gameId].CurrentPlayer.Options(in mmfPtr);
+
+            watch.Stop();
+            _total_processing_time += watch.ElapsedMilliseconds;
+            
+            return result;
         }
 
         public static int Process(int gameId, in Option option, in byte* mmfPtr)
         {
+            var watch = Stopwatch.StartNew();
+
             Game game = ManagedObjects.Games[gameId];
             PlayerTask task = SabberHelper.OptionToPlayerTask(game.CurrentPlayer, option);
             game.Process(task);
 
-            return MarshalEntities.MarshalGameToMMF(game, in mmfPtr, gameId);
+            var result =  MarshalEntities.MarshalGameToMMF(game, in mmfPtr, gameId);
+            watch.Stop();
+            _total_processing_time += watch.ElapsedMilliseconds;
+            return result;
         }
 
         public static unsafe int Status(in byte* mmfPtr)
