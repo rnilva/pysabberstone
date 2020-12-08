@@ -15,38 +15,38 @@ matchserver_port = 50051
 
 
 def _test_game():
-    server = SabberStoneServer(id="test")
-    server.get_server_status()
+    # server = SabberStoneServer(id="test")
+    # server.get_server_status()
 
-    print("Send one playable test")
-    playable = server._test_get_one_playable()
-    print(playable)
+    # print("Send one playable test")
+    # playable = server._test_get_one_playable()
+    # print(playable)
 
-    print("Send hand test")
-    hand = server._test_zone_with_playables()
-    print(hand)
+    # print("Send hand test")
+    # hand = server._test_zone_with_playables()
+    # print(hand)
 
-    print("Send game test")
+    # print("Send game test")
     # https://www.hearthpwn.com/decks/1286667-hand-priest
     string1 = r"AAECAa0GBKbwAr3zApeHA+aIAw3lBOEH9geNCKUJ0gryDPsM5fcC0P4C0okD64oDz50DAA=="
     # https://www.hearthpwn.com/decks/1286917-starter-pack-mage
     string2 = r"AAECAf0EAA8MuwKVA6sEtATmBJYFhQjC8wK0/ALnlQOmmAOfmwP/nQPinwMA"
 
-    game = server.new_game(string1, string2)
-    print('Received game object from NewGame! size: {}'.format(game.size))
-    print(game)
+    # game = server.new_game(string1, string2)
+    # print('Received game object from NewGame! size: {}'.format(game.size))
+    # print(game)
 
-    # Reset Test
-    server.reset(game)
-    print('game after reset:')
-    print(game)
+    # # Reset Test
+    # server.reset(game)
+    # print('game after reset:')
+    # print(game)
 
-    # Options Test
-    options = server.options(game)
-    for option in options:
-        print(option.print)
+    # # Options Test
+    # options = server.options(game)
+    # for option in options:
+    #     print(option.print)
 
-    del server
+    # del server
 
     def full_random_game(id, deck1, deck2, server=None):
         if server is None:
@@ -66,7 +66,7 @@ def _test_game():
         print(f'id:{id}\tgame_time:{end_game:.2f}\tw:{winner_id}')
 
     def game_per_second(n_matches):
-        server = pysabberstone.server.SabberStoneServer(id="test")
+        server = pysabberstone.server.SabberStoneServer(id="test", run_csharp_process=False)
         avg_time = []
         start_test = time.time()
         for ep in range(n_matches):
@@ -80,18 +80,18 @@ def _test_game():
 
     game_per_second( 100)
 
-    print("Multithreading Test")
-    processes = [
-        Process(target=full_random_game, args=("thread1", string1, string2)),
-        Process(target=full_random_game, args=("thread2", string1, string2)),
-        Process(target=full_random_game, args=("thread3", string1, string2)),
-        Process(target=full_random_game, args=("thread4", string1, string2))]
+    # print("Multithreading Test")
+    # processes = [
+    #     Process(target=full_random_game, args=("thread1", string1, string2)),
+    #     Process(target=full_random_game, args=("thread2", string1, string2)),
+    #     Process(target=full_random_game, args=("thread3", string1, string2)),
+    #     Process(target=full_random_game, args=("thread4", string1, string2))]
 
-    for p in processes:
-        p.start()
+    # for p in processes:
+    #     p.start()
 
-    for p in processes:
-        p.join()
+    # for p in processes:
+    #     p.join()
 
 
 def run_remote_ai(pid, match_stub, game_stub):
@@ -138,5 +138,7 @@ def _test_mcts_match():
 
 
 if __name__ == "__main__":
+    # import cProfile
     _test_game()
-    _test_mcts_match()
+    # cProfile.run('_test_game()')
+    # _test_mcts_match()

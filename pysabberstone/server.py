@@ -13,7 +13,7 @@ from .game import Game
 # TODO @milva what is this doing?
 SERVER_ADDRESS = '/tmp/CoreFxPipe_sabberstoneserver_'
 # TODO @esac when you install this as a pacakge what is the root dir?
-DEFAULT_DLL_PATH = os.path.join(os.path.dirname(__file__), '_sabberstone_dotnet/SabberStonePython.dll')
+DEFAULT_DLL_PATH = 'python/_sabberstone_dotnet/SabberStonePython.dll'
 TIMEOUT = 50
 
 
@@ -97,3 +97,7 @@ class SabberStoneServer:
             except:
                 pass
         print('server {0} closed'.format(self.id))
+
+    # @staticmethod
+    # def from_id(id: str):
+    #     SabberStoneServer()
